@@ -1,0 +1,120 @@
+reward-list:
+  # 奖励的名称, 应与文件名对应
+  name: $name$
+  # 奖励所属的等级, 如果等级不存在, 奖励则不会被载入.
+  level: $level$
+  # 奖励菜单的大小
+  size: 54
+  # 各页的标题
+  # {page} -> 页数
+  titles:
+    _DEFAULT_: 'The reward title (Page {page})'
+    2: 'The second page'
+  # 打开菜单需要的权限
+  permissions: []
+  # 没有权限时触发的事件
+  permissions-denied-events: []
+  rewards:
+    1:
+      levels: 1
+      page: 1
+      slot: 10
+      rewards:
+        - '&6Coins x100'
+      events:
+        - '@EventProperty world'
+        - '[CONSOLE] bal give {player} 100'
+    2:
+      levels: 2
+      page: 1
+      slot: 11
+      rewards:
+        - '&6Coins x100'
+      events:
+        - '@EventProperty world'
+        - '[CONSOLE] bal give {player} 100'
+      custom-items:
+        reward-unlocked:
+          display-name: '&eReward 2 &f| &aUnlocked'
+          lore:
+            - ''
+            - '&6rewards:'
+            - '{rewards}'
+            - ''
+            - '&aClick to claim!'
+          material: CHEST_MINECART
+          amount: 1
+          item-flags:
+            - HIDE_ENCHANTS
+          enchantments:
+            - 'PROTECTION_ENVIRONMENTAL : 1'
+          events:
+            - '[msg] &aReceived successfully'
+        reward-locked:
+          display-name: '&eReward 3 &f| &cLocked'
+          lore:
+            - ''
+            - '&6rewards:'
+            - '{rewards}'
+            - ''
+            - '&cYou need more levels!'
+          material: CHEST_MINECART
+          amount: 1
+          events:
+            - '[msg] &cThis reward is locked!'
+        reward-received:
+          display-name: '&eReward 3 &f| &cReceived'
+          lore:
+            - ''
+            - '&6rewards:'
+            - '{rewards}'
+            - ''
+            - '&cYou''ve already received!'
+          material: MINECART
+          amount: 1
+          events:
+            - '[msg] &cYou''ve already received this reward!'
+        reward-no-permissions:
+          display-name: '&eReward 3 &f| &cLocked'
+          lore:
+            - ''
+            - '&6rewards:'
+            - '{rewards}'
+            - ''
+            - '&cYou don''t have permissions!'
+          material: CHEST_MINECART
+          amount: 1
+          events:
+            - '[msg] &cYou don''t have permissions to receive this reward!'
+  item-slots:
+    previous-page: [ 9, 18, 27, 36 ]
+    next-page: [ 17, 26, 35, 44 ]
+    custom-border: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 45, 46, 47, 48, 49, 50, 51, 52, 53 ]
+  custom-items:
+    custom-border:
+      display-name: '&7Border'
+      material: GRAY_STAINED_GLASS_PANE
+      events:
+        - '[msg] &eHey, it''s no use clicking this item!'
+#    Previous-page:
+#      display-name: '&cPrevious page'
+#      lore:
+#        - '&7Click to go to the previous page'
+#      material: RED_STAINED_GLASS_PANE
+#      amount: 1
+#      Data: 0
+#    Next-page:
+#      display-name: '&aNext page'
+#      lore:
+#        - '&7Click to go to the next page'
+#      material: GREEN_STAINED_GLASS_PANE
+#      amount: 1
+#      Data: 0
+#    Reward-Unlocked:
+#      ...
+#    Reward-Locked:
+#      ...
+#    Reward-Received:
+#      ...
+#    Reward-NoPermissions:
+#      ...

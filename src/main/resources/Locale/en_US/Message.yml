@@ -1,0 +1,110 @@
+startup:
+  welcome: 'Welcome to use'
+  version: 'Version'
+  author: 'Author'
+  info: |
+    &f
+    &b&lDreamLevels &dv{version} &eby &eDreamStudio (MrTyphoon)
+    &7Need help?&a Try the command &b'/{cmd} Help'&f!
+    &f
+  on-enable:
+    error-plugin_yml: '{prefix}&cDetected that plugin.yml has been modified, please do not modify plugin.yml!'
+    register-command: '{prefix}&fRegistering commands...'
+    register-listener: '{prefix}&fRegistering listeners...'
+    register-PAPI: '{prefix}&fRegistering PAPI expansion...'
+    succeed: '{prefix}&aRegistration successful!'
+    failed: '{prefix}&cRegistration failed!'
+    enabled: '{prefix}&aThis plugin startup took &e{time}ms&a.'
+  on-disable:
+    disabled: '{prefix}&cThe plugin has been unloaded!'
+command:
+  generic:
+    no-permissions: '{prefix}&cYou do not have permission to execute this command!'
+    not-an-integer: '{prefix}&cThe {index}th parameter is not an integer!'
+    not-an-number: '{prefix}&cThe {index}th parameter is not a number!'
+    only-for-console: '{prefix}&cThis command can only be executed by the console!'
+    only-for-player: '{prefix}&cOnly players can use this command!'
+    player-not-found: '{prefix}&cPlayer named {name} not found!'
+    parameters-error: '{prefix}&cMissing the {index}th parameter, please refer to the help command!'
+    property-required: '{prefix}&cMissing parameter {property}, please refer to the help command.'
+    reloaded: '{prefix}&aThe plugin has been reloaded!'
+    unknown-command: '{prefix}&cCommand not found!'
+  # Available placeholders are as follows:
+  #
+  # {player}            -> One or more players, separated by commas if multiple.
+  # {level}             -> Identifier of the level system
+  # {level-displayName} -> Display name of the level system
+  # {amount}            -> Value
+  #
+  # For the AddExp command, there is also:
+  # {final-amount}      -> The actual experience value the player gets (rate * original value)
+  level:
+    add-exp: '{prefix}&aAdded &e{final-amount} points of {level-displayName} experience for player &e{player}.'
+    add-levels: '{prefix}&aAdded &e{amount} levels of {level-displayName} for player &e{player}.'
+    set-exp: '{prefix}&aSet the &e{level-displayName} experience of the player to &e{amount}.'
+    set-levels: '{prefix}&aSet the &e{level-displayName} level of the player to &e{amount}.'
+    set-multiple: '{prefix}&aSet the level rate of the player {level-displayName} to &e{amount}.'
+    remove-exp: '{prefix}&aRemoved &e{amount} points of {level-displayName} experience from player &e{player}.'
+    remove-levels: '{prefix}&aRemoved &e{amount} levels of {level-displayName} from player &e{player}.'
+    reset: '{prefix}&aReset the {level-displayName} data of player &e{player}.'
+  help:
+    1:
+      - ''
+      - ''
+      - '&b&lDreamLevels &e&lHelp &7(#{page})'
+      - ''
+      - '&e/{cmd} Help [Page Number] &d| &fDisplay help message'
+      - '&e/{cmd} Admin [Page Number] &d| &cDisplay admin help message'
+      - ''
+  admin:
+    1:
+      - ''
+      - ''
+      - '&b&lDreamLevels &c&lAdmin Help &7(#{page})'
+      - ''
+      - '&e/{cmd} Admin [Page Number] &d| &cDisplay admin help message'
+      - '&e/{cmd} Reload&7[rl] &8[&7config&8|&7lang&8] &d| &aReload the plugin'
+      #- '&7(Enter ''/{cmd} admin 2'' to view the next page)'
+      - ''
+data:
+  database:
+    disconnected: '{prefix}&cDatabase not connected, please report to the administrator or try again later.'
+  sync-mode:
+    ShadowMessenger-absent: |
+      {prefix}&cServer does not have the ShadowMessenger plugin installed.
+      {prefix}&cCross-server synchronization feature is disabled.
+    BungeeMessenger-absent: |
+      {prefix}&cBungeeMessenger was not successfully enabled, cross-server synchronization feature is disabled.
+      {prefix}&cPlease check the relevant configuration in ShadowMessenger.
+    channel-failure: '{prefix}&cUnable to enable the communication channel, please try restarting the server.'
+    starting: '{prefix}&fEnabling cross-server synchronization communicator...'
+    succeeded: '{prefix}&aCross-server synchronization communicator enabled successfully.'
+    stopped: '{prefix}&cCross-server synchronization communicator has been disabled.'
+  failure:
+    invalid-null: '{prefix}&cPlayer {player} loaded empty data, replaced with new data!'
+    invalid-storage-method: |
+      {prefix}&eUnknown storage method {method}
+      {prefix}&eChanged to "YAML", please modify and use the reload command.
+    invalid-storage-directory: |
+      {prefix}Invalid storage path, changed to default path, please modify the configuration file and use the reload command.
+      {prefix}This may be because the path is not an accessible folder.
+    invalid-MySQL-configuration: '{prefix}MySQL database configuration file error, database function disabled.'
+    invalid-SQLite-configuration: '{prefix}SQLite database configuration file error, database function disabled.'
+    admin:
+      failed-to-create: '{prefix}&cUnable to create data for player {player}!'
+      failed-to-load: '{prefix}&cError loading data for player {player}!'
+      failed-to-unload: '{prefix}&cError unloading data for player {player}!'
+    player:
+      failed-to-load: '{prefix}&eYour data could not be loaded normally, please contact the administrator.'
+      no-db-connection: '{prefix}&cUnable to connect to the database, please report to the administrator.'
+level:
+  create: '{prefix}&aSuccessfully created and loaded a level system, you can modify it and then reload using the reload command.'
+  create-duplicated: '{prefix}&cThis level system already exists!'
+  create-failed: '{prefix}&cFailed to create the level systen!'
+  inconsistent-name: '{prefix}&cLevel system {level} does not match the file name, please modify and reload!'
+  invalid-directory: '{prefix}&cFailed to initialize the level system, the level file storage path is not an accessible folder!'
+  invalid-level: '{prefix}&cUnable to load level system {file}'
+  load: '{prefix}&fSuccessfully loaded level system &a{level}'
+  load-all: '{prefix}&fSuccessfully loaded &a{amount} &flevel systems.'
+  load-empty: '{prefix}&eNo available level systems, please create one according to the documentation.'
+  load-error: '{prefix}&cAn error occurred while loading level {file}'

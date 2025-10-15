@@ -1,0 +1,57 @@
+items:
+  previous-page:
+    display-name: '&c上一页'
+    lore:
+      - '&7单击返回上一页'
+    material: RED_STAINED_GLASS_PANE
+    amount: 1
+  next-page:
+    display-name: '&a下一页'
+    lore:
+      - '&7点击前往下一页'
+    material: GREEN_STAINED_GLASS_PANE
+    amount: 1
+  reward-unlocked:
+    display-name: '&e奖励 {level} &f| &a解锁'
+    lore:
+      - ''
+      - '&6奖励:'
+      - '{rewards}'
+      - ''
+      - '&a点击领取!'
+    material: CHEST_MINECART
+    amount: 1
+    item-flags:
+      - HIDE_ENCHANTS
+    enchantments:
+      - 'PROTECTION_ENVIRONMENTAL : 1'
+  reward-locked:
+    display-name: '&e奖励 {level} &f| &c未解锁'
+    lore:
+      - ''
+      - '&6奖励:'
+      - '{rewards}'
+      - ''
+      - '&c你需要更高的等级!'
+    material: CHEST_MINECART
+    amount: 1
+  reward-received:
+    display-name: '&e奖励 {level} &f| &c已领取'
+    lore:
+      - ''
+      - '&6奖励:'
+      - '{rewards}'
+      - ''
+      - '&c你已经领取了此奖励!'
+    material: MINECART
+    amount: 1
+  reward-no-permissions:
+    display-name: '&e奖励 {level} &f| &c未解锁'
+    lore:
+      - ''
+      - '&6奖励:'
+      - '{rewards}'
+      - ''
+      - '&c你没有权限!'
+    material: CHEST_MINECART
+    amount: 1

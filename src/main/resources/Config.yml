@@ -1,0 +1,73 @@
+# 插件前缀
+prefix: '&b&lDL &8» &f'
+# 插件语言
+locale:
+  # 语言文件存储的文件夹路径
+  directory: '{default}/Locale'
+  # 默认语言
+  default-locale: 'zh_CN'
+  # 强制使用默认语言
+  # 插件会根据玩家的游戏语言使用相应的插件语言, 如需禁用, 请启用该项.
+  use-default-locale: false
+data:
+  # 数据存储支持
+  # 本地文件: Yaml, Json
+  # 数据库: MySQL, SQLite
+  storage-method: "Yaml"
+  # 数据配置文件存储的路径 (仅限'Yaml', 'Json')
+  storage-directory: '{default}/PlayerData'
+  # 跨服同步模式, 可以修改其它服务器玩家的数据.
+  # 需要安装前置插件ShadowMessenger
+  sync-mode:
+    enabled: false
+    # 通信通道名, 请确保所有服务器的通道名同一.
+    channel: 'dreamlevels:sync'
+  data-pool:
+    maximum: 5
+  # MySQL数据库配置
+  MySQL:
+    username: 'username' # 用户名
+    password: 'password' # 密码
+    database: 'database' # 数据库名
+    host: 'localhost' # 主机
+    port: 3306 # 端口
+    table: 'dreamlevels_data' # 表名
+  # SQLite数据库配置文件
+  SQLite:
+    # 表名
+    table: 'dreamlevels_data'
+    # SQLite数据库文件保存位置
+    file: '{default}\PlayerData.db'
+level:
+  # 等级文件存储的目录
+  directory: '{default}\Levels'
+  # 启用的等级系统. 如果新创建了等级系统, 请务必在此启用
+  # 不同的服务器可共用相同的文件夹, 通过等级系统的启用与禁用实现隔离.
+  enabled:
+    - 'server'
+  # 默认经验条. 开启后玩家的经验条将会同步指定等级的百分比.
+  experience-bar:
+    enabled: true
+    # 指定的等级
+    level: 'server'
+    # 经验条生效的世界, 留空为所有世界.
+    worlds: []
+  # 等级进度条显示, 即为变量 %dreamlevels_<等级系统>_progressbar% 显示的内容
+  # 也可使用 %dreamlevels_<等级系统>_progressbar_<长度>% 来表示特定长度的进度条.
+  progress-bar:
+    # 已获取进度
+    filled: '&b■'
+    # 未获取进度
+    blank: '&7■'
+    # 默认进度条长度
+    default-length: 10
+reward:
+  # 等级奖励存储的目录
+  directory: '{default}\Rewards'
+  # 启用的等级奖励. 如果新创建了等级奖励, 请务必在此启用
+  # 不同的服务器可共用相同的文件夹, 通过等级奖励的启用与禁用实现隔离.
+  enabled:
+    - 'server'
+# 调试模式
+# 仅在插件测试阶段时开启, 向后台打印调试信息.
+debug-mode: false

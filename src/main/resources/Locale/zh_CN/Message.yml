@@ -1,0 +1,188 @@
+startup:
+  welcome: '欢迎使用'
+  version: '版本'
+  author: '作者'
+  info: |
+    &f
+    &b&lDreamLevels &dv{version} &eby DreamStudio
+    &7使用指令来 &f'/{cmd} Help' &7获取帮助.
+    &f
+  on-enable:
+    error-plugin_yml: '{prefix}&c检测到plugin.yml被修改, 请不要随意修改plugin.yml!'
+    register-command: '{prefix}&f正在注册命令...'
+    register-listener: '{prefix}&f正在注册监听器...'
+    register-PAPI: '{prefix}&f正在注册PAPI拓展...'
+    succeed: '{prefix}&a注册成功!'
+    failed: '{prefix}&c注册失败!'
+    enabled: '{prefix}&a本次插件启动耗费&e{time}ms&a.'
+  on-disable:
+    disabled: '{prefix}&c插件已卸载!'
+command:
+  generic:
+    no-permissions: '{prefix}&c你没有执行该指令的权限!'
+    not-an-integer: '{prefix}&c第{index}个参数不是一个整数!'
+    not-an-number: '{prefix}&c第{index}个参数不是一个数字!'
+    only-for-console: '{prefix}&c该指令只能由控制台执行!'
+    only-for-player: '{prefix}&c只有玩家才能使用这个指令!'
+    parameters-error: '{prefix}&c缺少第{index}个参数, 请查阅帮助指令!'
+    property-required: '{prefix}&c缺少参数{property}, 请查阅帮助指令.'
+    reloaded: '{prefix}&a插件已重载!'
+    unknown-command: '{prefix}&c找不到这个指令!'
+    unknown-level: '{prefix}&c找不到这个等级系统: {level}'
+    unknown-player: '{prefix}&c找不到这个玩家: {player}'
+    unknown-reward: '{prefix}&c找不到这个等级奖励: {reward}'
+  offline:
+    offline-success: "{prefix}&f由于当前玩家不在线, 已修改离线数据!"
+    online-detected: "{prefix}&c当前玩家存在于服务器中, 请不要使用离线修改!"
+    sync-mode: "{prefix}&7正在通过同步模式进行修改操作..."
+    sync-success: "{prefix}&f由于当前玩家存在于其它服务器, 已通过同步模式进行跨服修改!"
+    unknown-data: "{prefix}&c服务器找不到该玩家的数据, 请在含有该玩家数据的服务器上操作!"
+    unknown-level: "{prefix}&c在该玩家所属的服务器上找不到该等级!"
+    unknown-level-data: "{prefix}&c该玩家的数据不包含该等级信息, 请在含有该玩家对应等级数据的服务器上操作!!"
+    unknown-error: "{prefix}&c在修改离线玩家数据的时候发生未知错误, 错误信息 {error}"
+    inaccessible-server: "{prefix}&c当前玩家不在任何服务器, 无法进行数据的处理, 请稍后再试!"
+    sync-timed-out: "{prefix}&c跨服同步已超时, 请检查通信器连接, 当前没有任何操作被应用!"
+  # 可用占位符如下:
+  #
+  # {player}            -> 一个或多个玩家, 代表多个玩家时会用逗号隔开.
+  # {level}             -> 等级系统的标识符
+  # {level-displayName} -> 等级系统的展示名
+  # {amount}            -> 数值
+  #
+  # 对于 AddExp 指令, 还有:
+  # {final-amount}      -> 玩家实际得到的经验值 (倍率 * 原始数值)
+  level:
+    add-exp: '{prefix}&a已为玩家 &e{player} &a添加 &e{final-amount}点 {level-displayName}经验.'
+    add-levels: '{prefix}&a已为玩家 &e{player} &a添加 &e{amount}级 {level-displayName}等级.'
+    set-exp: '{prefix}&a已设置玩家的 &e{level-displayName} &a经验为 &e{amount}.'
+    set-levels: '{prefix}&a已设置玩家的 &e{level-displayName} &a等级为 &e{amount}.'
+    set-multiple: '{prefix}&a已设置玩家 {level-displayName} 的等级倍率为 &e{amount}.'
+    remove-exp: '{prefix}&a已删除玩家 &e{player} {amount}点 {level-displayName}经验.'
+    remove-levels: '{prefix}&a已删除玩家&e{player} {amount}级 {level-displayName}等级.'
+    reset: '{prefix}&a已重置玩家 &e{player} 的 {level-displayName} 数据.'
+    reset-all: '{prefix}&a已重置玩家 &e{player} 的所有等级数据.'
+  reward:
+    open-menu-others: '{prefix}&a已为玩家 &e{player} &a打开等级奖励菜单!'
+    permissions-denied: '{prefix}&c你没有打开该奖励菜单的权限!'
+  help:
+    1:
+      - ''
+      - ''
+      - '&b&lDreamLevels &f帮助指令 &7(#{page})'
+      - ''
+      - '&f ● &f/{cmd} Help &8[页数]'
+      - '     &8▷ &7显示帮助消息'
+      - '&f ● &f/{cmd} Reward &8<奖励>'
+      - '     &8▷ &7打开奖励菜单'
+      - '&f ● &f/{cmd} Admin &8[页数]'
+      - '     &8▷ &7显示&c管理员&f帮助消息'
+      - ''
+      - ' &8<>&7内为必填参数, &8[]&7内为可选参数'
+      - ''
+  admin:
+    1:
+      - ''
+      - ''
+      - '&b&lDreamLevels &c管理员&f帮助指令 &7(#{page})'
+      - ''
+      - '&f ● &f/{cmd} AddExp &8<玩家> <等级> <数量> [反馈信息]'
+      - '     &8▷ &7为玩家添加特定等级的经验'
+      - '&f ● &f/{cmd} SetExp &8<玩家> <等级> <数量> [反馈信息]'
+      - '     &8▷ &7修改玩家的特定等级的经验'
+      - '&f ● &f/{cmd} RemoveExp &8<玩家> <等级> <数量> [反馈信息]'
+      - '     &8▷ &7移除玩家特定等级的经验'
+      - '&f ● &f/{cmd} AddLevels &8<玩家> <等级> <数量> [反馈信息]'
+      - '     &8▷ &7为玩家添加特定等级的等级'
+      - ' &8(使用''/{cmd} Admin 2''来查看下一页)'
+      - ''
+      - ' &8<>&7内为必填参数, &8[]&7内为可选参数'
+      - ''
+    2:
+      - ''
+      - ''
+      - '&b&lDreamLevels &c管理员&f帮助指令 &7(#{page})'
+      - ''
+      - '&f ● &f/{cmd} SetLevels &8<玩家> <等级> <数量> [反馈信息]'
+      - '     &8▷ &7修改玩家的特定等级的等级'
+      - '&f ● &f/{cmd} RemoveLevels &8<玩家> <等级> <数量> [反馈信息]'
+      - '     &8▷ &7移除玩家特定等级的等级'
+      - '&f ● &f/{cmd} SetMultiple &8<玩家> <等级> <数量> [反馈信息]'
+      - '     &8▷ &7修改玩家的特定等级的经验倍率'
+      - '&f ● &f/{cmd} Reset &8<玩家> <等级> [反馈信息]'
+      - '     &8▷ &7重置玩家的等级信息。当&8<等级>&7为"*"时重置所有等级的信息'
+      - ' &8(使用''/{cmd} Admin 3''来查看下一页)'
+      - ''
+      - ' &8[反馈信息]&f为&7"false"&f时, 不会发送反馈'
+      - ' &8<玩家>&f可为&7"玩家1,玩家2..."&f, 也可为&7"of:<离线玩家>"'
+      - ' &8<>&7内为必填参数, &8[]&7内为可选参数'
+      - ''
+    3:
+      - ''
+      - ''
+      - '&b&lDreamLevels &c管理员&f帮助指令 &7(#{page})'
+      - ''
+      - '&f ● &f/{cmd} OpenReward &8<玩家> <奖励名>'
+      - '     &8▷ &7让玩家打开奖励菜单'
+      - '&f ● &f/{cmd} CreateLevel &8<等级名> <显示名>'
+      - '     &8▷ &7创建一个等级系统。&c仅限控制台使用!'
+      - '&f ● &f/{cmd} CreateReward &8<奖励名> <等级名>'
+      - '     &8▷ &7创建一个等级奖励。&c仅限控制台使用!'
+      - '&f ● &f/{cmd} Reload &8[功能]'
+      - '     &8▷ &7重载插件。有关&8[功能]&7详细请看文档'
+      - ''
+      - ' &8<>&7内为必填参数, &8[]&7内为可选参数'
+      - ''
+data:
+  database:
+    disconnected: '{prefix}&c数据库未连接, 请向管理员反馈, 或稍后再次尝试.'
+  sync-mode:
+    ShadowMessenger-absent: |
+      {prefix}&c服务器未安装ShadowMessenger插件.
+      {prefix}&c跨服同步功能已禁用.
+    BungeeMessenger-absent: |
+      {prefix}&cBungeeMessenger未成功启用, 跨服同步功能已禁用.
+      {prefix}&c请检查ShadowMessenger中相关配置.
+    channel-failure: '{prefix}&c无法启用通信通道, 请尝试重启服务器.'
+    channel-unavailable: '{prefix}通道未启用，无法进行消息转发。'
+    starting: '{prefix}&f正在启用跨服同步通信器...'
+    succeeded: '{prefix}&a跨服同步通信器启用成功.'
+    stopped: '{prefix}&c跨服同步通信器已禁用.'
+  failure:
+    invalid-null: '{prefix}&c玩家{player}载入的数据为空数据, 已用新数据替换！'
+    invalid-storage-method: |
+      {prefix}&e未知的存储方式 {method}
+      {prefix}&e已更改为"YAML", 请修改后使用重载指令.
+    invalid-storage-directory: |
+      {prefix}错误的存储路径, 已改为默认路径, 请修改配置文件后使用重载指令.
+      {prefix}可能是因为路径不是一个可访问的文件夹.
+    invalid-MySQL-configuration: '{prefix}MySQL数据库配置文件错误, 数据库功能已禁用.'
+    invalid-SQLite-configuration: '{prefix}SQLite数据库配置文件错误, 数据库功能已禁用.'
+    admin:
+      failed-to-create: '{prefix}&c无法创建玩家{player}的数据!'
+      failed-to-load: '{prefix}&c载入玩家{player}数据时出现错误!'
+      failed-to-unload: '{prefix}&c卸载玩家{player}数据时出现错误!'
+    player:
+      failed-to-load: '{prefix}&e你的数据无法被正常载入, 请联系管理员.'
+      no-db-connection: '{prefix}&c无法连接到数据库, 请向管理员反馈.'
+level:
+  create: '{prefix}&a已成功创建并载入一个等级系统, 您可以修改后使用重载指令重载.'
+  create-duplicated: '{prefix}&c该等级系统已经存在!'
+  create-failed: '{prefix}&c无法创建等级系统!'
+  inconsistent-name: '{prefix}&c等级系统 {level} 与文件名不一致, 请修改后再载入!'
+  invalid-directory: '{prefix}&c初始化等级系统失败, 等级文件存储路径不是一个可访问的文件夹!'
+  invalid-level: '{prefix}&c无法载入等级系统 {file}'
+  load: '{prefix}&f成功载入等级系统 &a{level}'
+  load-all: '{prefix}&f成功载入 &a{amount} &f个等级系统.'
+  load-empty: '{prefix}&e当前无可用的等级系统, 请参照文档创建.'
+  load-error: '{prefix}&c载入等级 {file} 时出现异常'
+reward:
+  create: '{prefix}&a已成功创建并载入一个等级奖励, 您可以修改后使用重载指令重载.'
+  create-duplicated: '{prefix}&c该等级奖励已经存在!'
+  create-failed: '{prefix}&c无法创建等级奖励!'
+  inconsistent-name: '{prefix}&c等级奖励 {reward} 与文件名不一致, 请修改后再载入!'
+  invalid-directory: '{prefix}&c初始化等级奖励失败, 等级奖励存储路径不是一个可访问的文件夹!'
+  load: '{prefix}&f成功载入等级奖励 &a{reward}'
+  load-all: '{prefix}&f成功载入 &a{amount} &f个等级奖励.'
+  load-empty: '{prefix}&e当前无可用的等级奖励, 请参照文档创建.'
+  load-error: '{prefix}&c载入等级奖励 {file} 时出现异常'
+  load-skip: '{prefix}&e已忽略奖励 {reward} , 由于服务器未载入等级系统 {level}'

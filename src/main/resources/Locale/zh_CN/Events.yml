@@ -1,0 +1,87 @@
+rewards:
+  locked:
+    - '[sound] sound=ENTITY_ENDERMAN_TELEPORT pitch=0 yaw=1'
+    - '[msg] {prefix}&c你还需要更高的等级才能领取这个奖励!'
+  received:
+    - '[sound] sound=ENTITY_ENDERMAN_TELEPORT pitch=0 yaw=1'
+    - '[msg] {prefix}&c你已经领取过这个奖励了!'
+  no-permission:
+    - '[sound] sound=ENTITY_ENDERMAN_TELEPORT pitch=0 yaw=1'
+    - '[msg] {prefix}&c你没有领取这个奖励的权限!'
+levels:
+  # 未配置等级的默认事件
+  _DEFAULT_:
+    # {exp}            -> 玩家得到的经验的原始值 (未乘以倍率)
+    # {final-exp}      -> 玩家最终得到的经验 (倍率 * 经验)
+    exp-received:
+      - '[msg] &b+ {final-exp} Exp'
+    # {exp}            -> 经验数量
+    exp-set:
+      - '[msg] {prefix}&a您的经验被设置为: {exp}'
+    # {exp}            -> 经验数量
+    exp-removed:
+      - '[msg] &c- {exp} exp'
+    # 此项可用 "LEVEL_UP" 代替, 将调用升级事件.
+    #
+    # {levels}         -> 玩家得到的等级数量
+    # {current-levels} -> 玩家的当前等级
+    levels-added:
+      - LEVEL_UP
+    # {levels}         -> 等级数量
+    levels-set:
+      - '[msg] {prefix}&a您的等级被设置为: {levels}'
+    # {levels}         -> 等级数量
+    levels-removed:
+      - '[msg] &c- {levels} Levels'
+    # {multiple}       -> 倍率
+    multiple-set:
+      - '[msg] {prefix}&a您的经验倍率设置为: {multiple}'
+    reset:
+      - '[msg] {prefix}&c您的等级信息已被重置!'
+    # {levels}         -> 玩家当前等级
+    level-up-events:
+      # 默认升级事件
+      default:
+        - '[title] title=&b&l等级提升 subtitle=&a当前等级: {levels} fadeIn=10 stay=30 fadeOut=10'
+  # 等级系统 server 事件
+  server:
+    # {exp}            -> 玩家得到的经验的原始值 (未乘以倍率)
+    # {final-exp}      -> 玩家最终得到的经验 (倍率 * 经验)
+    exp-received:
+      - '[msg] &b+ {final-exp} Exp'
+    # {exp}            -> 经验数量
+    exp-set:
+      - '[msg] {prefix}&a您的经验被设置为: {exp}'
+    # {exp}            -> 经验数量
+    exp-removed:
+      - '[msg] &c- {exp} exp'
+    # {levels}         -> 玩家得到的等级数量
+    # {current-levels} -> 玩家的当前等级
+    levels-added:
+      - LEVEL_UP
+    # {levels}         -> 等级数量
+    # {current-levels} -> 玩家的当前等级
+    levels-set:
+      - '[msg] {prefix}&a您的等级被设置为: {levels}'
+    # {levels}         -> 等级数量
+    # {current-levels} -> 玩家的当前等级
+    levels-removed:
+      - '[msg] &c- {levels} Levels'
+    # {multiple}       -> 倍率
+    multiple-set:
+      - '[msg] {prefix}&a您的经验倍率设置为: {multiple}'
+    reset:
+      - '[msg] {prefix}&c您的等级信息已被重置!'
+    # {previous}       -> 玩家的上一级
+    # {levels}         -> 玩家当前等级
+    level-up-events:
+      # 默认升级事件
+      default:
+        - '[title] title=&b&l等级提升 subtitle=&a当前等级: {levels} fadeIn=10 stay=30 fadeOut=10'
+      # 从 0级到1级 的升级事件
+      '1':
+        - '[title] title=&b&l等级提升 subtitle=&a当前等级: 1 fadeIn=10 stay=30 fadeOut=10'
+      # 从 99级到100级(设定的最高等级) 的升级事件
+      '100':
+        - '[title] title=&b&l等级提升 subtitle=&c你到达了最高等级! fadeIn=10 stay=30 fadeOut=10'
+        - '[bc] {prefix}&6%player_name%到达了最高等级!'

@@ -1,0 +1,17 @@
+#file: noinspection SpellCheckingInspection
+name: DreamLevels
+version: '${version}'
+main: net.dreampixel.dreamlevels.DreamLevels
+api-version: 1.13
+author: 'DreamStudio (MrTyphoon)'
+depend: [ShadowCore]
+softdepend: [PlaceholderAPI, ShadowMessenger]
+commands:
+  DreamLevels:
+    description: The main command of plugin DreamLevels.
+    aliases: [dl]
+permissions:
+  DreamLevels.Command.Admin:
+    default: op
+  DreamLevels.Command.Reload:
+    default: op
