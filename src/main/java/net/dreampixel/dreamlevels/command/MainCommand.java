@@ -5,12 +5,15 @@ import net.dreampixel.dreamlevels.DreamLevels;
 import net.dreampixel.dreamlevels.command.sub.basic.AdminCommand;
 import net.dreampixel.dreamlevels.command.sub.basic.HelpCommand;
 import net.dreampixel.dreamlevels.command.sub.basic.ReloadCommand;
+import net.dreampixel.dreamlevels.command.sub.dataspy.DataSpyCommand;
 import net.dreampixel.dreamlevels.command.sub.level.ResetCommand;
 import net.dreampixel.dreamlevels.command.sub.level.SetMultipleCommand;
+import net.dreampixel.dreamlevels.command.sub.level.edit.EditLevelCommand;
 import net.dreampixel.dreamlevels.command.sub.level.exp.AddExpCommand;
 import net.dreampixel.dreamlevels.command.sub.level.exp.SetExpCommand;
 import net.dreampixel.dreamlevels.command.sub.level.levels.*;
 import net.dreampixel.dreamlevels.command.sub.level.exp.RemoveExpCommand;
+import net.dreampixel.dreamlevels.command.sub.level.reward.AutoReceiveCommand;
 import net.dreampixel.dreamlevels.command.sub.level.reward.CreateRewardCommand;
 import net.dreampixel.dreamlevels.command.sub.level.reward.OpenRewardCommand;
 import net.dreampixel.dreamlevels.command.sub.level.reward.RewardCommand;
@@ -52,7 +55,10 @@ public class MainCommand extends SubCommand {
                 new RewardCommand(),
                 // others
                 new ResetCommand(),
-                new SetMultipleCommand()
+                new SetMultipleCommand(),
+                new EditLevelCommand(),
+                new AutoReceiveCommand(),
+                new DataSpyCommand()
         );
 
         // message exception handlers

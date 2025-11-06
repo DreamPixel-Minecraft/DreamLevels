@@ -4,6 +4,7 @@ import lombok.var;
 import net.dreampixel.dreamlevels.DreamLevels;
 import net.dreampixel.dreamlevels.data.DataManager;
 import net.dreampixel.dreamlevels.data.level.LevelData;
+import net.dreampixel.dreamlevels.level.task.ExperienceBarTask;
 import net.dreampixel.dreamlevels.util.Logger;
 import net.dreampixel.dreamlevels.util.MLogger;
 import org.bukkit.Bukkit;
@@ -11,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.shadowpixel.shadowcore.api.config.component.ConfigurationProvider;
+import top.shadowpixel.shadowcore.api.function.component.ExecutableEvent;
 import top.shadowpixel.shadowcore.object.interfaces.Manager;
 import top.shadowpixel.shadowcore.util.ConfigurationUtils;
 import top.shadowpixel.shadowcore.util.collection.MapUtils;
@@ -20,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.HashMap;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -29,6 +32,15 @@ public class LevelManager implements Manager {
 
     private final HashMap<String, Level> levels = new HashMap<>();
     private File directory;
+
+    private ExecutableEvent resetAllEvent;
+
+    /**
+     * Experience bar fields
+     */
+    private ExperienceBarTask experienceBarTask;
+    private Level experienceBarLevel;
+    private List<String> activatedWorlds;
 
     public LevelManager(DreamLevels plugin) {
         this.plugin = plugin;
@@ -42,7 +54,7 @@ public class LevelManager implements Manager {
             return;
         }
 
-        // check directory
+        // make and check directory
         this.directory = new File(config.getString("directory")
                 .replace("{default}", plugin.getDataFolder().getPath()));
         this.directory.mkdirs();
@@ -59,10 +71,23 @@ public class LevelManager implements Manager {
             MLogger.infoReplaced("level.load-all",
                     "{amount}", String.valueOf(this.levels.size()));
         }
+
+        // experience bar task
+        if (config.getBoolean("experience-bar.enabled")) {
+            this.experienceBarLevel = getLevel(config.getString("experience-bar.level"));
+            if (experienceBarLevel == null) {
+                Logger.error("The specified level of experience bar task is invalid, and the exp bar service has been down!");
+                return;
+            }
+
+            startExperienceBarTask();
+            this.activatedWorlds = config.getStringList("experience-bar.worlds");
+        }
     }
 
     @Override
     public void unload() {
+        stopExperienceBarTask();
         this.levels.clear();
     }
 
@@ -140,6 +165,7 @@ public class LevelManager implements Manager {
                 return;
             }
 
+            level.setFile(file);
             this.levels.put(name, level);
             MLogger.infoReplaced("level.load",
                     "{level}", name);
@@ -172,10 +198,7 @@ public class LevelManager implements Manager {
      * Reset all the player's level data.
      */
     public void resetAll(@NotNull Player player) {
-        requireNonNull(DataManager.getInstance().getPlayerData(player.getUniqueId()))
-                .getLevelData()
-                .values()
-                .forEach(LevelData::reset);
+        requireNonNull(DataManager.getInstance().getPlayerData(player.getUniqueId())).resetAll();
     }
 
     @Nullable
@@ -190,6 +213,45 @@ public class LevelManager implements Manager {
 
     public boolean hasLevel(@NotNull String name) {
         return this.levels.containsKey(name);
+    }
+
+    /**
+     * Update the player's experience bar.
+     *
+     * @param player Player
+     */
+    public void updateExperienceBar(@NotNull Player player) {
+        if (experienceBarLevel == null) {
+            return;
+        }
+
+        if (activatedWorlds.isEmpty() || activatedWorlds.contains(player.getWorld().getName())) {
+            var data = experienceBarLevel.getLevelData(player);
+            player.setLevel(data.getLevels());
+            player.setExp((float) Math.min(data.getPercentage() / 100D, 0.99D));
+        }
+    }
+
+    /**
+     * Start the task updating all players' experience bar. This task runs every 10 seconds.
+     */
+    public void startExperienceBarTask() {
+        if (experienceBarLevel == null) {
+            return;
+        }
+
+        stopExperienceBarTask();
+        experienceBarTask = new ExperienceBarTask();
+        experienceBarTask.start();
+    }
+
+    /**
+     * Cancel the experience bar task if running.
+     */
+    public void stopExperienceBarTask() {
+        if (experienceBarTask != null) {
+            experienceBarTask.stop();
+        }
     }
 
     @NotNull

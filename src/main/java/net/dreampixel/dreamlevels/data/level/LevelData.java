@@ -14,7 +14,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.shadowpixel.shadowcore.util.collection.MapUtils;
@@ -209,7 +208,7 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
      */
     public void setMultiple(double amount, boolean fireEvent) {
         // check illegal amount
-        if (amount <= 0) {
+        if (amount < 0) {
             return;
         }
 
@@ -231,6 +230,13 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
      */
     @Override
     public void reset() {
+        reset(true);
+    }
+
+    /**
+     * Clear the player's data.
+     */
+    public void reset(boolean fireEvent) {
         this.levels = 0;
         this.exp = 0.0d;
         this.multiple = 1.0d;
@@ -240,6 +246,10 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
         var player = getPlayer();
         if (player != null) {
             RewardManager.getInstance().removeRewardMenu(player);
+        }
+
+        if (!fireEvent) {
+            return;
         }
 
         // fire event
@@ -352,7 +362,7 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
             return -1;
         }
 
-        var total = 0;
+        var total = 0.0D;
         for (int i = 1; i <= levels; i++) {
             var exp = level.getRequiredExp(i);
             if (exp < 0) {
@@ -413,7 +423,7 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
                 var event = level.getLevelUpEvent(player, this.levels);
                 if (event != null) {
                     event.replace("{previous}", String.valueOf(levels - 1));
-                    event.replace("{levels}", String.valueOf(levels));
+                    event.replace("{current-levels}", String.valueOf(levels));
                     event.execute(DreamLevels.getInstance(), player);
                 }
             }
@@ -422,6 +432,9 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
             // refresh reward menu items
             RewardManager.getInstance().updateRewardMenus(player, level);
         }
+
+        // update experience bar
+        LevelManager.getInstance().updateExperienceBar(player);
     }
 
     /**
@@ -464,7 +477,7 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
 
     private void modifyExp(double amount, ModificationType type, boolean fireEvent) {
         // check illegal amount
-        if (amount <= 0) {
+        if (amount < 0) {
             return;
         }
 
@@ -507,7 +520,7 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
 
     private void modifyLevel(int amount, ModificationType type, boolean fireEvent) {
         // check illegal amount
-        if (amount <= 0) {
+        if (amount < 0) {
             return;
         }
 

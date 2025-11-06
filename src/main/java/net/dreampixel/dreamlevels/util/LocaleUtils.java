@@ -10,7 +10,10 @@ import org.jetbrains.annotations.NotNull;
 import top.shadowpixel.shadowcore.api.command.CommandContext;
 import top.shadowpixel.shadowcore.api.config.component.Configuration;
 import top.shadowpixel.shadowcore.util.entity.PlayerUtils;
+import top.shadowpixel.shadowcore.util.entity.SenderUtils;
 import top.shadowpixel.shadowcore.util.text.ReplaceUtils;
+
+import java.util.List;
 
 @UtilityClass
 public class LocaleUtils {
@@ -68,7 +71,14 @@ public class LocaleUtils {
     @NotNull
     public static String getMessage(CommandSender sender, String path, String... replacements) {
         return ReplaceUtils.coloredReplace(
-                getLocaleMessage(sender).getString(path, "undefined: " + path).replace("{prefix}", DreamLevels.getPrefix()), sender, replacements
+                getLocaleMessage(sender).getString(path, getDefaultMessage().getString(path, "undefined: " + path)).replace("{prefix}", DreamLevels.getPrefix()), sender, replacements
+        );
+    }
+
+    @NotNull
+    public static List<String> getMessages(CommandSender sender, String path, String... replacements) {
+        return ReplaceUtils.coloredReplace(
+                getLocaleMessage(sender).getStringList(path), sender, replacements
         );
     }
 
@@ -77,8 +87,25 @@ public class LocaleUtils {
         return getMessage(sender, "command." + path, replacements);
     }
 
+    @NotNull
+    public static List<String> getCmdMessages(CommandSender sender, String path, String... replacements) {
+        return getMessages(sender, "command." + path, replacements);
+    }
+
+    public static void sendMessage(@NotNull CommandSender sender, @NotNull String path, @NotNull String... replacements) {
+        sender.sendMessage(getMessage(sender, path, replacements));
+    }
+
+    public static void sendMessages(@NotNull CommandSender sender, @NotNull String path, @NotNull String... replacements) {
+        SenderUtils.sendMessage(sender, getMessages(sender, path, replacements));
+    }
+
     public static void sendCmdMessage(@NotNull CommandSender sender, @NotNull String path, @NotNull String... replacements) {
         sender.sendMessage(getCmdMessage(sender, path, replacements));
+    }
+
+    public static void sendCmdMessages(@NotNull CommandSender sender, @NotNull String path, @NotNull String... replacements) {
+        SenderUtils.sendMessage(sender, getCmdMessages(sender, path, replacements));
     }
 
     public static void sendOfflineFailure(@NotNull CommandContext ctx, @NotNull String result) {

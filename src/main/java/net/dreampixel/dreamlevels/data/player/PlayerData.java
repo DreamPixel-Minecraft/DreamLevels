@@ -1,8 +1,11 @@
 package net.dreampixel.dreamlevels.data.player;
 
+import lombok.var;
 import net.dreampixel.dreamlevels.DreamLevels;
+import net.dreampixel.dreamlevels.api.event.PlayerDataResetAllEvent;
 import net.dreampixel.dreamlevels.data.DataManager;
 import net.dreampixel.dreamlevels.data.level.LevelData;
+import net.dreampixel.dreamlevels.util.EventUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
@@ -48,7 +51,18 @@ public class PlayerData implements ConfigurationSerializable, IPlayerData {
     }
 
     public void resetAll() {
-        this.levelData.values().forEach(LevelData::reset);
+        resetAll(true);
+    }
+
+    public void resetAll(boolean fireEvent) {
+        this.levelData.values().forEach(ld -> ld.reset(false));
+
+        if (fireEvent) {
+            var player = Bukkit.getPlayer(uniqueId);
+            if (player != null) {
+                EventUtils.fire(new PlayerDataResetAllEvent(player));
+            }
+        }
     }
 
     public void save() {

@@ -5,6 +5,7 @@ import net.dreampixel.dreamlevels.DreamLevels;
 import net.dreampixel.dreamlevels.util.Logger;
 import org.jetbrains.annotations.NotNull;
 import top.shadowpixel.shadowcore.api.config.component.ConfigurationProvider;
+import top.shadowpixel.shadowcore.api.function.component.ExecutableEvent;
 import top.shadowpixel.shadowcore.api.locale.AbstractLocaleManager;
 import top.shadowpixel.shadowcore.api.locale.Locale;
 import top.shadowpixel.shadowcore.api.locale.LocaleInfo;
@@ -33,6 +34,16 @@ public class LocaleManager extends AbstractLocaleManager<DreamLevels> {
     public void initialize() {
         super.initialize();
         setDefaultLocale(plugin.getConfiguration().getString("locale.default-locale"));
+
+        // load reset-all events
+        getLocales().values().forEach(l -> {
+            var events = l.getConfig("Events");
+            if (events != null) {
+                var event = ExecutableEvent.of(events.getStringList("level-reset-all"));
+                event.replacePermanently("{prefix}", DreamLevels.getPrefix());
+                events.set("reset-all-events", event);
+            }
+        });
     }
 
     @Override

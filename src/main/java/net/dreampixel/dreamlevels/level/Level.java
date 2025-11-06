@@ -8,12 +8,15 @@ import net.dreampixel.dreamlevels.data.level.ILevelData;
 import net.dreampixel.dreamlevels.data.level.LevelData;
 import net.dreampixel.dreamlevels.data.level.OfflineLevelData;
 import net.dreampixel.dreamlevels.util.Logger;
+import net.dreampixel.dreamlevels.util.MLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import top.shadowpixel.shadowcore.api.config.component.Configuration;
+import top.shadowpixel.shadowcore.api.config.component.ConfigurationProvider;
 import top.shadowpixel.shadowcore.api.function.component.ExecutableEvent;
 import top.shadowpixel.shadowcore.util.collection.MapUtils;
 import top.shadowpixel.shadowcore.util.entity.PlayerUtils;
@@ -21,21 +24,25 @@ import top.shadowpixel.shadowcore.util.object.NumberUtils;
 import top.shadowpixel.shadowcore.util.text.ColorUtils;
 import top.shadowpixel.shadowcore.util.text.StringUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Consumer;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "unused"})
 @SerializableAs("DreamLevels-Level")
 public class Level implements ConfigurationSerializable {
     /**
      * basic vars for a level system
      */
     private final String name;
-    private final String displayName;
+    private String displayName;
 
-    private int maxLevels = 100;
-    private int defaultLevel = 0;
-    private int defaultRequiredExp = 5000;
+    private int defaultMaxLevels = 100;
+    private int defaultLevels = 0;
+    private double defaultRequiredExp = 5000D;
+
+    private File storageFile;
 
     private final Map<Integer, Integer> expToLevel = new HashMap<>();
     private final LinkedHashMap<Integer, String> colors = new LinkedHashMap<>();
@@ -61,9 +68,9 @@ public class Level implements ConfigurationSerializable {
         this.name = (String) deserialize.get("name");
         this.displayName = (String) deserialize.get("display-name");
 
-        this.maxLevels = (int) deserialize.get("max-levels");
-        this.defaultLevel = (int) deserialize.get("default-level");
-        this.defaultRequiredExp = (int) deserialize.get("default-exp-to-level-up");
+        this.defaultMaxLevels = (int) deserialize.get("max-levels");
+        this.defaultLevels = (int) deserialize.get("default-level");
+        this.defaultRequiredExp = (double) deserialize.get("default-exp-to-level-up");
 
         this.expToLevel.putAll((HashMap<Integer, Integer>) deserialize.get("custom-exp-to-level-up"));
         this.colors.putAll((LinkedHashMap<Integer, String>) deserialize.get("colors"));
@@ -87,11 +94,26 @@ public class Level implements ConfigurationSerializable {
         return displayName;
     }
 
+    public void setDisplayName(@NotNull String displayName) {
+        this.displayName = displayName;
+        save();
+    }
+
     /**
      * @return Default max levels of this level
      */
     public int getDefaultMaxLevels() {
-        return maxLevels;
+        return defaultMaxLevels;
+    }
+
+    /**
+     * Set the default max levels.
+     *
+     * @param levels Default max levels
+     */
+    public void setDefaultMaxLevels(int levels) {
+        this.defaultMaxLevels = levels;
+        save();
     }
 
     /**
@@ -109,17 +131,38 @@ public class Level implements ConfigurationSerializable {
     }
 
     /**
-     * @return Default level
+     * @return The default levels that a new level data starts from
      */
-    public int getDefaultLevel() {
-        return defaultLevel;
+    public int getDefaultLevels() {
+        return defaultLevels;
+    }
+
+    /**
+     * Set the default levels that a new level data starts from.
+     *
+     * @param defaultLevels The default levels
+     */
+    public void setDefaultLevels(int defaultLevels) {
+        this.defaultLevels = defaultLevels;
+        save();
     }
 
     /**
      * @return The default amount of exp to level up
      */
-    public int getDefaultRequiredExp() {
+    public double getDefaultRequiredExp() {
         return defaultRequiredExp;
+    }
+
+    /**
+     * Set the default exp to level up. This is only used when a level has no
+     * specified exp amount to level up.
+     *
+     * @param defaultRequiredExp Default exp to level up
+     */
+    public void setDefaultRequiredExp(double defaultRequiredExp) {
+        this.defaultRequiredExp = defaultRequiredExp;
+        save();
     }
 
     /**
@@ -127,8 +170,8 @@ public class Level implements ConfigurationSerializable {
      * @return The exp required leveling up from the previous level to this level. </br>
      *         Returns -1 if {@code nextLevel} >= the max level
      */
-    public int getRequiredExp(int nextLevel) {
-        if (nextLevel > maxLevels) {
+    public double getRequiredExp(int nextLevel) {
+        if (nextLevel > defaultMaxLevels) {
             return -1;
         }
 
@@ -136,7 +179,7 @@ public class Level implements ConfigurationSerializable {
             return expToLevel.get(nextLevel);
         }
 
-        int exp = getDefaultRequiredExp();
+        double exp = getDefaultRequiredExp();
         for (var entry : expToLevel.entrySet()) {
             if (entry.getKey() >= nextLevel) {
                 exp = entry.getValue();
@@ -152,7 +195,7 @@ public class Level implements ConfigurationSerializable {
      * @return Whether the level has reached the max
      */
     public boolean isMax(int level) {
-        return level >= this.maxLevels;
+        return level >= this.defaultMaxLevels;
     }
 
     @NotNull
@@ -183,17 +226,22 @@ public class Level implements ConfigurationSerializable {
         return ColorUtils.colorize(color);
     }
 
-    @NotNull
-    public LevelData getLevelData(@NotNull Player player) {
-        var data = DataManager.getInstance().getPlayerData(player.getUniqueId());
+    @Nullable
+    public LevelData getLevelData(@NotNull UUID uniqueId) {
+        var data = DataManager.getInstance().getPlayerData(uniqueId);
         assert data != null;
 
         var levelData = data.getLevelData(this.name);
         if (levelData == null) {
-            levelData = new LevelData(player.getUniqueId(), this.name);
+            levelData = new LevelData(uniqueId, this.name);
         }
 
         return levelData;
+    }
+
+    @NotNull
+    public LevelData getLevelData(@NotNull Player player) {
+        return Objects.requireNonNull(getLevelData(player.getUniqueId()));
     }
 
     /**
@@ -324,13 +372,32 @@ public class Level implements ConfigurationSerializable {
         return event;
     }
 
+    public void save() {
+        try {
+            // create configuration
+            var config = new Configuration();
+            config.set("level", this);
+            // save
+            ConfigurationProvider.getYamlConfigurationProvider().save(config, storageFile);
+        } catch (IOException e) {
+            MLogger.errorReplaced("level.save-failed",
+                    "{file}", storageFile.toString());
+        }
+    }
+
+    protected void setFile(@NotNull File file) {
+        if (storageFile == null) {
+            storageFile = file;
+        }
+    }
+
     @Override
     public @NotNull Map<String, Object> serialize() {
         return MapUtils.of(
                 "name", this.name,
                 "display-name", this.displayName,
-                "max-levels", this.maxLevels,
-                "default-level", this.defaultLevel,
+                "max-levels", this.defaultMaxLevels,
+                "default-level", this.defaultLevels,
                 "default-exp-to-level-up", this.defaultRequiredExp,
                 "custom-exp-to-level-up", this.expToLevel,
                 "colors", this.colors

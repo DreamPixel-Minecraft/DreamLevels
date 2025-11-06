@@ -2,12 +2,12 @@ package net.dreampixel.dreamlevels.listener;
 
 import lombok.var;
 import net.dreampixel.dreamlevels.DreamLevels;
-import net.dreampixel.dreamlevels.api.event.PlayerDataResetEvent;
-import net.dreampixel.dreamlevels.api.event.PlayerExpModifiedEvent;
-import net.dreampixel.dreamlevels.api.event.PlayerLevelsModifiedEvent;
-import net.dreampixel.dreamlevels.api.event.PlayerMultipleModifiedEvent;
+import net.dreampixel.dreamlevels.api.event.*;
 import net.dreampixel.dreamlevels.data.DataManager;
+import net.dreampixel.dreamlevels.dataspy.DataSpyManager;
+import net.dreampixel.dreamlevels.level.LevelManager;
 import net.dreampixel.dreamlevels.reward.RewardManager;
+import net.dreampixel.dreamlevels.util.LocaleUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -48,6 +48,9 @@ public class LevelListener implements Listener {
 
         // save data
         DataManager.getInstance().getPlayerData(player).saveAsync();
+
+        // update data spy menus
+        DataSpyManager.getInstance().updateMenu(event.getPlayer(), event.getLevel());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -82,6 +85,9 @@ public class LevelListener implements Listener {
 
         // save data
         DataManager.getInstance().getPlayerData(player).saveAsync();
+
+        // update data spy menus
+        DataSpyManager.getInstance().updateMenu(event.getPlayer(), event.getLevel());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -94,6 +100,9 @@ public class LevelListener implements Listener {
 
         // save data
         DataManager.getInstance().getPlayerData(event.getPlayer()).saveAsync();
+
+        // update data spy menus
+        DataSpyManager.getInstance().updateMenu(event.getPlayer(), event.getLevel());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -105,5 +114,28 @@ public class LevelListener implements Listener {
 
         // save data
         DataManager.getInstance().getPlayerData(event.getPlayer()).saveAsync();
+
+        // update experience bar
+        LevelManager.getInstance().updateExperienceBar(event.getPlayer());
+
+        // update data spy menus
+        DataSpyManager.getInstance().updateMenu(event.getPlayer(), event.getLevel());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerDataResetAll(PlayerDataResetAllEvent event) {
+        var ee = (ExecutableEvent) LocaleUtils.getLocaleEvents(event.getPlayer()).get("reset-all-events");
+        if (ee != null) {
+            ee.execute(DreamLevels.getInstance(), event.getPlayer());
+        }
+
+        // save data
+        DataManager.getInstance().getPlayerData(event.getPlayer()).saveAsync();
+
+        // update experience bar
+        LevelManager.getInstance().updateExperienceBar(event.getPlayer());
+
+        // update data spy menus
+        DataSpyManager.getInstance().updateMenus(event.getPlayer());
     }
 }

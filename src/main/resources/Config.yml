@@ -68,6 +68,19 @@ reward:
   # 不同的服务器可共用相同的文件夹, 通过等级奖励的启用与禁用实现隔离.
   enabled:
     - 'server'
+# 未完成
+data-spy:
+  menu-title:
+    player-data: '&e&l数据密探 &8| &d&l玩家数据 &8(第{page}页)'
+    level-data: '&b&l等级数据 &8| &d&l{player}'
+    level-data-overall: '&e&l数据密探 &8| &d等级数据 &8(第{page}页)'
+  item-slots:
+    player-data:
+      border: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 45, 46, 47, 48, 49, 50, 51, 52, 53 ]
+    level-data:
+      border: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 45, 46, 47, 48, 49, 50, 51, 52, 53 ]
+    level-data-overall:
+      border: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 45, 46, 47, 48, 49, 50, 51, 52, 53 ]
 # 调试模式
 # 仅在插件测试阶段时开启, 向后台打印调试信息.
 debug-mode: false

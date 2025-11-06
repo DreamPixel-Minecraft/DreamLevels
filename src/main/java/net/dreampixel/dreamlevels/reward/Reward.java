@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import top.shadowpixel.shadowcore.api.config.component.NodeSection;
 import top.shadowpixel.shadowcore.api.function.component.ExecutableEvent;
-import top.shadowpixel.shadowcore.api.menu.impl.PlayerMenu;
 import top.shadowpixel.shadowcore.api.util.item.ItemBuilder;
 import top.shadowpixel.shadowcore.api.menu.component.MenuItem;
 import top.shadowpixel.shadowcore.api.util.item.ItemUtils;
@@ -67,8 +66,8 @@ public class Reward {
                 var events = custom.getStringList("events");
                 if (!events.isEmpty()) {
                     var ee = ExecutableEvent.of(events);
-                    menuItem.addClickAction((menu, event) -> {
-                        ee.execute(DreamLevels.getInstance(), (Player) event.getWhoClicked());
+                    menuItem.addClickAction(event -> {
+                        ee.execute(DreamLevels.getInstance(), event.getPlayer());
                         event.setCancelled(true);
                     });
                 }
@@ -98,20 +97,26 @@ public class Reward {
         item = Objects.requireNonNull(item, "unknown reward item " + key).clone();
         // add unlock events
         if (key.equalsIgnoreCase("reward-unlocked")) {
-            item.addClickAction(((menu, event1) -> {
-                event.execute(DreamLevels.getInstance(), (Player) event1.getWhoClicked());
-                // add received rewards
-                var player = (Player) event1.getWhoClicked();
-                var data = parent.getLevel().getLevelData(player);
-                data.addReceivedReward(parent.getName(), this.name);
+            item.addClickAction(event1 -> {
+                var player = event1.getPlayer();
+                receive(player);
 
                 // update the unlocked item to received one
-                var pm = ((RewardMenu) menu);
-                pm.setItem(event1.getSlot(), ((RewardMenu) menu).getReplacedRewardItem(player, this));
-            }));
+                var pm = (RewardMenu) event1.getMenu();
+                pm.setItem(event1.getSlot(), ((RewardMenu) event1.getMenu()).getReplacedRewardItem(player, this));
+            });
         }
 
         return item;
+    }
+
+    public void receive(@NotNull Player player) {
+        // execute event
+        event.execute(DreamLevels.getInstance(), player);
+
+        // add received rewords
+        var data = parent.getLevel().getLevelData(player);
+        data.addReceivedReward(parent.getName(), this.name);
     }
 
     @NotNull
@@ -143,7 +148,7 @@ public class Reward {
                 var ee_ = ee;
                 ee_.replacePermanently("{prefix}", DreamLevels.getPrefix());
                 ee_.replace("{player}", player.getName());
-                item.addClickAction((menu, event) -> ee_.execute(DreamLevels.getInstance(), ((Player) event.getWhoClicked())));
+                item.addClickAction(event -> ee_.execute(DreamLevels.getInstance(), event.getPlayer()));
             }
         }
 

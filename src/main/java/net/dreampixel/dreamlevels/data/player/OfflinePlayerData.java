@@ -1,7 +1,6 @@
 package net.dreampixel.dreamlevels.data.player;
 
 import lombok.var;
-import net.dreampixel.dreamlevels.data.DataManager;
 import net.dreampixel.dreamlevels.data.level.OfflineLevelData;
 import net.dreampixel.dreamlevels.util.SyncUtils;
 import org.jetbrains.annotations.NotNull;

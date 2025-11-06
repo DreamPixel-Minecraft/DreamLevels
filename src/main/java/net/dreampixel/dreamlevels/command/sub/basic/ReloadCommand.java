@@ -3,6 +3,7 @@ package net.dreampixel.dreamlevels.command.sub.basic;
 import net.dreampixel.dreamlevels.DreamLevels;
 import net.dreampixel.dreamlevels.config.ConfigManager;
 import net.dreampixel.dreamlevels.data.DataManager;
+import net.dreampixel.dreamlevels.dataspy.DataSpyManager;
 import net.dreampixel.dreamlevels.level.LevelManager;
 import net.dreampixel.dreamlevels.locale.LocaleManager;
 import net.dreampixel.dreamlevels.reward.RewardManager;
@@ -46,6 +47,9 @@ public class ReloadCommand extends SubCommand {
                 case "sync":
                     DreamLevels.getInstance().initSyncService();
                     break;
+                case "dataspy":
+                    DreamLevels.getInstance().getDataSpyManager().reload();
+                    break;
             }
         } else {
             ManagerUtils.reloadManagers(
@@ -53,10 +57,12 @@ public class ReloadCommand extends SubCommand {
                     LocaleManager.getInstance(),
                     LevelManager.getInstance(),
                     RewardManager.getInstance(),
-                    DataManager.getInstance()
+                    DataManager.getInstance(),
+                    DataSpyManager.getInstance()
             );
 
             // sync service
+
             DreamLevels.getInstance().initSyncService();
         }
 

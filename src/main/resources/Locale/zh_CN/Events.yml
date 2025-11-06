@@ -37,12 +37,13 @@ levels:
     multiple-set:
       - '[msg] {prefix}&a您的经验倍率设置为: {multiple}'
     reset:
-      - '[msg] {prefix}&c您的等级信息已被重置!'
-    # {levels}         -> 玩家当前等级
+      - '[msg] {prefix}&c您的等级数据已被重置!'
+    # {previous}       -> 玩家的上一级
+    # {current-levels} -> 玩家当前等级
     level-up-events:
       # 默认升级事件
       default:
-        - '[title] title=&b&l等级提升 subtitle=&a当前等级: {levels} fadeIn=10 stay=30 fadeOut=10'
+        - '[title] title=&b&l等级提升 subtitle=&a当前等级: {current-levels} fadeIn=10 stay=30 fadeOut=10'
   # 等级系统 server 事件
   server:
     # {exp}            -> 玩家得到的经验的原始值 (未乘以倍率)
@@ -73,11 +74,11 @@ levels:
     reset:
       - '[msg] {prefix}&c您的等级信息已被重置!'
     # {previous}       -> 玩家的上一级
-    # {levels}         -> 玩家当前等级
+    # {current-levels} -> 玩家当前等级
     level-up-events:
       # 默认升级事件
       default:
-        - '[title] title=&b&l等级提升 subtitle=&a当前等级: {levels} fadeIn=10 stay=30 fadeOut=10'
+        - '[title] title=&b&l等级提升 subtitle=&a当前等级: {current-levels} fadeIn=10 stay=30 fadeOut=10'
       # 从 0级到1级 的升级事件
       '1':
         - '[title] title=&b&l等级提升 subtitle=&a当前等级: 1 fadeIn=10 stay=30 fadeOut=10'
@@ -85,3 +86,5 @@ levels:
       '100':
         - '[title] title=&b&l等级提升 subtitle=&c你到达了最高等级! fadeIn=10 stay=30 fadeOut=10'
         - '[bc] {prefix}&6%player_name%到达了最高等级!'
+level-reset-all:
+  - '[msg] {prefix}&c已重置您所有的等级数据!'

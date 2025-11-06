@@ -18,9 +18,12 @@ import top.shadowpixel.shadowcore.api.util.item.ItemBuilder;
 import top.shadowpixel.shadowcore.object.interfaces.Manager;
 import top.shadowpixel.shadowcore.util.ConfigurationUtils;
 import top.shadowpixel.shadowcore.util.collection.MapUtils;
+import top.shadowpixel.shadowcore.util.io.FileUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -83,19 +86,22 @@ public class RewardManager implements Manager {
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
+                // read lines and replace $name$ and $display-name$
+                var lines = FileUtils.readAll(requireNonNull(plugin.getResource("default-reward.yml")), StandardCharsets.UTF_8,
+                        "$name$", name,
+                        "$level$", level);
+
                 // load configuration from resource
                 var property = ConfigurationProperty.builder()
-                        .resourceSupplier(() -> plugin.getResource("default-reward.yml"))
+                        .resourceSupplier(() -> new ByteArrayInputStream(lines.getBytes(StandardCharsets.UTF_8)))
                         .configurationType(ConfigurationType.YAML)
                         .storageFile(file)
                         .createNewFile()
                         .createParentDirs()
                         .build();
-                // replace placeholders
+
+                // load and save
                 var config = property.loadFromResource();
-                config.set("reward-list.name", name);
-                config.set("reward-list.level", level);
-                // save the reward list
                 property.save(config);
 
                 // enable the reward in configuration then save
@@ -104,7 +110,7 @@ public class RewardManager implements Manager {
                 configuration.save();
 
                 // create a reward list
-                var rewardList = new RewardList(config, name);
+                var rewardList = new RewardList(config);
                 this.rewardLists.put(name, rewardList);
 
                 MLogger.info("reward.create");
@@ -155,7 +161,7 @@ public class RewardManager implements Manager {
                 return;
             }
 
-            var rewardList = new RewardList(config, name);
+            var rewardList = new RewardList(config);
             this.rewardLists.put(name, rewardList);
             MLogger.infoReplaced("reward.load",
                     "{reward}", name);
@@ -185,7 +191,7 @@ public class RewardManager implements Manager {
     }
 
     public void loadDefaultItems() {
-        var items = requireNonNull(plugin.getConfiguration("Items"), "Items configuration is null");
+        var items = plugin.getItemsConfiguration();
         items.isNodeSection("items", section -> section.getKeys().forEach(key -> section.isNodeSection(key, itemSection -> {
             var item = ItemBuilder.builder(itemSection).build();
             this.defaultItems.put(key, MenuItem.of(item));
@@ -226,7 +232,7 @@ public class RewardManager implements Manager {
                 .forEach(r -> {
                     var menu = r.findRewardMenu(player);
                     if (menu != null) {
-                        menu.updateItems();
+                        menu.updateItems(true);
                     }
                 });
     }

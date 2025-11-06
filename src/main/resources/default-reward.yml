@@ -89,32 +89,44 @@ reward-list:
   item-slots:
     previous-page: [ 9, 18, 27, 36 ]
     next-page: [ 17, 26, 35, 44 ]
-    custom-border: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 45, 46, 47, 48, 49, 50, 51, 52, 53 ]
+    custom-border: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 45, 46, 47, 48, 50, 51, 52, 53 ]
+    auto-receive: [49]
   custom-items:
-    custom-border:
-      display-name: '&7Border'
-      material: GRAY_STAINED_GLASS_PANE
-      events:
-        - '[msg] &eHey, it''s no use clicking this item!'
-#    Previous-page:
+## These are optional items to overwrite
+#    previous-page:
 #      display-name: '&cPrevious page'
 #      lore:
 #        - '&7Click to go to the previous page'
 #      material: RED_STAINED_GLASS_PANE
 #      amount: 1
 #      Data: 0
-#    Next-page:
+#    next-page:
 #      display-name: '&aNext page'
 #      lore:
 #        - '&7Click to go to the next page'
 #      material: GREEN_STAINED_GLASS_PANE
 #      amount: 1
 #      Data: 0
-#    Reward-Unlocked:
+#    reward-unlocked:
 #      ...
-#    Reward-Locked:
+#    reward-locked:
 #      ...
-#    Reward-Received:
+#    reward-received:
 #      ...
-#    Reward-NoPermissions:
+#    reward-no-permissions:
 #      ...
+    custom-border:
+      display-name: '&7Border'
+      material: GRAY_STAINED_GLASS_PANE
+#      On old version:
+#      material: STAINED_GLASS_PANE
+#      data: 15
+      events:
+        - '[msg] &eHey, it''s no use clicking this item!'
+    auto-receive:
+      display-name: '&bClaim All'
+      material: NETHER_STAR
+      lore:
+        - '&eClick to receive all unlocked rewards!'
+      events:
+        - '[cmd] dl AutoReceive $name$'

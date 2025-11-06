@@ -4,7 +4,7 @@ startup:
   author: 'Author'
   info: |
     &f
-    &b&lDreamLevels &dv{version} &eby &eDreamStudio (MrTyphoon)
+    &b&lDreamLevels &dv{version} &eby &eDreamStudio
     &7Need help?&a Try the command &b'/{cmd} Help'&f!
     &f
   on-enable:

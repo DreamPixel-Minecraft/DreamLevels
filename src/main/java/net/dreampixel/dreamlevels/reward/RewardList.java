@@ -32,7 +32,7 @@ public class RewardList {
     // reward menus
     private final HashMap<Player, RewardMenu> rewardMenus = new HashMap<>();
 
-    public RewardList(@NotNull NodeSection configuration, @NotNull String name) {
+    public RewardList(@NotNull NodeSection configuration) {
         this.configuration = configuration;
         this.name = configuration.getString("reward-list.name");
         this.level = LevelManager.getInstance().getLevel(configuration.getString("reward-list.level"));
@@ -47,6 +47,9 @@ public class RewardList {
         loadRewards();
     }
 
+    /**
+     * Load custom menu items of the reward list.
+     */
     public void loadCustomItems() {
         configuration.isNodeSection("reward-list.custom-items", s -> {
             for (var key : s.getKeys()) {
@@ -62,8 +65,8 @@ public class RewardList {
                 var events = custom.getStringList("events");
                 if (!events.isEmpty()) {
                     var ee = ExecutableEvent.of(events);
-                    menuItem.addClickAction((menu, event) -> {
-                        ee.execute(DreamLevels.getInstance(), (Player) event.getWhoClicked());
+                    menuItem.addClickAction(event -> {
+                        ee.execute(DreamLevels.getInstance(), event.getPlayer());
                         event.setCancelled(true);
                     });
                 }
@@ -73,6 +76,9 @@ public class RewardList {
         });
     }
 
+    /**
+     * Load reward entries.
+     */
     public void loadRewards() {
         configuration.isNodeSection("reward-list.rewards", rewards -> rewards.getKeys().forEach(key -> {
             var reward_section = rewards.getNodeSection(key);
@@ -83,16 +89,25 @@ public class RewardList {
         }));
     }
 
+    /**
+     * @return Name
+     */
     @NotNull
     public String getName() {
         return name;
     }
 
+    /**
+     * @return Associated level
+     */
     @NotNull
     public Level getLevel() {
         return level;
     }
 
+    /**
+     * @return Reward entries
+     */
     @NotNull
     public ArrayList<Reward> getRewards() {
         return rewards;
@@ -100,7 +115,7 @@ public class RewardList {
 
     /**
      * Get a title of a specific page. Returns the default title if this page
-     * does not have a specific title.
+     * does not have one.
      */
     @NotNull
     public String getTitle(int page) {
@@ -116,20 +131,33 @@ public class RewardList {
         return title;
     }
 
+    /**
+     * @return All titles in a map
+     */
+    @SuppressWarnings("unused")
     @NotNull
     public HashMap<String, String> getTitles() {
         return titles;
     }
 
+    /**
+     * @return All custom menu items in a map
+     */
     @NotNull
     public HashMap<String, MenuItem> getCustomItems() {
         return customItems;
     }
 
+    /**
+     * @return Size of the menu
+     */
     public int getMenuSize() {
         return size;
     }
 
+    /**
+     * @return Permissions required to open this menu
+     */
     @NotNull
     public ArrayList<String> getPermissions() {
         return permissions;
@@ -150,31 +178,80 @@ public class RewardList {
         return item;
     }
 
+    /**
+     * Get the reward menu of the player. Returns null if the menu is absent.
+     *
+     * @param player Player
+     * @return Reward menu
+     */
     @Nullable
     public RewardMenu findRewardMenu(@NotNull Player player) {
         return rewardMenus.get(player);
     }
 
+    /**
+     * Get the reward menu of the player. A new one will be created if absent.
+     *
+     * @param player Player
+     * @return Reward Menu
+     */
     @NotNull
     public RewardMenu getRewardMenu(@NotNull Player player) {
         var menu = rewardMenus.get(player);
         if (menu == null) {
-            menu = new RewardMenu(player, this);
+            menu = RewardMenu.createMenu(player, this);
             rewardMenus.put(player, menu);
         }
 
         return menu;
     }
 
+    /**
+     * Open a reward menu for a player. If the menu is absent, then a new one will be created.
+     *
+     * @param player Player
+     */
     public void openRewardMenu(@NotNull Player player) {
         getRewardMenu(player).openMenu();
     }
 
+    /**
+     * Remove the reward menu associated with the player.
+     *
+     * @param player Player
+     */
     public void removeRewardMenu(@NotNull Player player) {
         var menu = this.rewardMenus.remove(player);
         if (menu != null) {
             menu.delete();
         }
+    }
+
+    /**
+     * Receive the unlocked rewards for the player.
+     *
+     * @param player Player
+     * @return How many rewards has been received
+     */
+    public int autoReceive(@NotNull Player player) {
+        var cnt = 0;
+        for (var reward : rewards) {
+            // receive rewards
+            if (reward.getRewardStatus(player) == RewardStatus.UNLOCKED) {
+                reward.receive(player);
+                cnt++;
+            }
+        }
+
+        // update reward menu
+        if (cnt > 0) {
+            var menu = findRewardMenu(player);
+            if (menu != null) {
+                menu.updateItems(false);
+            }
+        }
+
+        return cnt;
     }
 
     /**
@@ -185,6 +262,11 @@ public class RewardList {
         this.rewardMenus.clear();
     }
 
+    /**
+     * Get the configuration where the reward list is loaded.
+     *
+     * @return Configuration
+     */
     @NotNull
     public NodeSection getConfiguration() {
         return configuration;

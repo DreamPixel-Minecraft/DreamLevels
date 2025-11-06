@@ -38,7 +38,7 @@ public class CreateRewardCommand extends SubCommand {
     @Override
     public @Nullable Collection<String> complete(@NotNull CommandContext ctx) {
         // /dl cr <name> <level>
-        if (ctx.arguments().length == 2) {
+        if (ctx.arguments().length == 3) {
             return LevelManager.getInstance().getLevels().keySet();
         }
 

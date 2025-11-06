@@ -10,10 +10,8 @@ import top.shadowpixel.shadowcore.api.command.CommandContext;
 import top.shadowpixel.shadowcore.api.command.annotation.CommandInfo;
 import top.shadowpixel.shadowcore.api.plugin.PlayerSet;
 
-import java.util.List;
 import java.util.function.Consumer;
 
-@SuppressWarnings("unchecked")
 @CommandInfo(
         name = "AddLevels",
         permissions = "DreamLevels.Commands.AddLevels"

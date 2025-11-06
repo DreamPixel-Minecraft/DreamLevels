@@ -3,8 +3,6 @@ package net.dreampixel.dreamlevels.data.level;
 import lombok.var;
 import net.dreampixel.dreamlevels.DreamLevels;
 import net.dreampixel.dreamlevels.api.event.ModificationType;
-import net.dreampixel.dreamlevels.data.DataManager;
-import net.dreampixel.dreamlevels.data.player.PlayerData;
 import net.dreampixel.dreamlevels.util.SyncUtils;
 import org.jetbrains.annotations.NotNull;
 

@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.shadowpixel.shadowcore.util.collection.ArrayUtils;
-import net.dreampixel.dreamlevels.DreamLevels;
 import top.shadowpixel.shadowcore.util.collection.ListUtils;
 import top.shadowpixel.shadowcore.util.object.NumberUtils;
 
@@ -27,7 +26,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getAuthor() {
-        return "DreamStudio (MrTyphoon)";
+        return "DreamStudio";
     }
 
     @Override

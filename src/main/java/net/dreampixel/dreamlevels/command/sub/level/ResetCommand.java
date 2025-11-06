@@ -15,7 +15,6 @@ import top.shadowpixel.shadowcore.api.uid.UUIDStorage;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 @CommandInfo(

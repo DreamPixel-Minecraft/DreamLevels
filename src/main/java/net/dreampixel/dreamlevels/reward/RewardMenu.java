@@ -20,10 +20,12 @@ public class RewardMenu extends PlayerMenu {
     private final RewardList rewardList;
     
     private final ArrayList<String> permissions;
+    // to record whether the player has not enough permissions, if so, this menu won't be constructed
+    // until the player has the permissions in order to improve performance
     private boolean permissionsDenied = false;
     private ExecutableEvent permissionDeniedEvent;
     
-    public RewardMenu(Player owner, RewardList rewardList) {
+    protected RewardMenu(Player owner, RewardList rewardList) {
         super(owner, rewardList.getName(), rewardList.getName());
         this.rewardList = rewardList;
 
@@ -58,12 +60,15 @@ public class RewardMenu extends PlayerMenu {
     }
 
     /**
-     * Update items
+     * Update the menu's items.
+     *
+     * @param skipReceived Whether not to updated items of received rewards
      */
-    public void updateItems() {
+    public void updateItems(boolean skipReceived) {
         var data = rewardList.getLevel().getLevelData(player);
         for (var reward : rewardList.getRewards()) {
-            if (data.hasRewardReceived(rewardList, reward)) {
+            // skip received ones
+            if (data.hasRewardReceived(rewardList, reward) && skipReceived) {
                 continue;
             }
 
@@ -112,7 +117,7 @@ public class RewardMenu extends PlayerMenu {
             // next-page item
             if (page != getPages().size()) {
                 var item = rewardList.getItemByKey("next-page");
-                item.addClickAction((menu, event) -> changePage(getCurrentPage() + 1));
+                item.addClickAction(e -> changePage(getCurrentPage() + 1));
                 slotSection.isIntegerList("next-page",
                         list -> list.forEach(slot -> setItem(page, slot, item)));
             }
@@ -120,8 +125,7 @@ public class RewardMenu extends PlayerMenu {
             // previous-page item
             if (page > 1) {
                 var item = rewardList.getItemByKey("previous-page");
-                item.addClickAction((menu, event) ->
-                        changePage(getCurrentPage() - 1));
+                item.addClickAction(e -> changePage(getCurrentPage() - 1));
                 slotSection.isIntegerList("previous-page",
                         list -> list.forEach(slot -> setItem(page, slot, item)));
             }
@@ -145,7 +149,7 @@ public class RewardMenu extends PlayerMenu {
     protected MenuItem getReplacedRewardItem(@NotNull Player player, @NotNull Reward reward) {
         var item = ItemUtils.replace(reward.getRewardItem(player), player,
                 "{level}", String.valueOf(reward.getLevels()));
-        // replace "{rewards}" with reward content in the lore
+        // replace "{rewards}" with reward content in the lore list
         var meta = item.getItemMeta();
         if (meta != null && meta.hasLore()) {
             var lore = meta.getLore();
@@ -180,9 +184,8 @@ public class RewardMenu extends PlayerMenu {
      */
     public static RewardMenu createMenu(@NotNull Player player, @NotNull RewardList rewardList) {
         var menu = new RewardMenu(player, rewardList);
-        //noinspection DataFlowIssue
         DreamLevels.getInstance().getMenuHandler("reward")
-                .addMenu(player.getUniqueId().toString(), menu);
+                .addMenu(menu);
         return menu;
     }
 }

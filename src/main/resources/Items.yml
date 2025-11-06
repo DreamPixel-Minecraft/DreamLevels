@@ -55,3 +55,56 @@ items:
       - '&c你没有权限!'
     material: CHEST_MINECART
     amount: 1
+dataspy-menu:
+  player-data:
+    display-name: '&d玩家数据 &f| &e{player}'
+    lore:
+      - '&a点击以查看或更改详细数据.'
+    material: NETHER_STAR
+    amount: 1
+  level-data:
+    display-name: '&b等级数据 &f| &e{level}'
+    lore:
+      - '&f点击以查看或更改等级数据.'
+    material: BEACON
+    amount: 1
+  levels:
+    display-name: '&e等级数量'
+    lore:
+      - '&a玩家当前等级为: {value}'
+      - ''
+      - '&f点击进行修改.'
+    material: CHEST_MINECART
+    amount: 1
+  exp:
+    display-name: '&e经验数量'
+    lore:
+      - '&a玩家当前经验值为: {value}'
+      - ''
+      - '&f点击进行修改.'
+    material: CHEST_MINECART
+    amount: 1
+  multiple:
+    display-name: '&e经验倍率'
+    lore:
+      - '&a玩家当前等级为: {value}'
+      - ''
+      - '&f点击进行修改.'
+    material: CHEST_MINECART
+    amount: 1
+  received-rewards:
+    display-name: '&e已领取奖励'
+    lore:
+      - '&a玩家当前经验值为: {value}'
+      - ''
+      - '&f点击进行修改.'
+    material: CHEST_MINECART
+    amount: 1
+  border:
+    display-name: '&8边框'
+    # material: GRAY_STAINED_GLASS_PANE
+    #On old version:
+    material: STAINED_GLASS_PANE
+    data: 15
+    events:
+      - '[msg] &eHey, it''s no use clicking this item!'

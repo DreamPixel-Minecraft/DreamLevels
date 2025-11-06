@@ -1,9 +1,11 @@
 package net.dreampixel.dreamlevels;
 
+import lombok.Getter;
 import lombok.var;
 import net.dreampixel.dreamlevels.data.DataManager;
 import net.dreampixel.dreamlevels.data.level.LevelData;
 import net.dreampixel.dreamlevels.data.player.PlayerData;
+import net.dreampixel.dreamlevels.dataspy.DataSpyManager;
 import net.dreampixel.dreamlevels.level.Level;
 import net.dreampixel.dreamlevels.level.LevelManager;
 import net.dreampixel.dreamlevels.listener.DataListener;
@@ -19,6 +21,7 @@ import top.shadowpixel.shadowcore.api.command.exception.ParameterizedCommandInte
 import top.shadowpixel.shadowcore.api.config.component.Configuration;
 import top.shadowpixel.shadowcore.api.config.component.FiledConfiguration;
 import top.shadowpixel.shadowcore.api.locale.Locale;
+import top.shadowpixel.shadowcore.api.menu.MenuHandler;
 import top.shadowpixel.shadowcore.api.plugin.AbstractPlugin;
 import top.shadowpixel.shadowcore.api.util.time.MSTimer;
 import top.shadowpixel.shadowcore.util.plugin.DescriptionChecker;
@@ -31,10 +34,10 @@ import net.dreampixel.dreamlevels.util.Logger;
 import net.dreampixel.dreamlevels.util.MLogger;
 
 import java.io.File;
-import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
+@SuppressWarnings("unchecked")
 public final class DreamLevels extends AbstractPlugin {
     private static DreamLevels instance;
 
@@ -46,6 +49,13 @@ public final class DreamLevels extends AbstractPlugin {
 
     private LevelManager levelManager;
     private RewardManager rewardManager;
+
+    private DataSpyManager dataSpyManager;
+
+    @Getter
+    private MenuHandler<DreamLevels> rewardMenuHandler;
+    @Getter
+    private MenuHandler<DreamLevels> dataSpyMenuHandler;
 
     private boolean isEnabled = false;
 
@@ -78,7 +88,7 @@ public final class DreamLevels extends AbstractPlugin {
                 "&b&lDreamLevels &7>> &a" + lang.getString("startup.welcome") + "!",
                 "",
                 "&f" + lang.getString("startup.version") + ": &av" + getVersion(),
-                "&f" + lang.getString("startup.author") + ": &aDreamStudio (MrTyphoon)",
+                "&f" + lang.getString("startup.author") + ": &aDreamStudio",
                 "",
                 ""
         );
@@ -87,7 +97,7 @@ public final class DreamLevels extends AbstractPlugin {
         if (!new DescriptionChecker(
                 this,
                 "DreamLevels",
-                "DreamStudio (MrTyphoon)",
+                "DreamStudio",
                 "1.0").check()) {
             MLogger.error("startup.on-enable.error-plugin_yml");
             getServer().getPluginManager().disablePlugin(this);
@@ -125,6 +135,10 @@ public final class DreamLevels extends AbstractPlugin {
             }
         }
 
+        // menu handlers
+        this.rewardMenuHandler = (MenuHandler<DreamLevels>) getMenuHandler("reward");
+        this.dataSpyMenuHandler = (MenuHandler<DreamLevels>) getMenuHandler("dataspy");
+
         // level manager
         this.levelManager = new LevelManager(this);
         this.levelManager.initialize();
@@ -132,7 +146,6 @@ public final class DreamLevels extends AbstractPlugin {
         // reward manager
         this.rewardManager = new RewardManager(this);
         this.rewardManager.initialize();
-        registerMenuHandler("reward");
 
         // sync manager
         initSyncService();
@@ -141,11 +154,14 @@ public final class DreamLevels extends AbstractPlugin {
         this.dataManager = new DataManager(this);
         this.dataManager.initialize();
 
+        // dataspy
+        this.dataSpyManager = new DataSpyManager(this);
+        this.dataSpyManager.initialize();
+
         Logger.info("");
         MLogger.infoReplaced("startup.on-enable.enabled",
                 "{time}", String.valueOf(timer.getTimePassed()));
         isEnabled = true;
-
         // snapshot warning
 //        Logger.warn("当前版本为测试版, 如有问题请联系开发者!");?
     }
@@ -164,8 +180,18 @@ public final class DreamLevels extends AbstractPlugin {
                 this.localeManager,
                 this.configManager,
                 this.levelManager,
-                this.rewardManager
+                this.rewardManager,
+                this.dataSpyManager
         );
+    }
+
+    /**
+     * @param name Name
+     * @return Configuration
+     */
+    @Nullable
+    public FiledConfiguration getConfiguration(String name) {
+        return this.configManager.getFiledConfiguration(name);
     }
 
     /**
@@ -177,12 +203,11 @@ public final class DreamLevels extends AbstractPlugin {
     }
 
     /**
-     * @param name Name
-     * @return Configuration
+     * @return Items Configuration
      */
-    @Nullable
-    public FiledConfiguration getConfiguration(String name) {
-        return this.configManager.getFiledConfiguration(name);
+    @NotNull
+    public FiledConfiguration getItemsConfiguration() {
+        return requireNonNull(getConfiguration("Items"), "Items Configuration is null");
     }
 
     /**
@@ -278,6 +303,11 @@ public final class DreamLevels extends AbstractPlugin {
     @NotNull
     public RewardManager getRewardManager() {
         return rewardManager;
+    }
+
+    @NotNull
+    public DataSpyManager getDataSpyManager() {
+        return dataSpyManager;
     }
 
     public boolean isDebugMode() {

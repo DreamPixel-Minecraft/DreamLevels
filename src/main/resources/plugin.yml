@@ -3,7 +3,7 @@ name: DreamLevels
 version: '${version}'
 main: net.dreampixel.dreamlevels.DreamLevels
 api-version: 1.13
-author: 'DreamStudio (MrTyphoon)'
+author: 'DreamStudio'
 depend: [ShadowCore]
 softdepend: [PlaceholderAPI, ShadowMessenger]
 commands:
