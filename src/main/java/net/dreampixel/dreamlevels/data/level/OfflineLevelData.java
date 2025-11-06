@@ -120,15 +120,6 @@ public class OfflineLevelData implements ILevelData {
         );
     }
 
-    /**
-     * @return Whether the sync mode is enabled, if true, the modification request will be post
-     *         to where the player is if online, otherwise directly modify their offline data.
-     */
-    private boolean isProxyMode() {
-        return DreamLevels.getInstance().getConfiguration()
-                .getBoolean("data.sync-mode.enabled", false) && DreamLevels.getInstance().getSyncManager() != null;
-    }
-
     private void modifyLevel(int amount, ModificationType type) {
         // handle the data offline
         Runnable onOffline = () -> SyncUtils.handleOfflineLevelData(uniqueId, levelName, feedbackConsumer, levelData -> {

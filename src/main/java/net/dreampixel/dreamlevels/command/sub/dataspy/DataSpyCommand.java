@@ -11,7 +11,6 @@ import top.shadowpixel.shadowcore.api.command.CommandContext;
 import top.shadowpixel.shadowcore.api.command.SenderType;
 import top.shadowpixel.shadowcore.api.command.SubCommand;
 import top.shadowpixel.shadowcore.api.command.annotation.CommandInfo;
-import top.shadowpixel.shadowcore.api.command.component.CommandArgument;
 import top.shadowpixel.shadowcore.util.entity.SenderUtils;
 
 import java.util.Collection;

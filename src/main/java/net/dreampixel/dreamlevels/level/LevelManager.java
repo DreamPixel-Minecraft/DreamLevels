@@ -33,8 +33,6 @@ public class LevelManager implements Manager {
     private final HashMap<String, Level> levels = new HashMap<>();
     private File directory;
 
-    private ExecutableEvent resetAllEvent;
-
     /**
      * Experience bar fields
      */

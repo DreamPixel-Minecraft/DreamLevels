@@ -29,8 +29,6 @@ public class PlayerDataMenu extends GlobalMenu {
 
     public void constructMenu() {
         var plugin = DreamLevels.getInstance();
-        var dsManager = DataSpyManager.getInstance();
-
         var targets = Bukkit.getOnlinePlayers();
 
         // create pages

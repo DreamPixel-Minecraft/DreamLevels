@@ -98,6 +98,7 @@ public class SyncUtils {
      * @return Whether the sync mode is enabled, if true, the modification request will be post
      *         to where the player is if online, otherwise directly modify their offline data.
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean isProxyMode() {
         return DreamLevels.getInstance().getConfiguration()
                 .getBoolean("data.sync-mode.enabled", false) && DreamLevels.getInstance().getSyncManager() != null;

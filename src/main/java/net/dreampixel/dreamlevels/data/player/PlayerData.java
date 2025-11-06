@@ -27,7 +27,7 @@ public class PlayerData implements ConfigurationSerializable, IPlayerData {
         this.levelData = new HashMap<>();
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "unused"})
     public PlayerData(@NotNull Map<String, Object> deserialize) {
         this.levelData = (Map<String, LevelData>) deserialize.get("level-data");
     }

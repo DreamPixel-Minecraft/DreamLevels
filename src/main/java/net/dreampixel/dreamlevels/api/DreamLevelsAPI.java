@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+@SuppressWarnings("unused")
 @UtilityClass
 public class DreamLevelsAPI {
 

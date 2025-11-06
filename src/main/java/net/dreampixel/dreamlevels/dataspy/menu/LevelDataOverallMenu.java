@@ -37,7 +37,6 @@ public class LevelDataOverallMenu extends GlobalMenu {
 
     public void constructMenu() {
         var plugin = DreamLevels.getInstance();
-        var dsManager = DataSpyManager.getInstance();
 
         var player = Bukkit.getPlayer(uniqueId);
         var playerData = DataManager.getInstance().getPlayerData(uniqueId);

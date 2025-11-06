@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
-@SuppressWarnings("ResultOfMethodCallIgnored")
+@SuppressWarnings({"ResultOfMethodCallIgnored", "unused"})
 public class RewardManager implements Manager {
     private final DreamLevels plugin;
 
