@@ -16,7 +16,7 @@ import java.util.List;
  * A hook into PlaceholderAPI, providing placeholder service.
  * The main placeholder is %dreamlevels_<arg1>_<arg2>%
  */
-@SuppressWarnings({"unused", "SpellCheckingInspection"})
+@SuppressWarnings("SpellCheckingInspection")
 public class PlaceholderHook extends PlaceholderExpansion {
 
     @Override

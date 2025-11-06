@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.shadowpixel.shadowcore.api.config.component.ConfigurationProvider;
-import top.shadowpixel.shadowcore.api.function.component.ExecutableEvent;
 import top.shadowpixel.shadowcore.object.interfaces.Manager;
 import top.shadowpixel.shadowcore.util.ConfigurationUtils;
 import top.shadowpixel.shadowcore.util.collection.MapUtils;

@@ -25,6 +25,7 @@ import java.util.*;
 import static net.dreampixel.dreamlevels.util.EventUtils.*;
 import static top.shadowpixel.shadowcore.util.object.NumberUtils.*;
 
+@SuppressWarnings("unused")
 @SerializableAs("DreamLevels-LevelData")
 @Getter
 public class LevelData implements ConfigurationSerializable, ILevelData {

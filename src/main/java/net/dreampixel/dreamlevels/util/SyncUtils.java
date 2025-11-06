@@ -105,11 +105,6 @@ public class SyncUtils {
     }
 
     @NotNull
-    public static BungeeChannel getDefaultChannel() {
-        return BungeeMessenger.getInstance().getDefaultChannel();
-    }
-
-    @NotNull
     public static BungeeChannel getSyncChannel() {
         return SyncManager.getInstance().getChannel();
     }
