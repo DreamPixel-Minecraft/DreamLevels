@@ -64,7 +64,6 @@ command:
       - ''
       - '&e/{cmd} Admin [Page Number] &d| &cDisplay admin help message'
       - '&e/{cmd} Reload&7[rl] &8[&7config&8|&7lang&8] &d| &aReload the plugin'
-      #- '&7(Enter ''/{cmd} admin 2'' to view the next page)'
       - ''
 data:
   database:

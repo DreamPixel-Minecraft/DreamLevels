@@ -17,8 +17,8 @@ import java.util.List;
 
 public class LocaleManager extends AbstractLocaleManager<DreamLevels> {
     public static final List<LocaleInfo> PRESET_LOCALE_INFOS = ListUtils.immutableList(
-            LocaleInfo.of("zh_CN", "Locale/zh_CN"),
-            LocaleInfo.of("en_US", "Locale/en_US")
+            LocaleInfo.of("zh_CN", "Locale/zh_CN")
+//            LocaleInfo.of("en_US", "Locale/en_US")
     );
 
     public static final List<String> CONTENTS = ListUtils.immutableList(

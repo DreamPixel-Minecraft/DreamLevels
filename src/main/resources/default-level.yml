@@ -9,7 +9,7 @@ level:
   # 默认等级数量
   default-level: 0
   # 默认升级所需经验 (可被 "custom-exp-to-level-up" 覆盖)
-  default-exp-to-level-up: 3000
+  default-exp-to-level-up: 3000.0
   # 说明: 玩家从 0 -> 1 级需要 100点 经验,
   # 1-10级内 (1→2...9→10)每升一级需要 1000点 经验
   # 10-30级内 (10→11...29→30) 需要 2000点 经验.

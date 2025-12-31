@@ -5,11 +5,12 @@ import lombok.var;
 import net.dreampixel.dreamlevels.data.DataManager;
 import net.dreampixel.dreamlevels.data.level.LevelData;
 import net.dreampixel.dreamlevels.data.player.PlayerData;
-import net.dreampixel.dreamlevels.dataspy.DataSpyManager;
+import net.dreampixel.dreamlevels.menu.dataspy.DataSpyManager;
 import net.dreampixel.dreamlevels.level.Level;
 import net.dreampixel.dreamlevels.level.LevelManager;
 import net.dreampixel.dreamlevels.listener.DataListener;
 import net.dreampixel.dreamlevels.listener.LevelListener;
+import net.dreampixel.dreamlevels.menu.level.LevelSpyManager;
 import net.dreampixel.dreamlevels.reward.RewardList;
 import net.dreampixel.dreamlevels.reward.RewardManager;
 import net.dreampixel.dreamlevels.sync.SyncManager;
@@ -51,11 +52,14 @@ public final class DreamLevels extends AbstractPlugin {
     private RewardManager rewardManager;
 
     private DataSpyManager dataSpyManager;
+    private LevelSpyManager levelSpyManager;
 
     @Getter
     private MenuHandler<DreamLevels> rewardMenuHandler;
     @Getter
     private MenuHandler<DreamLevels> dataSpyMenuHandler;
+    @Getter
+    private MenuHandler<DreamLevels> levelSpyMenuHandler;
 
     private boolean isEnabled = false;
 
@@ -72,7 +76,7 @@ public final class DreamLevels extends AbstractPlugin {
         this.configManager.initialize();
         logger.addReplacement("{prefix}", getPrefix());
 
-        // locale manager initialization
+        // init locale manager
         var localeFile = new File(getConfiguration().getString("locale.directory")
                 .replace("{default}", getDataFolder().toString()));
         this.localeManager = new LocaleManager(this, localeFile);
@@ -93,7 +97,7 @@ public final class DreamLevels extends AbstractPlugin {
                 ""
         );
 
-        /* Built-in description check */
+        // check plugin information
         if (!new DescriptionChecker(
                 this,
                 "DreamLevels",
@@ -104,7 +108,7 @@ public final class DreamLevels extends AbstractPlugin {
             return;
         }
 
-        /* Commands initialization */
+        // init commands
         try {
             MLogger.info("startup.on-enable.register-command");
             initCommand();
@@ -114,7 +118,7 @@ public final class DreamLevels extends AbstractPlugin {
             Logger.error(e);
         }
 
-        /* Listeners registration */
+        // init listeners
         try {
             MLogger.info("startup.on-enable.register-listener");
             registerListener("data", new DataListener());
@@ -124,7 +128,7 @@ public final class DreamLevels extends AbstractPlugin {
             MLogger.error("startup.on-enable.failed", e);
         }
 
-        /* Listeners registration */
+        // init PAPI
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             try {
                 MLogger.info("startup.on-enable.register-PAPI");
@@ -138,6 +142,7 @@ public final class DreamLevels extends AbstractPlugin {
         // menu handlers
         this.rewardMenuHandler = (MenuHandler<DreamLevels>) getMenuHandler("reward");
         this.dataSpyMenuHandler = (MenuHandler<DreamLevels>) getMenuHandler("dataspy");
+        this.levelSpyMenuHandler = (MenuHandler<DreamLevels>) getMenuHandler("levelspy");
 
         // level manager
         this.levelManager = new LevelManager(this);
@@ -154,16 +159,18 @@ public final class DreamLevels extends AbstractPlugin {
         this.dataManager = new DataManager(this);
         this.dataManager.initialize();
 
-        // dataspy
+        // dataspy manager
         this.dataSpyManager = new DataSpyManager(this);
         this.dataSpyManager.initialize();
+
+        // levelspy manager
+        this.levelSpyManager = new LevelSpyManager(this);
+        this.levelSpyManager.initialize();
 
         Logger.info("");
         MLogger.infoReplaced("startup.on-enable.enabled",
                 "{time}", String.valueOf(timer.getTimePassed()));
         isEnabled = true;
-        // snapshot warning
-//        Logger.warn("当前版本为测试版, 如有问题请联系开发者!");?
     }
 
     @Override
@@ -310,6 +317,11 @@ public final class DreamLevels extends AbstractPlugin {
         return dataSpyManager;
     }
 
+    @NotNull
+    public LevelSpyManager getLevelSpyManager() {
+        return levelSpyManager;
+    }
+
     public boolean isDebugMode() {
         return getConfiguration().getBoolean("Debug-mode", true);
     }
@@ -333,8 +345,10 @@ public final class DreamLevels extends AbstractPlugin {
         return getInstance().getDescription().getVersion();
     }
 
+    @SuppressWarnings("EmptyMethod")
     @NotNull @Deprecated //Shit
     public FileConfiguration getConfig() {
+        Logger.warn("The default method \"public FileConfiguration getConfig()\" method has been invoked which is deprecated and may cause unexpected problems!");
         return super.getConfig();
     }
 }

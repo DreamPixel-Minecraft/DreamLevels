@@ -55,7 +55,66 @@ items:
       - '&c你没有权限!'
     material: CHEST_MINECART
     amount: 1
-dataspy-menu:
+level-spy-menu:
+  level:
+    display-name: '&b等级系统 &f| &e{level}'
+    lore:
+      - '&f点击进行修改.'
+    material: BEACON
+    amount: 1
+  default-levels:
+    display-name: '&b默认初始等级'
+    lore:
+      - '&a当前值为: &e{value}'
+      - ''
+      - '&f点击进行修改.'
+    material: NAME_TAG
+    amount: 1
+  required-exp:
+    display-name: '&b默认升级经验'
+    lore:
+      - '&a当前值为: &e{value}'
+      - ''
+      - '&f点击进行修改.'
+    material: NAME_TAG
+    amount: 1
+  display-name:
+    display-name: '&b等级显示名'
+    lore:
+      - '&a当前值为: &e{value}'
+      - ''
+      - '&f点击进行修改.'
+    material: NAME_TAG
+    amount: 1
+  max-levels:
+    display-name: '&b默认最大等级'
+    lore:
+      - '&a当前值为: &e{value}'
+      - ''
+      - '&f点击进行修改.'
+    material: NAME_TAG
+    amount: 1
+  previous-page:
+    display-name: '&c上一页'
+    lore:
+      - '&7单击返回上一页'
+    material: RED_STAINED_GLASS_PANE
+    amount: 1
+  next-page:
+    display-name: '&a下一页'
+    lore:
+      - '&7点击前往下一页'
+    material: GREEN_STAINED_GLASS_PANE
+    amount: 1
+  border:
+    display-name: '&8边框'
+    # material: GRAY_STAINED_GLASS_PANE
+    #On old version:
+    material: STAINED_GLASS_PANE
+    data: 15
+    events:
+      - '[msg] &eHey, it''s no use clicking this item!'
+data-spy-menu:
   player-data:
     display-name: '&d玩家数据 &f| &e{player}'
     lore:
@@ -92,6 +151,18 @@ dataspy-menu:
       - '&f点击进行修改.'
     material: CHEST_MINECART
     amount: 1
+  reset:
+    display-name: '&c重置等级数据'
+    lore:
+      - '&f点击将重置该玩家的等级数据.'
+    material: REDSTONE
+    amount: 1
+  reset-all:
+    display-name: '&c重置所有等级数据'
+    lore:
+      - '&f点击将重置该玩家所有的等级数据.'
+    material: REDSTONE
+    amount: 1
   received-rewards:
     display-name: '&e已领取奖励'
     lore:
@@ -99,6 +170,18 @@ dataspy-menu:
       - ''
       - '&f点击进行修改.'
     material: CHEST_MINECART
+    amount: 1
+  previous-page:
+    display-name: '&c上一页'
+    lore:
+      - '&7单击返回上一页'
+    material: RED_STAINED_GLASS_PANE
+    amount: 1
+  next-page:
+    display-name: '&a下一页'
+    lore:
+      - '&7点击前往下一页'
+    material: GREEN_STAINED_GLASS_PANE
     amount: 1
   border:
     display-name: '&8边框'

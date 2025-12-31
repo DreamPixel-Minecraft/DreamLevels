@@ -10,6 +10,9 @@ import top.shadowpixel.shadowmessenger.spigot.ShadowMessenger;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Class that controls sync messages between servers.
+ */
 public class SyncManager implements Manager {
     private final DreamLevels plugin;
 

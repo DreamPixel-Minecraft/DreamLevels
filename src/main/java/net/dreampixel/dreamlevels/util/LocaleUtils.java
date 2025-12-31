@@ -14,6 +14,7 @@ import top.shadowpixel.shadowcore.util.entity.SenderUtils;
 import top.shadowpixel.shadowcore.util.text.ReplaceUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 @UtilityClass
 public class LocaleUtils {
@@ -28,6 +29,7 @@ public class LocaleUtils {
         return DreamLevels.getInstance().getDefaultEvents();
     }
 
+    @NotNull
     public static Configuration getLocaleMessage(@NotNull CommandSender sender) {
         if (DreamLevels.getInstance().getConfiguration().getBoolean("locale.use-default-locale")) {
             return getDefaultMessage();
@@ -39,12 +41,14 @@ public class LocaleUtils {
                 return getDefaultMessage();
             }
 
-            return locale.getConfig("Message");
+            return Objects.requireNonNull(locale.getConfig("Message"),
+                    String.format("locale of player %s is null", sender.getName()));
         }
 
         return getDefaultMessage();
     }
 
+    @NotNull
     public static Configuration getLocaleEvents(@NotNull CommandSender sender) {
         if (DreamLevels.getInstance().getConfiguration().getBoolean("locale.use-default-locale")) {
             return getDefaultEvents();
@@ -56,7 +60,8 @@ public class LocaleUtils {
                 return getDefaultEvents();
             }
 
-            return locale.getConfig("Events");
+            return Objects.requireNonNull(locale.getConfig("Events"),
+                    String.format("locale of player %s is null", sender.getName()));
         }
 
         return getDefaultEvents();

@@ -7,6 +7,7 @@ import net.dreampixel.dreamlevels.data.DataManager;
 import net.dreampixel.dreamlevels.data.level.ILevelData;
 import net.dreampixel.dreamlevels.data.level.LevelData;
 import net.dreampixel.dreamlevels.data.level.OfflineLevelData;
+import net.dreampixel.dreamlevels.menu.level.LevelSpyManager;
 import net.dreampixel.dreamlevels.util.Logger;
 import net.dreampixel.dreamlevels.util.MLogger;
 import org.bukkit.Bukkit;
@@ -96,7 +97,7 @@ public class Level implements ConfigurationSerializable {
 
     public void setDisplayName(@NotNull String displayName) {
         this.displayName = displayName;
-        save();
+        postprocess();
     }
 
     /**
@@ -113,7 +114,7 @@ public class Level implements ConfigurationSerializable {
      */
     public void setDefaultMaxLevels(int levels) {
         this.defaultMaxLevels = levels;
-        save();
+        postprocess();
     }
 
     /**
@@ -144,7 +145,7 @@ public class Level implements ConfigurationSerializable {
      */
     public void setDefaultLevels(int defaultLevels) {
         this.defaultLevels = defaultLevels;
-        save();
+        postprocess();
     }
 
     /**
@@ -162,7 +163,7 @@ public class Level implements ConfigurationSerializable {
      */
     public void setDefaultRequiredExp(double defaultRequiredExp) {
         this.defaultRequiredExp = defaultRequiredExp;
-        save();
+        postprocess();
     }
 
     /**
@@ -372,7 +373,19 @@ public class Level implements ConfigurationSerializable {
         return event;
     }
 
-    public void save() {
+    /**
+     * Post-processing steps after this level was modified, including update the specific
+     * level-spy menu and save to the file.
+     */
+    protected void postprocess() {
+        // update menu items for level spy menu
+        LevelSpyManager.getInstance().updateMenu(this);
+
+        // save to the storage file
+        if (storageFile == null) {
+            return;
+        }
+
         try {
             // create configuration
             var config = new Configuration();

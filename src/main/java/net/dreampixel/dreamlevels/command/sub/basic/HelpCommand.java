@@ -35,6 +35,9 @@ public class HelpCommand extends SubCommand {
         var sender = ctx.sender();
         var label = ctx.label();
         var pages = getPages(sender);
+
+        // fetch the page number
+        // if the player didn't input a page number, then "1" is used by default
         var page = "1";
         if (ctx.arguments().length > 1) {
             page = ctx.arguments()[1].getValue();

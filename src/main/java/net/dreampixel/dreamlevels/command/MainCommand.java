@@ -17,6 +17,7 @@ import net.dreampixel.dreamlevels.command.sub.level.reward.AutoReceiveCommand;
 import net.dreampixel.dreamlevels.command.sub.level.reward.CreateRewardCommand;
 import net.dreampixel.dreamlevels.command.sub.level.reward.OpenRewardCommand;
 import net.dreampixel.dreamlevels.command.sub.level.reward.RewardCommand;
+import net.dreampixel.dreamlevels.command.sub.levelspy.LevelSpyCommand;
 import net.dreampixel.dreamlevels.util.LocaleUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -58,7 +59,8 @@ public class MainCommand extends SubCommand {
                 new SetMultipleCommand(),
                 new EditLevelCommand(),
                 new AutoReceiveCommand(),
-                new DataSpyCommand()
+                new DataSpyCommand(),
+                new LevelSpyCommand()
         );
 
         // message exception handlers

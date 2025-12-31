@@ -5,6 +5,8 @@ import net.dreampixel.dreamlevels.DreamLevels;
 import net.dreampixel.dreamlevels.data.DataManager;
 import net.dreampixel.dreamlevels.data.level.LevelData;
 import net.dreampixel.dreamlevels.level.task.ExperienceBarTask;
+import net.dreampixel.dreamlevels.menu.dataspy.DataSpyManager;
+import net.dreampixel.dreamlevels.menu.level.LevelSpyManager;
 import net.dreampixel.dreamlevels.util.Logger;
 import net.dreampixel.dreamlevels.util.MLogger;
 import org.bukkit.Bukkit;
@@ -45,7 +47,7 @@ public class LevelManager implements Manager {
 
     @Override
     public void initialize() {
-        // check configuration
+        // check configuration's validity
         var config = plugin.getConfiguration().getNodeSection("level");
         if (config == null) {
             return;
@@ -60,16 +62,17 @@ public class LevelManager implements Manager {
             return;
         }
 
-        // load and log
+        // load levels and log
         loadAll();
         if (levels.isEmpty()) {
             MLogger.infoReplaced("level.load-empty");
+            return;
         } else {
             MLogger.infoReplaced("level.load-all",
                     "{amount}", String.valueOf(this.levels.size()));
         }
 
-        // experience bar task
+        // initialize experience bar task
         if (config.getBoolean("experience-bar.enabled")) {
             this.experienceBarLevel = getLevel(config.getString("experience-bar.level"));
             if (experienceBarLevel == null) {
@@ -118,18 +121,22 @@ public class LevelManager implements Manager {
             } catch (Exception e) {
                 MLogger.error("level.create-failed", e);
             }
+
+            // update the menus so the new level system could be properly shown
+            LevelSpyManager.getInstance().updateLevelOverallMenu();
+            DataSpyManager.getInstance().updateLDOMenus();
         });
     }
 
     /**
-     * Load a level from the level directory.
+     * Load a level from the level directory with a specific name.
      *
      * @param name Name
      * @param skipCheck Whether not to check this level is enabled
      *                  in Config.yml when loading.
      */
     public void load(@NotNull String name, boolean skipCheck) {
-        // check enabled
+        // check enablement in configuration
         if (!plugin.getConfiguration().getStringList("level.enabled").contains(name) && !skipCheck) {
             return;
         }
@@ -145,7 +152,7 @@ public class LevelManager implements Manager {
     public void load(@NotNull File file) {
         try {
             var name = file.getName();
-            name = name.substring(0, name.lastIndexOf(".")); // cut suffix
+            name = name.substring(0, name.lastIndexOf(".")); // cut off the suffix
 
             var config = ConfigurationProvider.getYamlConfigurationProvider().load(file);
             var level = (Level) config.get("level");
@@ -155,14 +162,18 @@ public class LevelManager implements Manager {
                 return;
             }
 
-            // check inconsistent name
+            // check the consistency between the file name and the level name
+            // to avoid unexpected problems
             if (!name.equals(level.getName())) {
                 MLogger.errorReplaced("level.inconsistent-name",
                         "{level}", level.getName());
                 return;
             }
 
+            // set the level's storage file, in order to save the level file after
+            // modifying the level system
             level.setFile(file);
+
             this.levels.put(name, level);
             MLogger.infoReplaced("level.load",
                     "{level}", name);
@@ -225,6 +236,7 @@ public class LevelManager implements Manager {
         if (activatedWorlds.isEmpty() || activatedWorlds.contains(player.getWorld().getName())) {
             var data = experienceBarLevel.getLevelData(player);
             player.setLevel(data.getLevels());
+            // control the max value to 0.99D to avoid leveling up
             player.setExp((float) Math.min(data.getPercentage() / 100D, 0.99D));
         }
     }

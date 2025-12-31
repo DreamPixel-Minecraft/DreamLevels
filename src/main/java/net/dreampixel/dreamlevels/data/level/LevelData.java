@@ -243,7 +243,7 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
         this.multiple = 1.0d;
         this.receivedRewards.clear();
 
-        // reset all menus
+        // reset all reward menus
         var player = getPlayer();
         if (player != null) {
             RewardManager.getInstance().removeRewardMenu(player);
@@ -270,7 +270,7 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
     }
 
     /**
-     * @return Exp required leveling up.
+     * @return Exp required to level up.
      */
     public double getRequiredExp() {
         var level = getLevel();

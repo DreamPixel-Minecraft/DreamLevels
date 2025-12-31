@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class SQLDataModifier implements DataModifier {
-    public static StorageMethod[] STORAGE_METHODS = { StorageMethod.SQLITE, StorageMethod.MYSQL };
+    public static final StorageMethod[] STORAGE_METHODS = { StorageMethod.SQLITE, StorageMethod.MYSQL };
 
     public Connection getConnection() {
         return Objects.requireNonNull(DataManager.getInstance().getDatabase()).getConnection();

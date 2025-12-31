@@ -80,7 +80,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
                 }
 
                 return levelData.getProgressBar();
-            // %dreamlevels_rewards-count_<level>_<reward>%
+            // %dreamlevels_rewards-count_<reward>%
             case "received-rewards-count":
                 var rewardList = levelData.getReceivedRewards(parameters[2]);
                 if (rewardList == null) {

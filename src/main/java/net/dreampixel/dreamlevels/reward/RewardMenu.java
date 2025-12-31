@@ -104,7 +104,7 @@ public class RewardMenu extends PlayerMenu {
         for (var page : getPages().keySet()) {
             // custom items
             rewardList.getCustomItems().forEach((k, v) -> {
-                // find slots
+                // get slots
                 var slotList = slotSection.getIntegerList(k);
                 if (slotList.isEmpty()) {
                     Logger.warn("There are no slots set for custom item " + k + " in reward menu " + rewardList.getName());
@@ -184,7 +184,7 @@ public class RewardMenu extends PlayerMenu {
      */
     public static RewardMenu createMenu(@NotNull Player player, @NotNull RewardList rewardList) {
         var menu = new RewardMenu(player, rewardList);
-        DreamLevels.getInstance().getMenuHandler("reward")
+        DreamLevels.getInstance().getRewardMenuHandler()
                 .addMenu(menu);
         return menu;
     }

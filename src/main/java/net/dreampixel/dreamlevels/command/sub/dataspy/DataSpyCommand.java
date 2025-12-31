@@ -1,7 +1,7 @@
 package net.dreampixel.dreamlevels.command.sub.dataspy;
 
 import lombok.var;
-import net.dreampixel.dreamlevels.dataspy.DataSpyManager;
+import net.dreampixel.dreamlevels.menu.dataspy.DataSpyManager;
 import net.dreampixel.dreamlevels.level.Level;
 import net.dreampixel.dreamlevels.level.LevelManager;
 import org.bukkit.entity.Player;
@@ -21,7 +21,7 @@ import java.util.Collection;
         permissions = "DreamLevels.Commands.DataSpy",
         senderType = SenderType.PLAYER
 )
-// /dl ds <player>
+// /dl ds [player] [level]
 public class DataSpyCommand extends SubCommand {
 
     @Override
@@ -31,8 +31,11 @@ public class DataSpyCommand extends SubCommand {
 
         SenderUtils.sendMessage(sender, "&f&lWelcome to use &5&lDataSpy&f&l.");
 
+        // the user has specificed a player
         if (ctx.hasArgument(1)) {
             var player = arguments[1].getOnlinePlayer();
+
+            // the user has specified a level
             if (ctx.hasArgument(2)) {
                 // open level data menu
                 var level = arguments[2].get(Level.class);

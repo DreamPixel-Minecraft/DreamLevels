@@ -3,9 +3,10 @@ package net.dreampixel.dreamlevels.command.sub.basic;
 import net.dreampixel.dreamlevels.DreamLevels;
 import net.dreampixel.dreamlevels.config.ConfigManager;
 import net.dreampixel.dreamlevels.data.DataManager;
-import net.dreampixel.dreamlevels.dataspy.DataSpyManager;
+import net.dreampixel.dreamlevels.menu.dataspy.DataSpyManager;
 import net.dreampixel.dreamlevels.level.LevelManager;
 import net.dreampixel.dreamlevels.locale.LocaleManager;
+import net.dreampixel.dreamlevels.menu.level.LevelSpyManager;
 import net.dreampixel.dreamlevels.reward.RewardManager;
 import net.dreampixel.dreamlevels.util.LocaleUtils;
 import org.jetbrains.annotations.NotNull;
@@ -27,42 +28,51 @@ public class ReloadCommand extends SubCommand {
 
     @Override
     public boolean execute(@NotNull CommandContext ctx) {
+        // reload the specific section
         if (ctx.arguments().length > 1) {
             switch (ctx.arguments()[1].getValue().toLowerCase()) {
+                // reload config manager
                 case "config":
                     ConfigManager.getInstance().reload();
                     break;
+                // reload locale manager
                 case "locale":
                     LocaleManager.getInstance().reload();
                     break;
+                // reload level manager
                 case "level":
                     LevelManager.getInstance().reload();
                     break;
+                // reload reward manager
                 case "reward":
                     RewardManager.getInstance().reload();
                     break;
+                // reload data manager
                 case "data":
                     DataManager.getInstance().reload();
                     break;
+                // reload sync service
                 case "sync":
                     DreamLevels.getInstance().initSyncService();
                     break;
+                // reload dataspy manager
                 case "dataspy":
                     DreamLevels.getInstance().getDataSpyManager().reload();
                     break;
             }
         } else {
+            // reload all managers
             ManagerUtils.reloadManagers(
                     ConfigManager.getInstance(),
                     LocaleManager.getInstance(),
                     LevelManager.getInstance(),
                     RewardManager.getInstance(),
                     DataManager.getInstance(),
-                    DataSpyManager.getInstance()
+                    DataSpyManager.getInstance(),
+                    LevelSpyManager.getInstance()
             );
 
-            // sync service
-
+            // reload sync service
             DreamLevels.getInstance().initSyncService();
         }
 

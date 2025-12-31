@@ -4,7 +4,7 @@ import lombok.var;
 import net.dreampixel.dreamlevels.DreamLevels;
 import net.dreampixel.dreamlevels.api.event.*;
 import net.dreampixel.dreamlevels.data.DataManager;
-import net.dreampixel.dreamlevels.dataspy.DataSpyManager;
+import net.dreampixel.dreamlevels.menu.dataspy.DataSpyManager;
 import net.dreampixel.dreamlevels.level.LevelManager;
 import net.dreampixel.dreamlevels.reward.RewardManager;
 import net.dreampixel.dreamlevels.util.LocaleUtils;

@@ -1,11 +1,12 @@
-package net.dreampixel.dreamlevels.dataspy.menu;
+package net.dreampixel.dreamlevels.menu.dataspy.menu;
 
 import lombok.var;
 import net.dreampixel.dreamlevels.DreamLevels;
-import net.dreampixel.dreamlevels.dataspy.item.ExpItem;
-import net.dreampixel.dreamlevels.dataspy.item.LevelsItem;
-import net.dreampixel.dreamlevels.dataspy.item.MultipleItem;
 import net.dreampixel.dreamlevels.level.Level;
+import net.dreampixel.dreamlevels.menu.dataspy.item.DSItemExp;
+import net.dreampixel.dreamlevels.menu.dataspy.item.DSItemLevels;
+import net.dreampixel.dreamlevels.menu.dataspy.item.DSItemMultiple;
+import net.dreampixel.dreamlevels.menu.dataspy.item.DSItemReset;
 import net.dreampixel.dreamlevels.util.Logger;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +16,7 @@ import top.shadowpixel.shadowcore.util.text.ReplaceUtils;
 import java.util.Objects;
 import java.util.UUID;
 
-import static net.dreampixel.dreamlevels.dataspy.menu.PlayerDataMenu.getItemByKey;
+import static net.dreampixel.dreamlevels.menu.dataspy.menu.PlayerDataMenu.getItemByKey;
 
 /**
  * A menu for a player's single level data.
@@ -24,9 +25,9 @@ public class LevelDataMenu extends GlobalMenu {
     private final UUID uniqueId;
     private final Level level;
 
-    private LevelsItem levelsItem;
-    private ExpItem expItem;
-    private MultipleItem multipleItem;
+    private DSItemLevels levelsItem;
+    private DSItemExp expItem;
+    private DSItemMultiple multipleItem;
 
 //    private ReceivedRewardsItem receivedRewardsItem;
 
@@ -72,13 +73,14 @@ public class LevelDataMenu extends GlobalMenu {
         }
 
         // set items
-        levelsItem = new LevelsItem(this);
-        expItem = new ExpItem(this);
-        multipleItem = new MultipleItem(this);
+        levelsItem = new DSItemLevels(this);
+        expItem = new DSItemExp(this);
+        multipleItem = new DSItemMultiple(this);
 
         page.setItem(10, levelsItem);
         page.setItem(11, expItem);
         page.setItem(12, multipleItem);
+        page.setItem(28, new DSItemReset(this));
     }
 
     public void updateItems() {

@@ -1,9 +1,9 @@
-package net.dreampixel.dreamlevels.dataspy.item;
+package net.dreampixel.dreamlevels.menu.dataspy.item;
 
 import lombok.var;
 import net.dreampixel.dreamlevels.data.level.LevelData;
-import net.dreampixel.dreamlevels.dataspy.DataSpyManager;
-import net.dreampixel.dreamlevels.dataspy.menu.LevelDataMenu;
+import net.dreampixel.dreamlevels.menu.dataspy.DataSpyManager;
+import net.dreampixel.dreamlevels.menu.dataspy.menu.LevelDataMenu;
 import net.dreampixel.dreamlevels.util.LocaleUtils;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -13,14 +13,14 @@ import top.shadowpixel.shadowcore.util.text.ReplaceUtils;
 
 import java.util.Objects;
 
-public class MultipleItem extends MenuItem {
+public class DSItemReceivedRewards extends MenuItem {
     private final LevelDataMenu menu;
     private final LevelData levelData;
 
     private ItemMeta originalMeta;
 
-    public MultipleItem(LevelDataMenu menu) {
-        super(Objects.requireNonNull(DataSpyManager.getInstance().getItemByKey("multiple")));
+    public DSItemReceivedRewards(LevelDataMenu menu) {
+        super(Objects.requireNonNull(DataSpyManager.getInstance().getItemByKey("receive-rewards")));
         this.menu = menu;
         this.levelData = menu.getLevel().getLevelData(menu.getUniqueId());
 
@@ -34,20 +34,10 @@ public class MultipleItem extends MenuItem {
         addClickAction(event -> {
             var player = event.getPlayer();
             player.closeInventory();
-            LocaleUtils.sendMessages(player, "data-spy.modify.multiple",
-                    "{player}", player.getName());
+            LocaleUtils.sendMessages(player, "data-spy.modify.receive-rewards");
             DataInputController.getInstance().createInput(player, double.class,
                     input -> {
-                        double previous = levelData.getMultiple();
                         levelData.setMultiple(input.getExistingValue());
-
-                        // send feedback command
-                        LocaleUtils.sendMessage(player, "data-spy.modified.multiple",
-                                "{previous}", String.valueOf(previous),
-                                "{value}", String.valueOf(levelData.getExp()),
-                                "{player}", Objects.requireNonNull(levelData.getPlayer()).getName());
-
-                        // reopen the menu
                         menu.openMenu(player);
                     },
                     invalid -> LocaleUtils.sendMessage(player, "data-spy.invalid.number"),
@@ -72,21 +62,24 @@ public class MultipleItem extends MenuItem {
         if (player == null) {
             return;
         }
-        
+
         // replace display name
-        meta.setDisplayName(ReplaceUtils.replace(originalMeta.getDisplayName(),
+        meta.setDisplayName(ReplaceUtils.coloredReplace(originalMeta.getDisplayName(), player,
                 "{value}", getDisplayValue().toString(),
-                "{player}", player.getName()));
+                "{player}", player.getName(),
+                "{level}", levelData.getLevelName()));
+
         // replace lore
         if (meta.hasLore()) {
             //noinspection DataFlowIssue
-            meta.setLore(ReplaceUtils.replace(originalMeta.getLore(),
+            meta.setLore(ReplaceUtils.coloredReplace(originalMeta.getLore(), player,
                     "{value}", getDisplayValue().toString(),
-                    "{player}", player.getName()));
+                    "{player}", player.getName(),
+                    "{level}", levelData.getLevelName()));
         }
 
         setItemMeta(meta);
-        menu.setItem(1, 12, this);
+        menu.setItem(1, 10, this);
     }
 
     @NotNull

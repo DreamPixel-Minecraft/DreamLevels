@@ -59,6 +59,7 @@ public class Reward {
                     return;
                 }
 
+                // build menu item from node section
                 var item = ItemBuilder.builder(custom).build();
                 var menuItem = MenuItem.of(item);
 
@@ -78,7 +79,9 @@ public class Reward {
     }
 
     /**
-     * @param key Key of item
+     * Get the menu item by key.
+     *
+     * @param key Key of an item
      * @return A copy of reward item
      */
     @NotNull
@@ -89,10 +92,12 @@ public class Reward {
         if (item == null) {
             item = this.parent.getCustomItems().get(key);
         }
+
         // get from the default item configuration
         if (item == null) {
             item = RewardManager.getInstance().defaultItems.get(key);
         }
+
         // clone
         item = Objects.requireNonNull(item, "unknown reward item " + key).clone();
         // add unlock events

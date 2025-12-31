@@ -1,9 +1,9 @@
-package net.dreampixel.dreamlevels.dataspy.item;
+package net.dreampixel.dreamlevels.menu.dataspy.item;
 
 import lombok.var;
 import net.dreampixel.dreamlevels.data.level.LevelData;
-import net.dreampixel.dreamlevels.dataspy.DataSpyManager;
-import net.dreampixel.dreamlevels.dataspy.menu.LevelDataMenu;
+import net.dreampixel.dreamlevels.menu.dataspy.DataSpyManager;
+import net.dreampixel.dreamlevels.menu.dataspy.menu.LevelDataMenu;
 import net.dreampixel.dreamlevels.util.LocaleUtils;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -13,14 +13,14 @@ import top.shadowpixel.shadowcore.util.text.ReplaceUtils;
 
 import java.util.Objects;
 
-public class LevelsItem extends MenuItem {
+public class DSItemExp extends MenuItem {
     private final LevelDataMenu menu;
     private final LevelData levelData;
 
     private ItemMeta originalMeta;
 
-    public LevelsItem(LevelDataMenu menu) {
-        super(Objects.requireNonNull(DataSpyManager.getInstance().getItemByKey("levels")));
+    public DSItemExp(LevelDataMenu menu) {
+        super(Objects.requireNonNull(DataSpyManager.getInstance().getItemByKey("exp")));
         this.menu = menu;
         this.levelData = menu.getLevel().getLevelData(menu.getUniqueId());
 
@@ -34,34 +34,35 @@ public class LevelsItem extends MenuItem {
         addClickAction(event -> {
             var player = event.getPlayer();
             player.closeInventory();
-            LocaleUtils.sendMessages(player, "data-spy.modify.levels",
+            LocaleUtils.sendMessages(player, "data-spy.modify.exp",
                     "{player}", player.getName());
-            DataInputController.getInstance().createInput(player, int.class,
+            DataInputController.getInstance().createInput(player, double.class,
                     input -> {
-                        int previous = levelData.getLevels();
-                        int value = input.getExistingValue();
+                        double previous = levelData.getExp();
+                        double value = input.getExistingValue();
                         switch (input.getPrimitiveValue().charAt(0)) {
                             case '+':
-                                levelData.addLevels(value);
+                                levelData.addExp(value);
                                 break;
                             case '-':
-                                levelData.removeLevels(-value);
+                                levelData.removeExp(-value);
                                 break;
                             default:
-                                levelData.setLevels(value);
+                                levelData.setExp(value);
                                 break;
                         }
 
                         // send feedback command
-                        LocaleUtils.sendMessage(player, "data-spy.modified.levels",
+                        LocaleUtils.sendMessage(player, "data-spy.modified.exp",
                                 "{previous}", String.valueOf(previous),
-                                "{value}", String.valueOf(levelData.getLevels()),
-                                "{player}", Objects.requireNonNull(levelData.getPlayer()).getName());
+                                "{value}", String.valueOf(levelData.getExp()),
+                                "{player}", Objects.requireNonNull(levelData.getPlayer()).getName(),
+                                "{level}", levelData.getLevelName());
 
                         // reopen the menu
                         menu.openMenu(player);
                     },
-                    invalid -> LocaleUtils.sendMessage(player, "data-spy.invalid.integer"),
+                    invalid -> LocaleUtils.sendMessage(player, "data-spy.invalid.number"),
                     () -> {
                         LocaleUtils.sendMessage(player, "data-spy.cancel");
                         menu.openMenu(player);
@@ -75,6 +76,8 @@ public class LevelsItem extends MenuItem {
             return;
         }
 
+        // copy the original item meta, lest modifying all replacements
+        // if the replacements are
         if (originalMeta == null) {
             originalMeta = meta.clone();
         }
@@ -85,23 +88,26 @@ public class LevelsItem extends MenuItem {
         }
 
         // replace display name
-        meta.setDisplayName(ReplaceUtils.replace(originalMeta.getDisplayName(),
+        meta.setDisplayName(ReplaceUtils.coloredReplace(originalMeta.getDisplayName(), player,
                 "{value}", getDisplayValue().toString(),
-                "{player}", player.getName()));
+                "{player}", player.getName(),
+                "{level}", levelData.getLevelName()));
+
         // replace lore
         if (meta.hasLore()) {
             //noinspection DataFlowIssue
-            meta.setLore(ReplaceUtils.replace(originalMeta.getLore(),
+            meta.setLore(ReplaceUtils.coloredReplace(originalMeta.getLore(), player,
                     "{value}", getDisplayValue().toString(),
-                    "{player}", player.getName()));
+                    "{player}", player.getName(),
+                    "{level}", levelData.getLevelName()));
         }
 
         setItemMeta(meta);
-        menu.setItem(1, 10, this);
+        menu.setItem(1, 11, this);
     }
 
     @NotNull
     public Object getDisplayValue() {
-        return levelData.getLevels();
+        return levelData.getExp();
     }
 }

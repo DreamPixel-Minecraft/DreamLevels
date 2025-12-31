@@ -10,6 +10,9 @@ import top.shadowpixel.shadowmessenger.common.message.messenger.MessageSubscript
 
 import java.util.UUID;
 
+/**
+ * A receiver class of sync messages.
+ */
 public class SyncSubscription extends MessageSubscription {
 
     @Override
@@ -34,51 +37,37 @@ public class SyncSubscription extends MessageSubscription {
             return;
         }
 
-        // Shitty variables declaration
-        // Fuck you Java
-        String level, type;
-        LevelData levelData;
-        double valueDouble;
-        int valueInt;
+        // get and check level data
+        var level = parameters.getString("level", "");
+        var levelData = data.getLevelData(level);
+
+        if (levelData == null) {
+            reply("unknown level");
+            return;
+        }
+
+        // get modification type for certain usages
+        var type = parameters.getString("type");
         
         switch (instruction.toLowerCase()) {
+            // reset player's data
             case "reset":
-                level = parameters.getString("level", "");
-                levelData = data.getLevelData(level);
-                if (levelData == null) {
-                    reply("unknown level");
-                    return;
-                }
-
                 levelData.reset();
                 reply("ok");
                 break;
+            // reset player's all data
             case "reset-all":
                 data.resetAll();
                 reply("ok");
                 break;
+            // modify player's multiple
             case "modify-multiple":
-                level = parameters.getString("level", "");
-                levelData = data.getLevelData(level);
-                valueDouble = parameters.getDouble("value");
-                if (levelData == null) {
-                    reply("unknown level");
-                    return;
-                }
-
-                levelData.setMultiple(valueDouble);
+                levelData.setMultiple(parameters.getDouble("value"));
                 reply("ok");
                 break;
+            // modify player's levels
             case "modify-levels":
-                level = parameters.getString("level", "");
-                levelData = data.getLevelData(level);
-                valueInt = parameters.getInt("value");
-                if (levelData == null) {
-                    reply("unknown level");
-                    return;
-                }
-
-                type = parameters.getString("type");
+                var inbValue = parameters.getInt("value");
                 if (type == null) {
                     reply("unknown mod type");
                     return;
@@ -86,27 +75,20 @@ public class SyncSubscription extends MessageSubscription {
                 
                 switch (type) {
                     case "ADD":
-                        levelData.addLevels(valueInt);
+                        levelData.addLevels(inbValue);
                         break;
                     case "SET":
-                        levelData.setLevels(valueInt);
+                        levelData.setLevels(inbValue);
                         break;
                     case "REMOVE":
-                        levelData.removeLevels(valueInt);
+                        levelData.removeLevels(inbValue);
                         break;
                 }
                 reply("ok");
                 break;
+            // modify player's exp
             case "modify-exp":
-                level = parameters.getString("level", "");
-                levelData = data.getLevelData(level);
-                valueDouble = parameters.getDouble("value");
-                if (levelData == null) {
-                    reply("unknown level");
-                    return;
-                }
-
-                type = parameters.getString("type");
+                var doubleValue = parameters.getDouble("value");
                 if (type == null) {
                     reply("unknown mod type");
                     return;
@@ -114,19 +96,20 @@ public class SyncSubscription extends MessageSubscription {
 
                 switch (type) {
                     case "ADD":
-                        levelData.addExp(valueDouble);
+                        levelData.addExp(doubleValue);
                         break;
                     case "SET":
-                        levelData.setExp(valueDouble);
+                        levelData.setExp(doubleValue);
                         break;
                     case "REMOVE":
-                        levelData.removeExp(valueDouble);
+                        levelData.removeExp(doubleValue);
                         break;
                 }
                 reply("ok");
                 break;
         }
 
+        // save the data async
         data.saveAsync();
     }
 }

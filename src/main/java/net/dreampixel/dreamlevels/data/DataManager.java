@@ -251,7 +251,7 @@ public class DataManager implements Manager {
     @Nullable
     public PlayerData loadOfflineData(@NotNull String playerName) {
         return Optional.of(UUIDStorage.getUniqueID(playerName))
-                .ret(s -> getDataModifier().load(s));
+                .ret(s -> getDataModifier().load(Objects.requireNonNull(s)));
     }
 
     @NotNull

@@ -6,12 +6,8 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 public class NullOfflineLevelData extends OfflineLevelData {
-    private NullOfflineLevelData(@NotNull Consumer<String> feedbackConsumer) {
-        this(null, feedbackConsumer, null);
-    }
-
-    private NullOfflineLevelData(UUID uniqueId, Consumer<String> feedbackConsumer, String levelName) {
-        super(uniqueId, feedbackConsumer, levelName);
+    private NullOfflineLevelData(Consumer<String> feedbackConsumer) {
+        super(null, feedbackConsumer, null);
     }
 
     @Override

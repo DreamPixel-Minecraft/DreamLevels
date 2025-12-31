@@ -101,18 +101,15 @@ public abstract class LevelCommand extends SubCommand {
      * <li> amount  - the amount, which has a type of 'int' in levels, and 'double' in exp.
      *
      * @param ctx   Command context
-     * @param level
-     * @param value
      * @return Whether to send feedback message
      */
+    @SuppressWarnings("SameReturnValue")
     public abstract boolean executeOnline(@NotNull CommandContext ctx, @NotNull Level level, double value);
 
     /**
      * This method will run to send success feedback to the command sender.
      *
      * @param ctx   Command context
-     * @param level
-     * @param value
      */
     public abstract void sendOnlineFeedback(@NotNull CommandContext ctx, @NotNull Level level, double value);
 
@@ -125,10 +122,6 @@ public abstract class LevelCommand extends SubCommand {
      * <li> amount  - the amount, which has a type of 'int' in levels, and 'double' in exp.
      *
      * @param ctx        Command context
-     * @param level
-     * @param value
-     * @param onFinished
-     * @return Whether to send feedback message
      */
     public abstract void executeOffline(@NotNull CommandContext ctx, @NotNull Level level, double value, @NotNull Consumer<Boolean> onFinished);
 
@@ -139,8 +132,6 @@ public abstract class LevelCommand extends SubCommand {
      * Please notify that, the modification feedback will be saved as a property "feedback"
      *
      * @param ctx   Command context
-     * @param level
-     * @param value
      */
     public abstract void sendOfflineFeedback(@NotNull CommandContext ctx, @NotNull Level level, double value);
 }
