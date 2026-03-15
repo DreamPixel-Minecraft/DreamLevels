@@ -26,7 +26,6 @@ import top.shadowpixel.shadowcore.api.command.SubCommand;
 import top.shadowpixel.shadowcore.api.command.annotation.CommandInfo;
 import top.shadowpixel.shadowcore.api.command.exception.MissingPropertyException;
 import top.shadowpixel.shadowcore.api.command.exception.ParameterizedCommandInterruptedException;
-import top.shadowpixel.shadowcore.api.menu.IMenu;
 import top.shadowpixel.shadowcore.util.entity.SenderUtils;
 import top.shadowpixel.shadowcore.util.object.NumberUtils;
 
@@ -132,24 +131,6 @@ public class MainCommand extends SubCommand {
 
     @Override
     public boolean execute(@NotNull CommandContext ctx) {
-        System.out.println("All reward menus");
-        DreamLevels.getInstance().getRewardMenuHandler().getMenus().values()
-                .stream()
-                .map(IMenu::getName)
-                .forEach(System.out::println);
-
-        System.out.println("All level menus");
-        DreamLevels.getInstance().getLevelSpyMenuHandler().getMenus().values()
-                .stream()
-                .map(IMenu::getName)
-                .forEach(System.out::println);
-
-        System.out.println("All data menus");
-        DreamLevels.getInstance().getDataSpyMenuHandler().getMenus().values()
-                .stream()
-                .map(IMenu::getName)
-                .forEach(System.out::println);
-
         if (ctx.arguments().length > 0) {
             // return false to run subcommands.
             return false;

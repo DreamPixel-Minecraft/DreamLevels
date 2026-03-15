@@ -187,7 +187,6 @@ public class DataSpyManager implements Manager {
      */
     public void removeLevelDataMenu(@NotNull String key) {
         var menu = levelDataMenus.remove(key);
-        System.out.println("Remove status: " + (menu != null));
         if (menu != null) {
             menu.delete();
         }
