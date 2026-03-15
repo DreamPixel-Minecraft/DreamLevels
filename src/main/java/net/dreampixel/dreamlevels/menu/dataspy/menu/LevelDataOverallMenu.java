@@ -6,10 +6,11 @@ import net.dreampixel.dreamlevels.data.DataManager;
 import net.dreampixel.dreamlevels.data.level.LevelData;
 import net.dreampixel.dreamlevels.menu.dataspy.DataSpyManager;
 import net.dreampixel.dreamlevels.menu.dataspy.item.DSItemResetAll;
+import net.dreampixel.dreamlevels.task.lifecycle.LifeCycleTask;
+import net.dreampixel.dreamlevels.task.lifecycle.LifeCycled;
 import net.dreampixel.dreamlevels.util.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryEvent;
 import org.jetbrains.annotations.NotNull;
 import top.shadowpixel.shadowcore.api.config.component.NodeSection;
 import top.shadowpixel.shadowcore.api.menu.impl.GlobalMenu;
@@ -26,18 +27,26 @@ import static net.dreampixel.dreamlevels.menu.dataspy.menu.PlayerDataMenu.getIte
 /**
  * A menu for a player's all level data.
  */
-public class LevelDataOverallMenu extends GlobalMenu {
+public class LevelDataOverallMenu extends GlobalMenu implements LifeCycled {
     private final UUID uniqueId;
+    private int lifeCycle;
 
     public LevelDataOverallMenu(UUID uniqueId) {
-        super("ldm-" + uniqueId, "Level Data Menu");
+        super(DreamLevels.getInstance().getDataSpyMenuHandler(),
+                "ldom-" + uniqueId,
+                "Level Data Menu");
         this.uniqueId = uniqueId;
         constructMenu();
     }
 
     @Override
-    public void handleEvent(@NotNull InventoryEvent event) {
-        super.handleEvent(event);
+    protected void onOpened() {
+        LifeCycleTask.remove(getKey());
+    }
+
+    @Override
+    protected void onClosed() {
+        LifeCycleTask.add(this);
     }
 
     public void constructMenu() {
@@ -67,6 +76,33 @@ public class LevelDataOverallMenu extends GlobalMenu {
         setCustomItems(itemSlots);
     }
 
+    /**
+     * Remove the menu. This method will remove the menu from data spy manager and delete it.
+     */
+    public void remove() {
+        DataSpyManager.getInstance().removeLevelDataOverallMenu(uniqueId);
+    }
+
+    @Override
+    public String getKey() {
+        return getName();
+    }
+
+    @NotNull
+    public UUID getUniqueId() {
+        return uniqueId;
+    }
+
+    @Override
+    public int getLifeCycle() {
+        return lifeCycle;
+    }
+
+    @Override
+    public void setLifeCycle(int lifeCycle) {
+        this.lifeCycle = lifeCycle;
+    }
+
     private void setPages(Collection<LevelData> targets, NodeSection itemSlots) {
         var plugin = DreamLevels.getInstance();
         var raItem = new DSItemResetAll(this);
@@ -78,7 +114,6 @@ public class LevelDataOverallMenu extends GlobalMenu {
             var title = ReplaceUtils.coloredReplace(plugin.getConfiguration().getString("data-spy.menu-title.level-data-overall"),
                     "{page}", String.valueOf(i));
             var page = addPage(i, title, 54);
-
             // copy immutable variable
             var finalI = i;
 
@@ -166,9 +201,5 @@ public class LevelDataOverallMenu extends GlobalMenu {
                 }
             }
         }
-    }
-
-    public UUID getUniqueId() {
-        return uniqueId;
     }
 }

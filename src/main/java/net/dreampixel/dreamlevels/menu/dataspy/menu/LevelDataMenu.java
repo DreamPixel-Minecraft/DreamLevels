@@ -3,10 +3,13 @@ package net.dreampixel.dreamlevels.menu.dataspy.menu;
 import lombok.var;
 import net.dreampixel.dreamlevels.DreamLevels;
 import net.dreampixel.dreamlevels.level.Level;
+import net.dreampixel.dreamlevels.menu.dataspy.DataSpyManager;
 import net.dreampixel.dreamlevels.menu.dataspy.item.DSItemExp;
 import net.dreampixel.dreamlevels.menu.dataspy.item.DSItemLevels;
 import net.dreampixel.dreamlevels.menu.dataspy.item.DSItemMultiple;
 import net.dreampixel.dreamlevels.menu.dataspy.item.DSItemReset;
+import net.dreampixel.dreamlevels.task.lifecycle.LifeCycleTask;
+import net.dreampixel.dreamlevels.task.lifecycle.LifeCycled;
 import net.dreampixel.dreamlevels.util.Logger;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +24,7 @@ import static net.dreampixel.dreamlevels.menu.dataspy.menu.PlayerDataMenu.getIte
 /**
  * A menu for a player's single level data.
  */
-public class LevelDataMenu extends GlobalMenu {
+public class LevelDataMenu extends GlobalMenu implements LifeCycled {
     private final UUID uniqueId;
     private final Level level;
 
@@ -29,14 +32,29 @@ public class LevelDataMenu extends GlobalMenu {
     private DSItemExp expItem;
     private DSItemMultiple multipleItem;
 
+    // life cycle
+    private int lifeCycle;
+
 //    private ReceivedRewardsItem receivedRewardsItem;
 
     public LevelDataMenu(String name, UUID uniqueId, Level level) {
-        super(name, "Level Data Menu");
+        super(DreamLevels.getInstance().getDataSpyMenuHandler(),
+                name,
+                "Level Data Menu");
         this.uniqueId = uniqueId;
         this.level = level;
 
         constructMenu();
+    }
+
+    @Override
+    protected void onOpened() {
+        LifeCycleTask.remove(getKey());
+    }
+
+    @Override
+    protected void onClosed() {
+        LifeCycleTask.add(this);
     }
 
     public void constructMenu() {
@@ -87,6 +105,28 @@ public class LevelDataMenu extends GlobalMenu {
         levelsItem.updateItem();
         expItem.updateItem();
         multipleItem.updateItem();
+    }
+
+    @Override
+    public int getLifeCycle() {
+        return lifeCycle;
+    }
+
+    @Override
+    public void setLifeCycle(int lifeCycle) {
+        this.lifeCycle = lifeCycle;
+    }
+
+    public void remove() {
+        DataSpyManager.getInstance().removeLevelDataMenu(getKey());
+    }
+
+    /**
+     * @return The key of the menu stored in data spy manager's map
+     */
+    @NotNull
+    public String getKey() {
+        return getName();
     }
 
     @NotNull

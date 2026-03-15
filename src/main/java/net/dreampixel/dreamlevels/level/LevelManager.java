@@ -4,7 +4,7 @@ import lombok.var;
 import net.dreampixel.dreamlevels.DreamLevels;
 import net.dreampixel.dreamlevels.data.DataManager;
 import net.dreampixel.dreamlevels.data.level.LevelData;
-import net.dreampixel.dreamlevels.level.task.ExperienceBarTask;
+import net.dreampixel.dreamlevels.task.ExperienceBarTask;
 import net.dreampixel.dreamlevels.menu.dataspy.DataSpyManager;
 import net.dreampixel.dreamlevels.menu.level.LevelSpyManager;
 import net.dreampixel.dreamlevels.util.Logger;
@@ -62,15 +62,8 @@ public class LevelManager implements Manager {
             return;
         }
 
-        // load levels and log
+        // load levels
         loadAll();
-        if (levels.isEmpty()) {
-            MLogger.infoReplaced("level.load-empty");
-            return;
-        } else {
-            MLogger.infoReplaced("level.load-all",
-                    "{amount}", String.valueOf(this.levels.size()));
-        }
 
         // initialize experience bar task
         if (config.getBoolean("experience-bar.enabled")) {
@@ -100,6 +93,7 @@ public class LevelManager implements Manager {
                 var lines = FileUtils.readAllLines(requireNonNull(plugin.getResource("default-level.yml")),
                         "$name$", name,
                         "$display-name$", displayName);
+
                 // create file and write
                 file.createNewFile();
                 Files.write(file.toPath(), lines);
@@ -113,7 +107,7 @@ public class LevelManager implements Manager {
                 var level = new Level(name);
                 this.levels.put(name, level);
 
-                // add empty level data to online players
+                // add empty level data to online players's player data
                 DataManager.getInstance().getLoadedData().values().forEach(v ->
                         v.getLevelData().put(name, new LevelData(v.getUniqueId(), name)));
 
@@ -152,7 +146,7 @@ public class LevelManager implements Manager {
     public void load(@NotNull File file) {
         try {
             var name = file.getName();
-            name = name.substring(0, name.lastIndexOf(".")); // cut off the suffix
+            name = name.substring(0, name.lastIndexOf(".")); // cut off the file suffix
 
             var config = ConfigurationProvider.getYamlConfigurationProvider().load(file);
             var level = (Level) config.get("level");
@@ -175,8 +169,6 @@ public class LevelManager implements Manager {
             level.setFile(file);
 
             this.levels.put(name, level);
-            MLogger.infoReplaced("level.load",
-                    "{level}", name);
         } catch (IOException e) {
             MLogger.errorReplaced("level.load-error",
                     "{file}", file.getPath());

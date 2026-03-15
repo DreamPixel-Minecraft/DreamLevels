@@ -1,4 +1,4 @@
-package net.dreampixel.dreamlevels.level.task;
+package net.dreampixel.dreamlevels.task;
 
 import net.dreampixel.dreamlevels.DreamLevels;
 import net.dreampixel.dreamlevels.level.LevelManager;

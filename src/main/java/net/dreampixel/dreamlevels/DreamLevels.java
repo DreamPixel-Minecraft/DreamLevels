@@ -14,6 +14,7 @@ import net.dreampixel.dreamlevels.menu.level.LevelSpyManager;
 import net.dreampixel.dreamlevels.reward.RewardList;
 import net.dreampixel.dreamlevels.reward.RewardManager;
 import net.dreampixel.dreamlevels.sync.SyncManager;
+import net.dreampixel.dreamlevels.task.lifecycle.LifeCycleTask;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +26,6 @@ import top.shadowpixel.shadowcore.api.locale.Locale;
 import top.shadowpixel.shadowcore.api.menu.MenuHandler;
 import top.shadowpixel.shadowcore.api.plugin.AbstractPlugin;
 import top.shadowpixel.shadowcore.api.util.time.MSTimer;
-import top.shadowpixel.shadowcore.util.plugin.DescriptionChecker;
 import top.shadowpixel.shadowcore.util.plugin.ManagerUtils;
 import net.dreampixel.dreamlevels.command.MainCommand;
 import net.dreampixel.dreamlevels.config.ConfigManager;
@@ -54,12 +54,20 @@ public final class DreamLevels extends AbstractPlugin {
     private DataSpyManager dataSpyManager;
     private LevelSpyManager levelSpyManager;
 
+    /**
+     * Menu handlers
+     */
     @Getter
     private MenuHandler<DreamLevels> rewardMenuHandler;
     @Getter
     private MenuHandler<DreamLevels> dataSpyMenuHandler;
     @Getter
     private MenuHandler<DreamLevels> levelSpyMenuHandler;
+
+    /**
+     * Tasks
+     */
+    private LifeCycleTask lifeCycleTask;
 
     private boolean isEnabled = false;
 
@@ -71,86 +79,63 @@ public final class DreamLevels extends AbstractPlugin {
         // serializations
         registerSerializations(PlayerData.class, LevelData.class, Level.class);
 
-        // config manager initialization
-        this.configManager = new ConfigManager(this);
-        this.configManager.initialize();
-        logger.addReplacement("{prefix}", getPrefix());
+        // config manager
+        initConfigManager();
 
-        // init locale manager
-        var localeFile = new File(getConfiguration().getString("locale.directory")
-                .replace("{default}", getDataFolder().toString()));
-        this.localeManager = new LocaleManager(this, localeFile);
-        this.localeManager.initialize();
-        if (getDefaultLocale() == LocaleManager.getInternal()) {
-            this.logger.warn("The internal locale is in use!");
-        }
+        // locale manager
+        initLocaleManager();
 
-        var lang = getDefaultMessage();
+        // show welcome messages
         this.logger.info(
-                "",
-                "",
-                "&b&lDreamLevels &7>> &a" + lang.getString("startup.welcome") + "!",
-                "",
-                "&f" + lang.getString("startup.version") + ": &av" + getVersion(),
-                "&f" + lang.getString("startup.author") + ": &aDreamStudio",
-                "",
-                ""
+                "&b",
+                "&b    &l____                             __                _     ",
+                "&b   &l/ __ \\________  ____ _____ ___  / /   ___ _   _____/ /____",
+                "&b  &l/ / / / ___/ _ \\/ __ `/ __ `__ \\/ /   / _ \\ | / / _  / ___/",
+                "&b &l/ /_/ / /  /  __/ /_/ / / / / / / /___/  __/ |/ /  __/ (__  ) ",
+                "&b&l/_____/_/   \\___/\\__,_/_/ /_/ /_/_/____/\\___/|___/\\__,_/____/  ",
+                "&3",
+                "&7  > &fVersion: &b" + getDescription().getVersion(),
+                "&7  > &fAuthor: &b" + getDescription().getAuthors()
         );
 
-        // check plugin information
-        if (!new DescriptionChecker(
-                this,
-                "DreamLevels",
-                "DreamStudio",
-                "1.0").check()) {
-            MLogger.error("startup.on-enable.error-plugin_yml");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
+        /*
+         * Basic functions of plugin (listeners, commands, etc.)
+         */
+        Logger.info("  &9[Basic Functions]");
 
         // init commands
         try {
-            MLogger.info("startup.on-enable.register-command");
             initCommand();
-            MLogger.info("startup.on-enable.succeed");
+            Logger.info("&7  > &fCommand: &aSUCCESS");
         } catch (Exception e) {
-            MLogger.info("startup.on-enable.failed");
-            Logger.error(e);
+            Logger.error("&7  > &fCommand: &cFAILED", e);
         }
 
         // init listeners
         try {
-            MLogger.info("startup.on-enable.register-listener");
             registerListener("data", new DataListener());
             registerListener("level", new LevelListener());
-            MLogger.info("startup.on-enable.succeed");
+            Logger.info("&7  > &fListener: &aSUCCESS");
         } catch (Exception e) {
-            MLogger.error("startup.on-enable.failed", e);
-        }
-
-        // init PAPI
-        if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            try {
-                MLogger.info("startup.on-enable.register-PAPI");
-                new PlaceholderHook().register();
-                MLogger.info("startup.on-enable.succeed");
-            } catch (Exception e) {
-                MLogger.error("startup.on-enable.failed", e);
-            }
+            Logger.error("&7  > &fListener: &cFAILED", e);
         }
 
         // menu handlers
         this.rewardMenuHandler = (MenuHandler<DreamLevels>) getMenuHandler("reward");
         this.dataSpyMenuHandler = (MenuHandler<DreamLevels>) getMenuHandler("dataspy");
         this.levelSpyMenuHandler = (MenuHandler<DreamLevels>) getMenuHandler("levelspy");
+        Logger.info("&7  > &fMenu Handlers: &aSUCCESS");
+
+        /*
+         * Featured functions.
+         */
+        Logger.info("  &9[Features]");
 
         // level manager
-        this.levelManager = new LevelManager(this);
-        this.levelManager.initialize();
+        initLevelManager();
 
         // reward manager
-        this.rewardManager = new RewardManager(this);
-        this.rewardManager.initialize();
+        initRewardManager();
 
         // sync manager
         initSyncService();
@@ -159,17 +144,36 @@ public final class DreamLevels extends AbstractPlugin {
         this.dataManager = new DataManager(this);
         this.dataManager.initialize();
 
-        // dataspy manager
+        // data spy manager
         this.dataSpyManager = new DataSpyManager(this);
         this.dataSpyManager.initialize();
 
-        // levelspy manager
+        // level spy manager
         this.levelSpyManager = new LevelSpyManager(this);
         this.levelSpyManager.initialize();
 
-        Logger.info("");
-        MLogger.infoReplaced("startup.on-enable.enabled",
-                "{time}", String.valueOf(timer.getTimePassed()));
+        // start task
+        startLifeCycleTask(false);
+
+        /*
+         * Hooks into other plugins.
+         */
+        Logger.info("  &9[Hooks]");
+
+        // PlaceholderAPI
+        if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            try {
+                new PlaceholderHook().register();
+                Logger.info("&7  > &fPlaceholderAPI: &aON");
+            } catch (Exception e) {
+                Logger.error("&7  > &fPlaceholderAPI: &cFAILED", e);
+            }
+        } else {
+            Logger.info("&7  > &fPlaceholderAPI: &cOFF");
+        }
+
+        Logger.info("&9  [End]");
+        Logger.info("&7  > &fStatus: &aREADY&7 &e(" + timer.getTimePassed() + "ms)");
         isEnabled = true;
     }
 
@@ -178,11 +182,9 @@ public final class DreamLevels extends AbstractPlugin {
         if (!isEnabled) return;
         MLogger.infoReplaced("startup.on-disable.disabled");
 
-        if (syncManager != null) {
-            syncManager.unload();
-        }
-
+        stopLifeCycleTask();
         ManagerUtils.unloadManagers(
+                this.syncManager,
                 this.dataManager,
                 this.localeManager,
                 this.configManager,
@@ -266,6 +268,9 @@ public final class DreamLevels extends AbstractPlugin {
         });
     }
 
+    /**
+     * Initializethe sync-mode service.
+     */
     public void initSyncService() {
         if (syncManager != null) {
             syncManager.unload();
@@ -276,9 +281,39 @@ public final class DreamLevels extends AbstractPlugin {
             if (Bukkit.getPluginManager().isPluginEnabled("ShadowMessenger")) {
                 this.syncManager = new SyncManager(this);
                 this.syncManager.initialize();
+                Logger.info("&7  > &fSync Mode: &aON");
             } else {
-                MLogger.error("data.sync-mode.ShadowMessenger-absent");
+                Logger.error(
+                        "&7  > &fSync Mode: &cFAILED",
+                        "&7    &cThe plugin 'ShadowMessenger' is missing"
+                );
             }
+
+            return;
+        }
+
+        Logger.info("&7  > &fSync Mode: &cOFF");
+    }
+
+    /**
+     * @param bypassCheck True to forcibly start the task whatever the configuration is enabled
+     */
+    public void startLifeCycleTask(boolean bypassCheck) {
+        stopLifeCycleTask();
+
+        // check whether enabled in the configuration
+        if (!bypassCheck && !getConfiguration().getBoolean("menu-life-cycle.enabled")) {
+            return;
+        }
+
+        // create task
+        this.lifeCycleTask = new LifeCycleTask();
+        lifeCycleTask.start();
+    }
+
+    public void stopLifeCycleTask() {
+        if (lifeCycleTask != null) {
+            lifeCycleTask.stop();
         }
     }
 
@@ -324,6 +359,61 @@ public final class DreamLevels extends AbstractPlugin {
 
     public boolean isDebugMode() {
         return getConfiguration().getBoolean("Debug-mode", true);
+    }
+
+    /**
+     * Initialize the config manager.
+     */
+    private void initConfigManager() {
+        this.configManager = new ConfigManager(this);
+        this.configManager.initialize();
+
+        // put logger replacement
+        logger.addReplacement("{prefix}", getPrefix());
+    }
+
+    /**
+     * Initialize the locale manager.
+     */
+    private void initLocaleManager() {
+        var localeFile = new File(getConfiguration().getString("locale.directory")
+                .replace("{default}", getDataFolder().toString()));
+        this.localeManager = new LocaleManager(this, localeFile);
+        this.localeManager.initialize();
+
+        // warn internal locale for invalid locale settings
+        if (getDefaultLocale() == LocaleManager.getInternal()) {
+            this.logger.warn("The internal locale is in use!");
+        }
+    }
+
+    private void initLevelManager() {
+        this.levelManager = new LevelManager(this);
+        this.levelManager.initialize();
+
+        // log loaded levels
+        var levels = this.levelManager.getLevels();
+        if (levels.isEmpty()) {
+            Logger.info("&7  > &eNo levels were loaded. Please follow the instructions to create any.");
+            return;
+        }
+
+        Logger.info("&7  > &fLevels Loaded: &e(" + levels.size() + " items)");
+        levels.keySet().forEach(s -> Logger.info("&7    &e+ &f" + s));
+    }
+
+    private void initRewardManager() {
+        this.rewardManager = new RewardManager(this);
+        this.rewardManager.initialize();
+
+        // log loaded rewards
+        var rewardLists = rewardManager.getRewardLists();
+        if (rewardLists.isEmpty()) {
+            Logger.info("&7  > &eNo rewards were loaded. Please follow the instructions to create any.");
+        } else {
+            Logger.info("&7  > &fRewards loaded: &e(" + rewardLists.size() + " items)");
+            rewardLists.keySet().forEach(s -> Logger.info("&7    &e+  &f" + s));
+        }
     }
 
     @NotNull

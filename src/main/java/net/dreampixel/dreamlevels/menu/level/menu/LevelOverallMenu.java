@@ -22,7 +22,9 @@ import static net.dreampixel.dreamlevels.menu.dataspy.menu.PlayerDataMenu.dataSl
  */
 public class LevelOverallMenu extends GlobalMenu {
     public LevelOverallMenu() {
-        super("overall levels menu", "Level Menu");
+        super(DreamLevels.getInstance().getLevelSpyMenuHandler(),
+                "overall levels menu",
+                "Overall Level Menu");
         constructMenu();
     }
 

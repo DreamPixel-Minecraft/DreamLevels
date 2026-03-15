@@ -2,7 +2,6 @@ package net.dreampixel.dreamlevels.sync;
 
 import lombok.var;
 import net.dreampixel.dreamlevels.data.DataManager;
-import net.dreampixel.dreamlevels.data.level.LevelData;
 import net.dreampixel.dreamlevels.util.Debugger;
 import org.jetbrains.annotations.NotNull;
 import top.shadowpixel.shadowmessenger.common.message.Message;

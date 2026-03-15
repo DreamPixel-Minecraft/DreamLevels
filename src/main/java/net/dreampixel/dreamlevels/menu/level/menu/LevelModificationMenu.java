@@ -3,10 +3,13 @@ package net.dreampixel.dreamlevels.menu.level.menu;
 import lombok.var;
 import net.dreampixel.dreamlevels.DreamLevels;
 import net.dreampixel.dreamlevels.level.Level;
+import net.dreampixel.dreamlevels.menu.level.LevelSpyManager;
 import net.dreampixel.dreamlevels.menu.level.item.LSItemDefaultLevels;
 import net.dreampixel.dreamlevels.menu.level.item.LSItemDisplayName;
 import net.dreampixel.dreamlevels.menu.level.item.LSItemMaxLevels;
 import net.dreampixel.dreamlevels.menu.level.item.LSItemRequiredExp;
+import net.dreampixel.dreamlevels.task.lifecycle.LifeCycleTask;
+import net.dreampixel.dreamlevels.task.lifecycle.LifeCycled;
 import net.dreampixel.dreamlevels.util.Logger;
 import org.jetbrains.annotations.NotNull;
 import top.shadowpixel.shadowcore.api.menu.impl.GlobalMenu;
@@ -14,7 +17,7 @@ import top.shadowpixel.shadowcore.util.text.ReplaceUtils;
 
 import static net.dreampixel.dreamlevels.menu.level.menu.LevelOverallMenu.getItemByKey;
 
-public class LevelModificationMenu extends GlobalMenu {
+public class LevelModificationMenu extends GlobalMenu implements LifeCycled {
     private final Level level;
 
     //items
@@ -23,10 +26,25 @@ public class LevelModificationMenu extends GlobalMenu {
     private LSItemMaxLevels maxLevelsItem;
     private LSItemRequiredExp requiredExpItem;
 
+    // life cycle
+    private int lifeCycle;
+
     public LevelModificationMenu(@NotNull Level level) {
-        super("levelMenu-" + level.getName(), "idk");
+        super(DreamLevels.getInstance().getLevelSpyMenuHandler(),
+                "levelMenu-" + level.getName(),
+                "idk");
         this.level = level;
         constructMenu();
+    }
+
+    @Override
+    protected void onOpened() {
+        LifeCycleTask.remove(getKey());
+    }
+
+    @Override
+    protected void onClosed() {
+        LifeCycleTask.add(this);
     }
 
     public void constructMenu() {
@@ -75,6 +93,28 @@ public class LevelModificationMenu extends GlobalMenu {
         displayNameItem.updateItem();
         maxLevelsItem.updateItem();
         requiredExpItem.updateItem();
+    }
+
+    @Override
+    public int getLifeCycle() {
+        return lifeCycle;
+    }
+
+    @Override
+    public void setLifeCycle(int lifeCycle) {
+        this.lifeCycle = lifeCycle;
+    }
+
+    public void remove() {
+        LevelSpyManager.getInstance().removeLevelModificationMenu(getKey());
+    }
+
+    /**
+     * @return The key of the menu stored in level spy manager's map
+     */
+    @NotNull
+    public String getKey() {
+        return getName();
     }
 
     @NotNull

@@ -5,6 +5,7 @@ import net.dreampixel.dreamlevels.DreamLevels;
 import net.dreampixel.dreamlevels.level.Level;
 import net.dreampixel.dreamlevels.menu.level.menu.LevelModificationMenu;
 import net.dreampixel.dreamlevels.menu.level.menu.LevelOverallMenu;
+import net.dreampixel.dreamlevels.util.Logger;
 import net.dreampixel.dreamlevels.util.MLogger;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -35,6 +36,7 @@ public class LevelSpyManager implements Manager {
         // load items
         var items = plugin.getItemsConfiguration().getNodeSection("level-spy-menu");
         if (items == null) {
+            Logger.info("&7  > &fLevel Spy: &cFAILED");
             MLogger.error("level-spy.invalid-items");
             return;
         }
@@ -63,6 +65,8 @@ public class LevelSpyManager implements Manager {
             menuItem.addClickAction(e -> e.setCancelled(true));
             this.items.put(key, menuItem);
         }
+
+        Logger.info("&7  > &fLevel Spy: &aON");
     }
 
     @Override
@@ -74,7 +78,7 @@ public class LevelSpyManager implements Manager {
         levelModificationMenus.clear();
 
         // delete menus in menu handlers
-        plugin.getLevelSpyMenuHandler().deleteMenus();
+        plugin.getLevelSpyMenuHandler().clear();
     }
 
     /**
@@ -125,6 +129,26 @@ public class LevelSpyManager implements Manager {
         }
 
         return menu;
+    }
+
+    /**
+     * Remove a level modification menu.
+     *
+     * @param key Key of a level modification menu
+     */
+    public void removeLevelModificationMenu(@NotNull String key) {
+        var menu = levelModificationMenus.remove(key);
+        if (menu != null) {
+            menu.delete();
+        }
+    }
+
+    /**
+     * @return All level modification menus
+     */
+    @NotNull
+    public HashMap<String, LevelModificationMenu> getLevelModificationMenus() {
+        return levelModificationMenus;
     }
 
     /**

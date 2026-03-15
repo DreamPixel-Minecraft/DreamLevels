@@ -6,6 +6,7 @@ import net.dreampixel.dreamlevels.menu.dataspy.menu.LevelDataMenu;
 import net.dreampixel.dreamlevels.menu.dataspy.menu.LevelDataOverallMenu;
 import net.dreampixel.dreamlevels.menu.dataspy.menu.PlayerDataMenu;
 import net.dreampixel.dreamlevels.level.Level;
+import net.dreampixel.dreamlevels.util.Logger;
 import net.dreampixel.dreamlevels.util.MLogger;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +24,7 @@ public class DataSpyManager implements Manager {
     private final DreamLevels plugin;
     private final HashMap<String, MenuItem> items = new HashMap<>();
 
-    // menu for showing all player data
+    // menu for showing all players' data
     private PlayerDataMenu playerDataMenu;
     // menu for showing a player's all level data
     private final HashMap<UUID, LevelDataOverallMenu> levelDataOverallMenus = new HashMap<>();
@@ -39,6 +40,7 @@ public class DataSpyManager implements Manager {
         // load items
         var items = plugin.getItemsConfiguration().getNodeSection("data-spy-menu");
         if (items == null) {
+            Logger.info("&7  > &fData Spy: &cFAILED");
             MLogger.error("data-spy.invalid-items");
             return;
         }
@@ -58,14 +60,14 @@ public class DataSpyManager implements Manager {
             // add custom click events
             item.isStringList("events", events -> {
                 var event = ExecutableEvent.of(events);
-                menuItem.addClickAction(e -> {
-                    event.execute(plugin, e.getPlayer());
-                });
+                menuItem.addClickAction(e -> event.execute(plugin, e.getPlayer()));
             });
 
             menuItem.addClickAction(e -> e.setCancelled(true));
             this.items.put(key, menuItem);
         }
+
+        Logger.info("&7  > &fData Spy: &aON");
     }
 
     @Override
@@ -79,7 +81,7 @@ public class DataSpyManager implements Manager {
         levelDataOverallMenus.clear();
 
         // delete menus in menu handlers
-        plugin.getDataSpyMenuHandler().deleteMenus();
+        plugin.getDataSpyMenuHandler().clear();
     }
 
     /**
@@ -135,6 +137,7 @@ public class DataSpyManager implements Manager {
      * @param target The target player's uniqueId
      * @return LevelDataOverallMenu
      */
+    @NotNull
     public LevelDataOverallMenu getLevelDataOverallMenu(@NotNull UUID target) {
         if (this.levelDataOverallMenus.containsKey(target)) {
             return this.levelDataOverallMenus.get(target);
@@ -143,6 +146,24 @@ public class DataSpyManager implements Manager {
         var menu = new LevelDataOverallMenu(target);
         this.levelDataOverallMenus.put(target, menu);
         return menu;
+    }
+
+    /**
+     * @param target Target player's unique id
+     */
+    public void  removeLevelDataOverallMenu(@NotNull UUID target) {
+        var menu = levelDataOverallMenus.remove(target);
+        if (menu != null) {
+            menu.delete();
+        }
+    }
+
+    /**
+     * @return All level data overall menus
+     */
+    @NotNull
+    public HashMap<UUID, LevelDataOverallMenu> getLevelDataOverallMenus() {
+        return levelDataOverallMenus;
     }
 
     /**
@@ -156,9 +177,25 @@ public class DataSpyManager implements Manager {
             return this.levelDataMenus.get(key);
         }
 
-        var menu = new LevelDataMenu("ldm-" + target, target, level);
+        var menu = new LevelDataMenu(key, target, level);
         this.levelDataMenus.put(key, menu);
         return menu;
+    }
+
+    /**
+     * @param key Key of a level data menu
+     */
+    public void removeLevelDataMenu(@NotNull String key) {
+        var menu = levelDataMenus.remove(key);
+        System.out.println("Remove status: " + (menu != null));
+        if (menu != null) {
+            menu.delete();
+        }
+    }
+
+    @NotNull
+    public HashMap<String, LevelDataMenu> getLevelDataMenus() {
+        return levelDataMenus;
     }
 
     /**

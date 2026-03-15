@@ -18,7 +18,6 @@ import java.util.List;
 public class LocaleManager extends AbstractLocaleManager<DreamLevels> {
     public static final List<LocaleInfo> PRESET_LOCALE_INFOS = ListUtils.immutableList(
             LocaleInfo.of("zh_CN", "Locale/zh_CN")
-//            LocaleInfo.of("en_US", "Locale/en_US")
     );
 
     public static final List<String> CONTENTS = ListUtils.immutableList(
@@ -66,6 +65,7 @@ public class LocaleManager extends AbstractLocaleManager<DreamLevels> {
     public static Locale getInternal() {
         if (internal == null) {
             var plugin = DreamLevels.getInstance();
+
             // create internal locale
             var locale = new Locale(plugin, "Internal", null, CONTENTS);
             locale.setName("Internal");

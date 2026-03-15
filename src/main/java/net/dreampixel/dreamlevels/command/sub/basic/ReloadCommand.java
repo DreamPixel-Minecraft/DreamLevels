@@ -59,6 +59,10 @@ public class ReloadCommand extends SubCommand {
                 case "dataspy":
                     DreamLevels.getInstance().getDataSpyManager().reload();
                     break;
+                // reload the life cycle task
+                case "lifecycletask":
+                    DreamLevels.getInstance().startLifeCycleTask(false);
+                    break;
             }
         } else {
             // reload all managers
@@ -72,6 +76,9 @@ public class ReloadCommand extends SubCommand {
                     LevelSpyManager.getInstance()
             );
 
+            // reload life cycle task
+            DreamLevels.getInstance().startLifeCycleTask(false);
+
             // reload sync service
             DreamLevels.getInstance().initSyncService();
         }
@@ -83,7 +90,7 @@ public class ReloadCommand extends SubCommand {
     @Override
     public @Nullable Collection<String> complete(@NotNull CommandContext context) {
         if (context.arguments().length == 2) {
-            return ListUtils.asList("Config", "Locale", "Data", "Sync", "Level", "Reward");
+            return ListUtils.asList("Config", "Locale", "Data", "Sync", "Level", "Reward", "LifeCycleTask");
         }
 
         return null;

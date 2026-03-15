@@ -207,6 +207,14 @@ public class RewardList {
     }
 
     /**
+     * @return All reward menus
+     */
+    @NotNull
+    public HashMap<Player, RewardMenu> getRewardMenus() {
+        return rewardMenus;
+    }
+
+    /**
      * Open a reward menu for a player. If the menu is absent, then a new one will be created.
      *
      * @param player Player

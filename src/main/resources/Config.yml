@@ -95,6 +95,16 @@ data-spy:
       border: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 45, 46, 47, 48, 50, 51, 52, 53 ]
       previous-page: [ 9, 18, 27, 36 ]
       next-page: [ 17, 26, 35, 44 ]
+# 菜单的生命周期.
+# 当菜单超过多长时间未被访问时将会移除, 释放内存.
+menu-life-cycle:
+  enabled: true
+  reward-menu: 300 # seconds
+  # data spy menus
+  level-data-menu: 60 # seconds
+  level-data-overall-menu: 60 # seconds
+  # level spy menus
+  level-menu: 60 # seconds
 # 调试模式
 # 仅在插件测试阶段时开启, 向后台打印调试信息.
 debug-mode: false

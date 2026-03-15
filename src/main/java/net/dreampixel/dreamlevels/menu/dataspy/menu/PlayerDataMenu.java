@@ -27,7 +27,9 @@ public class PlayerDataMenu extends GlobalMenu {
     };
 
     public PlayerDataMenu(String name, String title) {
-        super(name, title);
+        super(DreamLevels.getInstance().getDataSpyMenuHandler(),
+                name,
+                title);
         constructMenu();
     }
 

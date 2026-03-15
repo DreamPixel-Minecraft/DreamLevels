@@ -61,14 +61,8 @@ public class RewardManager implements Manager {
             return;
         }
 
-        // load and log
+        // load rewards
         loadAll();
-        if (rewardLists.isEmpty()) {
-            MLogger.infoReplaced("reward.load-empty");
-        } else {
-            MLogger.infoReplaced("reward.load-all",
-                    "{amount}", String.valueOf(this.rewardLists.size()));
-        }
 
         // load items
         loadDefaultItems();

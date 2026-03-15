@@ -20,13 +20,18 @@ public class RewardMenu extends PlayerMenu {
     private final RewardList rewardList;
     
     private final ArrayList<String> permissions;
-    // to record whether the player has not enough permissions, if so, this menu won't be constructed
-    // until the player has the permissions in order to improve performance
+    /**
+     * to record whether the player has not enough permissions, if so, this menu won't be constructed
+     * until the player has the permissions in order to improve performance
+     */
     private boolean permissionsDenied = false;
     private ExecutableEvent permissionDeniedEvent;
     
     protected RewardMenu(Player owner, RewardList rewardList) {
-        super(owner, rewardList.getName(), rewardList.getName());
+        super(DreamLevels.getInstance().getRewardMenuHandler(),
+                owner,
+                rewardList.getName(),
+                rewardList.getName());
         this.rewardList = rewardList;
 
         // permissions
@@ -75,6 +80,13 @@ public class RewardMenu extends PlayerMenu {
             Objects.requireNonNull(getPage(reward.getPage()))
                     .setItem(reward.getSlot(), getReplacedRewardItem(player, reward));
         }
+    }
+
+    /**
+     * Remove the menu. This method will remove the menu from its reward list and delete itself.
+     */
+    public void remove() {
+        rewardList.removeRewardMenu(player);
     }
 
     public void constructMenu() {
@@ -137,6 +149,14 @@ public class RewardMenu extends PlayerMenu {
                 page.getProperty().setUnclickable(i);
             }
         }
+    }
+
+    /**
+     * @return Reward list
+     */
+    @NotNull
+    public RewardList getRewardList() {
+        return rewardList;
     }
 
     /**

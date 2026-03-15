@@ -1,20 +1,9 @@
 startup:
-  welcome: '欢迎使用'
-  version: '版本'
-  author: '作者'
   info: |
     &f
     &b&lDreamLevels &dv{version} &eby DreamStudio
     &7使用指令来 &f'/{cmd} Help' &7获取帮助.
     &f
-  on-enable:
-    error-Plugin_yml: '{prefix}&c检测到plugin.yml被修改, 请不要随意修改plugin.yml!'
-    register-command: '{prefix}&f正在注册命令...'
-    register-listener: '{prefix}&f正在注册监听器...'
-    register-PAPI: '{prefix}&f正在注册PAPI拓展...'
-    succeed: '{prefix}&a注册成功!'
-    failed: '{prefix}&c注册失败!'
-    enabled: '{prefix}&a本次插件启动耗费&e{time}ms&a.'
   on-disable:
     disabled: '{prefix}&c插件已卸载!'
 command:
