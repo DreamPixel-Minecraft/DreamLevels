@@ -55,11 +55,12 @@ public class DreamLevelsAPI {
     public static PlayerData getPlayerData(@NotNull Player player) {
         return DataManager.getInstance().getPlayerData(player);
     }
+
     /**
      * Get an offline player's data modifier. The modification result will be accepted
      * by the {@code feedbackConsumer}.
      *
-     * @param uniqueId UniqueId of player
+     * @param uniqueId         UniqueId of player
      * @param feedbackConsumer Feedback consumer
      * @return An offline player's data modifier.
      */

@@ -22,8 +22,9 @@ import top.shadowpixel.shadowcore.util.text.ColorUtils;
 
 import java.util.*;
 
-import static net.dreampixel.dreamlevels.util.EventUtils.*;
-import static top.shadowpixel.shadowcore.util.object.NumberUtils.*;
+import static net.dreampixel.dreamlevels.util.EventUtils.fire;
+import static top.shadowpixel.shadowcore.util.object.NumberUtils.asDouble;
+import static top.shadowpixel.shadowcore.util.object.NumberUtils.asInt;
 
 @SuppressWarnings("unused")
 @SerializableAs("DreamLevels-LevelData")
@@ -56,9 +57,15 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
         return uniqueId;
     }
 
+    public void setUniqueId(@NotNull UUID uniqueId) {
+        if (this.uniqueId == null) {
+            this.uniqueId = uniqueId;
+        }
+    }
+
     /**
      * Get the level of this level data. </br>
-     *
+     * <p>
      * Return null if the server doesn't have the level, usually for offline usage.
      * Use {@link #getLevelName()} for only level name.
      *
@@ -67,6 +74,12 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
     @Nullable
     public Level getLevel() {
         return LevelManager.getInstance().getLevel(this.level);
+    }
+
+    public void setLevel(@NotNull String level) {
+        if (this.level == null) {
+            this.level = level;
+        }
     }
 
     /**
@@ -191,14 +204,6 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
      */
     public void removeExp(double amount, boolean fireEvent) {
         modifyExp(amount, ModificationType.REMOVE, fireEvent);
-    }
-
-    /**
-     * Set multiple. This operation will be cancelled if the event is fired and then cancelled.
-     */
-    @Override
-    public void setMultiple(double amount) {
-        setMultiple(amount, true);
     }
 
     /**
@@ -466,6 +471,14 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
         return multiple;
     }
 
+    /**
+     * Set multiple. This operation will be cancelled if the event is fired and then cancelled.
+     */
+    @Override
+    public void setMultiple(double amount) {
+        setMultiple(amount, true);
+    }
+
     @Override
     public @NotNull Map<String, Object> serialize() {
         return MapUtils.of(
@@ -505,18 +518,6 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
                     }
                 }
         );
-    }
-
-    public void setLevel(@NotNull String level) {
-        if (this.level == null) {
-            this.level = level;
-        }
-    }
-
-    public void setUniqueId(@NotNull UUID uniqueId) {
-        if (this.uniqueId == null) {
-            this.uniqueId = uniqueId;
-        }
     }
 
     private void modifyLevel(int amount, ModificationType type, boolean fireEvent) {

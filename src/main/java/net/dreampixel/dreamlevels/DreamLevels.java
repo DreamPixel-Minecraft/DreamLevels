@@ -2,19 +2,25 @@ package net.dreampixel.dreamlevels;
 
 import lombok.Getter;
 import lombok.var;
+import net.dreampixel.dreamlevels.command.MainCommand;
+import net.dreampixel.dreamlevels.config.ConfigManager;
 import net.dreampixel.dreamlevels.data.DataManager;
 import net.dreampixel.dreamlevels.data.level.LevelData;
 import net.dreampixel.dreamlevels.data.player.PlayerData;
-import net.dreampixel.dreamlevels.menu.dataspy.DataSpyManager;
+import net.dreampixel.dreamlevels.hook.PlaceholderHook;
 import net.dreampixel.dreamlevels.level.Level;
 import net.dreampixel.dreamlevels.level.LevelManager;
 import net.dreampixel.dreamlevels.listener.DataListener;
 import net.dreampixel.dreamlevels.listener.LevelListener;
+import net.dreampixel.dreamlevels.locale.LocaleManager;
+import net.dreampixel.dreamlevels.menu.dataspy.DataSpyManager;
 import net.dreampixel.dreamlevels.menu.level.LevelSpyManager;
 import net.dreampixel.dreamlevels.reward.RewardList;
 import net.dreampixel.dreamlevels.reward.RewardManager;
 import net.dreampixel.dreamlevels.sync.SyncManager;
 import net.dreampixel.dreamlevels.task.lifecycle.LifeCycleTask;
+import net.dreampixel.dreamlevels.util.Logger;
+import net.dreampixel.dreamlevels.util.MLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -27,12 +33,6 @@ import top.shadowpixel.shadowcore.api.menu.MenuHandler;
 import top.shadowpixel.shadowcore.api.plugin.AbstractPlugin;
 import top.shadowpixel.shadowcore.api.util.time.MSTimer;
 import top.shadowpixel.shadowcore.util.plugin.ManagerUtils;
-import net.dreampixel.dreamlevels.command.MainCommand;
-import net.dreampixel.dreamlevels.config.ConfigManager;
-import net.dreampixel.dreamlevels.locale.LocaleManager;
-import net.dreampixel.dreamlevels.hook.PlaceholderHook;
-import net.dreampixel.dreamlevels.util.Logger;
-import net.dreampixel.dreamlevels.util.MLogger;
 
 import java.io.File;
 
@@ -70,6 +70,25 @@ public final class DreamLevels extends AbstractPlugin {
     private LifeCycleTask lifeCycleTask;
 
     private boolean isEnabled = false;
+
+    @NotNull
+    public static DreamLevels getInstance() {
+        return instance;
+    }
+
+    /**
+     * @return Prefix of this plugin
+     */
+    public static String getPrefix() {
+        return getInstance().getConfiguration().getString("prefix");
+    }
+
+    /**
+     * @return Version of this plugin
+     */
+    public static String getVersion() {
+        return getInstance().getDescription().getVersion();
+    }
 
     @Override
     public void enable() {
@@ -416,27 +435,9 @@ public final class DreamLevels extends AbstractPlugin {
         }
     }
 
-    @NotNull
-    public static DreamLevels getInstance() {
-        return instance;
-    }
-
-    /**
-     * @return Prefix of this plugin
-     */
-    public static String getPrefix() {
-        return getInstance().getConfiguration().getString("prefix");
-    }
-
-    /**
-     * @return Version of this plugin
-     */
-    public static String getVersion() {
-        return getInstance().getDescription().getVersion();
-    }
-
     @SuppressWarnings("EmptyMethod")
-    @NotNull @Deprecated //Shit
+    @NotNull
+    @Deprecated //Shit
     public FileConfiguration getConfig() {
         Logger.warn("The default method \"public FileConfiguration getConfig()\" method has been invoked which is deprecated and may cause unexpected problems!");
         return super.getConfig();

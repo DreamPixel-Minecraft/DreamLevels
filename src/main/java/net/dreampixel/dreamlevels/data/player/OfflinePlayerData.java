@@ -11,7 +11,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import static net.dreampixel.dreamlevels.util.SyncUtils.*;
+import static net.dreampixel.dreamlevels.util.SyncUtils.getSyncChannel;
+import static net.dreampixel.dreamlevels.util.SyncUtils.sendRequest;
 
 /**
  * A wrapper of offline player data's modifier. This wrapper offers modification operations for offline players' data.

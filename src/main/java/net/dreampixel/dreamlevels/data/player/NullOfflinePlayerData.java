@@ -14,6 +14,10 @@ public class NullOfflinePlayerData extends OfflinePlayerData {
         super(null, feedbackConsumer);
     }
 
+    public static @NotNull OfflinePlayerData of(@NotNull Consumer<String> feedbackConsumer) {
+        return new NullOfflinePlayerData(feedbackConsumer);
+    }
+
     @Override
     public void resetAll() {
         feedbackConsumer.accept("unknown player");
@@ -27,9 +31,5 @@ public class NullOfflinePlayerData extends OfflinePlayerData {
     @Override
     public @NotNull OfflineLevelData getLevelData(@NotNull String level) {
         return NullOfflineLevelData.of(super.feedbackConsumer);
-    }
-
-    public static @NotNull OfflinePlayerData of(@NotNull Consumer<String> feedbackConsumer) {
-        return new NullOfflinePlayerData(feedbackConsumer);
     }
 }

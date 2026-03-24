@@ -4,9 +4,9 @@ import lombok.var;
 import net.dreampixel.dreamlevels.DreamLevels;
 import net.dreampixel.dreamlevels.data.DataManager;
 import net.dreampixel.dreamlevels.data.level.LevelData;
-import net.dreampixel.dreamlevels.task.ExperienceBarTask;
 import net.dreampixel.dreamlevels.menu.dataspy.DataSpyManager;
 import net.dreampixel.dreamlevels.menu.level.LevelSpyManager;
+import net.dreampixel.dreamlevels.task.ExperienceBarTask;
 import net.dreampixel.dreamlevels.util.Logger;
 import net.dreampixel.dreamlevels.util.MLogger;
 import org.bukkit.Bukkit;
@@ -43,6 +43,11 @@ public class LevelManager implements Manager {
 
     public LevelManager(DreamLevels plugin) {
         this.plugin = plugin;
+    }
+
+    @NotNull
+    public static LevelManager getInstance() {
+        return DreamLevels.getInstance().getLevelManager();
     }
 
     @Override
@@ -125,7 +130,7 @@ public class LevelManager implements Manager {
     /**
      * Load a level from the level directory with a specific name.
      *
-     * @param name Name
+     * @param name      Name
      * @param skipCheck Whether not to check this level is enabled
      *                  in Config.yml when loading.
      */
@@ -253,10 +258,5 @@ public class LevelManager implements Manager {
         if (experienceBarTask != null) {
             experienceBarTask.stop();
         }
-    }
-
-    @NotNull
-    public static LevelManager getInstance() {
-        return DreamLevels.getInstance().getLevelManager();
     }
 }

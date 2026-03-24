@@ -2,9 +2,9 @@ package net.dreampixel.dreamlevels.command.sub.level.edit;
 
 import lombok.var;
 import net.dreampixel.dreamlevels.command.sub.level.edit.sub.SetDefaultLevelsCommand;
-import net.dreampixel.dreamlevels.command.sub.level.edit.sub.SetRequiredExpCommand;
 import net.dreampixel.dreamlevels.command.sub.level.edit.sub.SetDisplayNameCommand;
 import net.dreampixel.dreamlevels.command.sub.level.edit.sub.SetMaxLevelsCommand;
+import net.dreampixel.dreamlevels.command.sub.level.edit.sub.SetRequiredExpCommand;
 import net.dreampixel.dreamlevels.level.LevelManager;
 import net.dreampixel.dreamlevels.util.LocaleUtils;
 import org.jetbrains.annotations.NotNull;

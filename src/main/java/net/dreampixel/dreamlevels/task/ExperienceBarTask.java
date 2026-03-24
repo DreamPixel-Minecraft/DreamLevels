@@ -18,6 +18,7 @@ public class ExperienceBarTask extends BukkitRunnable {
     public void stop() {
         try {
             cancel();
-        } catch (Throwable ignored) {}
+        } catch (Throwable ignored) {
+        }
     }
 }

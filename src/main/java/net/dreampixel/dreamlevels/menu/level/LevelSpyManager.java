@@ -21,16 +21,20 @@ import java.util.HashMap;
 public class LevelSpyManager implements Manager {
     private final DreamLevels plugin;
     private final HashMap<String, MenuItem> items = new HashMap<>();
-
-    // menu showing all player data
-    private LevelOverallMenu levelOverallMenu;
     // the key is level-name
     private final HashMap<String, LevelModificationMenu> levelModificationMenus = new HashMap<>();
+    // menu showing all player data
+    private LevelOverallMenu levelOverallMenu;
 
     public LevelSpyManager(DreamLevels plugin) {
         this.plugin = plugin;
     }
-    
+
+    @NotNull
+    public static LevelSpyManager getInstance() {
+        return DreamLevels.getInstance().getLevelSpyManager();
+    }
+
     @Override
     public void initialize() {
         // load items
@@ -94,7 +98,7 @@ public class LevelSpyManager implements Manager {
      * Open a menu for modifying the specific level system.
      *
      * @param player Player to show the menu
-     * @param level Level system to modify
+     * @param level  Level system to modify
      */
     public void openLevelMenu(@NotNull Player player, @NotNull Level level) {
         getLevelModificationMenu(level).openMenu(player);
@@ -180,10 +184,5 @@ public class LevelSpyManager implements Manager {
     public void updateLevelOverallMenu() {
         this.levelOverallMenu = new LevelOverallMenu();
         plugin.getLevelSpyMenuHandler().addMenu(levelOverallMenu);
-    }
-
-    @NotNull
-    public static LevelSpyManager getInstance() {
-        return DreamLevels.getInstance().getLevelSpyManager();
     }
 }

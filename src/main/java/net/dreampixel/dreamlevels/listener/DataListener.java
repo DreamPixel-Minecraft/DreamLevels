@@ -20,7 +20,7 @@ import top.shadowpixel.shadowcore.util.entity.SenderUtils;
 
 public class DataListener implements Listener {
 
-    @EventHandler (priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onLogin(@NotNull AsyncPlayerPreLoginEvent event) {
         var uuid = event.getUniqueId();
         var dm = DataManager.getInstance();

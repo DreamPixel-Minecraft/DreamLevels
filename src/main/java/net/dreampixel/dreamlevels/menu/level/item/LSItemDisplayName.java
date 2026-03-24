@@ -43,7 +43,7 @@ public class LSItemDisplayName extends MenuItem {
 
                         // send feedback message
                         LocaleUtils.sendMessage(player, "level-spy.modified.display-name",
-                                "{previous}", String.valueOf(previous),
+                                "{previous}", previous,
                                 "{value}", value,
                                 "{level}", level.getName());
 

@@ -37,18 +37,14 @@ public class Level implements ConfigurationSerializable {
      * basic vars for a level system
      */
     private final String name;
+    private final Map<Integer, Integer> expToLevel = new HashMap<>();
+    private final LinkedHashMap<Integer, String> colors = new LinkedHashMap<>();
+    private final HashMap<String, HashMap<String, ExecutableEvent>> levelEvents = new HashMap<>();
     private String displayName;
-
     private int defaultMaxLevels = 100;
     private int defaultLevels = 0;
     private double defaultRequiredExp = 5000D;
-
     private File storageFile;
-
-    private final Map<Integer, Integer> expToLevel = new HashMap<>();
-    private final LinkedHashMap<Integer, String> colors = new LinkedHashMap<>();
-
-    private final HashMap<String, HashMap<String, ExecutableEvent>> levelEvents = new HashMap<>();
 
     /**
      * Create an empty level.
@@ -169,7 +165,7 @@ public class Level implements ConfigurationSerializable {
     /**
      * @param nextLevel Next level
      * @return The exp required leveling up from the previous level to this level. </br>
-     *         Returns -1 if {@code nextLevel} >= the max level
+     * Returns -1 if {@code nextLevel} >= the max level
      */
     public double getRequiredExp(int nextLevel) {
         if (nextLevel > defaultMaxLevels) {

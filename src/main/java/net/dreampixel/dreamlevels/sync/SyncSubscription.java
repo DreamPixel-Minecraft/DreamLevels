@@ -47,7 +47,7 @@ public class SyncSubscription extends MessageSubscription {
 
         // get modification type for certain usages
         var type = parameters.getString("type");
-        
+
         switch (instruction.toLowerCase()) {
             // reset player's data
             case "reset":
@@ -71,7 +71,7 @@ public class SyncSubscription extends MessageSubscription {
                     reply("unknown mod type");
                     return;
                 }
-                
+
                 switch (type) {
                     case "ADD":
                         levelData.addLevels(inbValue);

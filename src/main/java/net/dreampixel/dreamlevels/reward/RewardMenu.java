@@ -18,7 +18,7 @@ import java.util.Objects;
 
 public class RewardMenu extends PlayerMenu {
     private final RewardList rewardList;
-    
+
     private final ArrayList<String> permissions;
     /**
      * to record whether the player has not enough permissions, if so, this menu won't be constructed
@@ -26,7 +26,7 @@ public class RewardMenu extends PlayerMenu {
      */
     private boolean permissionsDenied = false;
     private ExecutableEvent permissionDeniedEvent;
-    
+
     protected RewardMenu(Player owner, RewardList rewardList) {
         super(DreamLevels.getInstance().getRewardMenuHandler(),
                 owner,
@@ -48,13 +48,27 @@ public class RewardMenu extends PlayerMenu {
         constructMenu();
     }
 
+    /**
+     * Create a reward menu for a player.
+     *
+     * @param player     Player
+     * @param rewardList Reward list
+     * @return Reward menu
+     */
+    public static RewardMenu createMenu(@NotNull Player player, @NotNull RewardList rewardList) {
+        var menu = new RewardMenu(player, rewardList);
+        DreamLevels.getInstance().getRewardMenuHandler()
+                .addMenu(menu);
+        return menu;
+    }
+
     @Override
     public void openMenu() {
         if (!SenderUtils.hasPermissions(player, permissions)) {
             permissionDeniedEvent.execute(DreamLevels.getInstance(), player);
             return;
         }
-        
+
         // now the player has enough permissions, loading the menu
         if (permissionsDenied) {
             constructMenu();
@@ -193,19 +207,5 @@ public class RewardMenu extends PlayerMenu {
         }
 
         return item;
-    }
-
-    /**
-     * Create a reward menu for a player.
-     *
-     * @param player Player
-     * @param rewardList Reward list
-     * @return Reward menu
-     */
-    public static RewardMenu createMenu(@NotNull Player player, @NotNull RewardList rewardList) {
-        var menu = new RewardMenu(player, rewardList);
-        DreamLevels.getInstance().getRewardMenuHandler()
-                .addMenu(menu);
-        return menu;
     }
 }

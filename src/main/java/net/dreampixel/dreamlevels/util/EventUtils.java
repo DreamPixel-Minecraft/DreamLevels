@@ -12,10 +12,10 @@ public class EventUtils {
         Bukkit.getServer().getPluginManager().callEvent(event);
     }
 
-    public static  <T extends Event & Cancellable> void fire(@NotNull T event,
-                                                     @NotNull Event finished,
-                                                     boolean fireEvent,
-                                                     @NotNull Runnable runnable) {
+    public static <T extends Event & Cancellable> void fire(@NotNull T event,
+                                                            @NotNull Event finished,
+                                                            boolean fireEvent,
+                                                            @NotNull Runnable runnable) {
         if (!fireEvent) {
             runnable.run();
             return;

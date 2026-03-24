@@ -42,9 +42,7 @@ public class DSItemMultiple extends MenuItem {
             DataInputController.getInstance().<Double>createInput()
                     .player(player)
                     .type(double.class)
-                    .onInput(input -> {
-                        handleInput(menu, input, player);
-                    })
+                    .onInput(input -> handleInput(menu, input, player))
                     .onInvalid(invalid -> LocaleUtils.sendMessage(player, "data-spy.invalid.number"))
                     .onCancelled(() -> {
                         LocaleUtils.sendMessage(player, "data-spy.cancel");

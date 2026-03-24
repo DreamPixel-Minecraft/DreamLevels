@@ -33,6 +33,10 @@ public class PlayerDataMenu extends GlobalMenu {
         constructMenu();
     }
 
+    public static MenuItem getItemByKey(@NotNull String itemKey) {
+        return DataSpyManager.getInstance().getItemByKey(itemKey);
+    }
+
     public void constructMenu() {
         var plugin = DreamLevels.getInstance();
         var targets = Bukkit.getOnlinePlayers();
@@ -145,9 +149,5 @@ public class PlayerDataMenu extends GlobalMenu {
                 }
             }
         }
-    }
-
-    public static MenuItem getItemByKey(@NotNull String itemKey) {
-        return DataSpyManager.getInstance().getItemByKey(itemKey);
     }
 }

@@ -43,7 +43,7 @@ public class MLogger {
     public static void error(String path, Throwable throwable) {
         Logger.error(getText(path), throwable);
     }
-    
+
     public static @NotNull String getText(String path) {
         return LocaleUtils.getMessage(path);
     }

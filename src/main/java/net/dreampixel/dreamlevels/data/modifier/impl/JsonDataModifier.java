@@ -10,7 +10,7 @@ import java.io.File;
 import java.util.UUID;
 
 public class JsonDataModifier extends ConfigurationDataModifier {
-    public static final StorageMethod[] STORAGE_METHODS = { StorageMethod.JSON };
+    public static final StorageMethod[] STORAGE_METHODS = {StorageMethod.JSON};
 
     @Override
     public ConfigurationProvider getConfigurationProvider() {

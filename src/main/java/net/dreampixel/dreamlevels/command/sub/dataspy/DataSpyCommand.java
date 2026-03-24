@@ -1,9 +1,9 @@
 package net.dreampixel.dreamlevels.command.sub.dataspy;
 
 import lombok.var;
-import net.dreampixel.dreamlevels.menu.dataspy.DataSpyManager;
 import net.dreampixel.dreamlevels.level.Level;
 import net.dreampixel.dreamlevels.level.LevelManager;
+import net.dreampixel.dreamlevels.menu.dataspy.DataSpyManager;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

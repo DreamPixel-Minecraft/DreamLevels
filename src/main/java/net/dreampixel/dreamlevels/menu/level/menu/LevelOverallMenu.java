@@ -28,6 +28,10 @@ public class LevelOverallMenu extends GlobalMenu {
         constructMenu();
     }
 
+    public static MenuItem getItemByKey(@NotNull String itemKey) {
+        return LevelSpyManager.getInstance().getItemByKey(itemKey);
+    }
+
     public void constructMenu() {
         var plugin = DreamLevels.getInstance();
         var targets = LevelManager.getInstance().getLevels().values();
@@ -132,9 +136,5 @@ public class LevelOverallMenu extends GlobalMenu {
                 }
             }
         }
-    }
-
-    public static MenuItem getItemByKey(@NotNull String itemKey) {
-        return LevelSpyManager.getInstance().getItemByKey(itemKey);
     }
 }

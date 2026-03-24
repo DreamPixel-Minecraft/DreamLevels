@@ -4,9 +4,9 @@ import lombok.Cleanup;
 import lombok.var;
 import net.dreampixel.dreamlevels.DreamLevels;
 import net.dreampixel.dreamlevels.data.DataManager;
-import net.dreampixel.dreamlevels.data.player.PlayerData;
 import net.dreampixel.dreamlevels.data.modifier.DataModifier;
 import net.dreampixel.dreamlevels.data.modifier.StorageMethod;
+import net.dreampixel.dreamlevels.data.player.PlayerData;
 import net.dreampixel.dreamlevels.util.Logger;
 import net.dreampixel.dreamlevels.util.MLogger;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class SQLDataModifier implements DataModifier {
-    public static final StorageMethod[] STORAGE_METHODS = { StorageMethod.SQLITE, StorageMethod.MYSQL };
+    public static final StorageMethod[] STORAGE_METHODS = {StorageMethod.SQLITE, StorageMethod.MYSQL};
 
     public Connection getConnection() {
         return Objects.requireNonNull(DataManager.getInstance().getDatabase()).getConnection();

@@ -19,7 +19,8 @@ import java.util.stream.Collectors;
 
 // /dl <AddLevels> <players> <level> <amount> [feedback]
 public abstract class LevelCommand extends SubCommand {
-    public LevelCommand() {}
+    public LevelCommand() {
+    }
 
     @Override
     public boolean execute(@NotNull CommandContext ctx) {
@@ -100,7 +101,7 @@ public abstract class LevelCommand extends SubCommand {
      * <li> level   - level whose data should be modified
      * <li> amount  - the amount, which has a type of 'int' in levels, and 'double' in exp.
      *
-     * @param ctx   Command context
+     * @param ctx Command context
      * @return Whether to send feedback message
      */
     @SuppressWarnings("SameReturnValue")
@@ -109,7 +110,7 @@ public abstract class LevelCommand extends SubCommand {
     /**
      * This method will run to send success feedback to the command sender.
      *
-     * @param ctx   Command context
+     * @param ctx Command context
      */
     public abstract void sendOnlineFeedback(@NotNull CommandContext ctx, @NotNull Level level, double value);
 
@@ -121,7 +122,7 @@ public abstract class LevelCommand extends SubCommand {
      * <li> level   - level whose data should be modified
      * <li> amount  - the amount, which has a type of 'int' in levels, and 'double' in exp.
      *
-     * @param ctx        Command context
+     * @param ctx Command context
      */
     public abstract void executeOffline(@NotNull CommandContext ctx, @NotNull Level level, double value, @NotNull Consumer<Boolean> onFinished);
 
@@ -131,7 +132,7 @@ public abstract class LevelCommand extends SubCommand {
      * <p>
      * Please notify that, the modification feedback will be saved as a property "feedback"
      *
-     * @param ctx   Command context
+     * @param ctx Command context
      */
     public abstract void sendOfflineFeedback(@NotNull CommandContext ctx, @NotNull Level level, double value);
 }

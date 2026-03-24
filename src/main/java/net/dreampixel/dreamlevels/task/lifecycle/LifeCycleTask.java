@@ -28,6 +28,35 @@ public class LifeCycleTask extends BukkitRunnable {
         instance = this;
     }
 
+    @NotNull
+    public static LifeCycleTask getInstance() {
+        return instance;
+    }
+
+    /**
+     * Add an item to the task. If the task is not started, then it'll be ignored.
+     *
+     * @param item Item
+     */
+    public static void add(@NotNull LifeCycled item) {
+        if (instance != null) {
+            instance.addItem(item);
+            Debugger.info("Item '" + item.getKey() + "' was added to the life cycle task.");
+        }
+    }
+
+    /**
+     * Remove an item from the task. If the task is not started, then it'll be ignored.
+     *
+     * @param key Key of the item
+     */
+    public static void remove(@NotNull String key) {
+        if (instance != null) {
+            instance.removeItem(key);
+            Debugger.info("Item '" + key + "' was removed from the life cycle task.");
+        }
+    }
+
     /**
      * Start the task.
      */
@@ -57,7 +86,8 @@ public class LifeCycleTask extends BukkitRunnable {
     public void stop() {
         try {
             cancel();
-        } catch (Throwable ignore) {}
+        } catch (Throwable ignore) {
+        }
     }
 
     /**
@@ -109,35 +139,6 @@ public class LifeCycleTask extends BukkitRunnable {
                 iter.remove();
                 Debugger.info("Item '" + value.getKey() + "''s life cycle finished, which has been removed.");
             }
-        }
-    }
-
-    @NotNull
-    public static LifeCycleTask getInstance() {
-        return instance;
-    }
-
-    /**
-     * Add an item to the task. If the task is not started, then it'll be ignored.
-     *
-     * @param item Item
-     */
-    public static void add(@NotNull LifeCycled item) {
-        if (instance != null) {
-            instance.addItem(item);
-            Debugger.info("Item '" + item.getKey() + "' was added to the life cycle task.");
-        }
-    }
-
-    /**
-     * Remove an item from the task. If the task is not started, then it'll be ignored.
-     *
-     * @param key Key of the item
-     */
-    public static void remove(@NotNull String key) {
-        if (instance != null) {
-            instance.removeItem(key);
-            Debugger.info("Item '" + key + "' was removed from the life cycle task.");
         }
     }
 }

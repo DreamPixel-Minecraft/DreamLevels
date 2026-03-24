@@ -12,14 +12,14 @@ public class PlayerDataResetAllEvent extends PlayerEvent {
         super(who);
     }
 
-    @Override
-    public @NotNull HandlerList getHandlers() {
-        return handlerList;
-    }
-
     @SuppressWarnings("unused")
     @NotNull
     public static HandlerList getHandlerList() {
+        return handlerList;
+    }
+
+    @Override
+    public @NotNull HandlerList getHandlers() {
         return handlerList;
     }
 }

@@ -75,7 +75,7 @@ public class DSItemReset extends MenuItem {
         if (player == null) {
             return;
         }
-        
+
         // replace display name
         meta.setDisplayName(ReplaceUtils.coloredReplace(meta.getDisplayName(), player,
                 "{player}", player.getName(),

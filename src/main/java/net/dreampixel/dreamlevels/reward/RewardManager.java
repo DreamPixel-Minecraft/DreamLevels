@@ -33,15 +33,18 @@ import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings({"ResultOfMethodCallIgnored", "unused"})
 public class RewardManager implements Manager {
-    private final DreamLevels plugin;
-
-    private File directory;
-
-    private final HashMap<String, RewardList> rewardLists = new HashMap<>();
     protected final HashMap<String, MenuItem> defaultItems = new HashMap<>();
+    private final DreamLevels plugin;
+    private final HashMap<String, RewardList> rewardLists = new HashMap<>();
+    private File directory;
 
     public RewardManager(DreamLevels plugin) {
         this.plugin = plugin;
+    }
+
+    @NotNull
+    public static RewardManager getInstance() {
+        return DreamLevels.getInstance().getRewardManager();
     }
 
     @Override
@@ -117,7 +120,7 @@ public class RewardManager implements Manager {
     /**
      * Load a reward from the reward directory.
      *
-     * @param name Name
+     * @param name      Name
      * @param skipCheck Whether not to check this reward is enabled
      *                  in Config.yml when loading.
      */
@@ -237,10 +240,5 @@ public class RewardManager implements Manager {
                 .map(t -> t.findRewardMenu(player))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-    }
-
-    @NotNull
-    public static RewardManager getInstance() {
-        return DreamLevels.getInstance().getRewardManager();
     }
 }

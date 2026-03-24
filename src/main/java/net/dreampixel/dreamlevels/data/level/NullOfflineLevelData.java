@@ -10,6 +10,10 @@ public class NullOfflineLevelData extends OfflineLevelData {
         super(null, feedbackConsumer, null);
     }
 
+    public static NullOfflineLevelData of(@NotNull Consumer<String> feedbackConsumer) {
+        return new NullOfflineLevelData(feedbackConsumer);
+    }
+
     @Override
     public @NotNull UUID getUniqueId() {
         return UUID.randomUUID();
@@ -58,9 +62,5 @@ public class NullOfflineLevelData extends OfflineLevelData {
     @Override
     public void reset() {
         feedbackConsumer.accept("unknown level data");
-    }
-
-    public static NullOfflineLevelData of(@NotNull Consumer<String> feedbackConsumer) {
-        return new NullOfflineLevelData(feedbackConsumer);
     }
 }

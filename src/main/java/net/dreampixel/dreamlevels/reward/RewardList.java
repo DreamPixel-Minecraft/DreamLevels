@@ -9,9 +9,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.shadowpixel.shadowcore.api.config.component.NodeSection;
 import top.shadowpixel.shadowcore.api.function.component.ExecutableEvent;
+import top.shadowpixel.shadowcore.api.menu.component.MenuItem;
 import top.shadowpixel.shadowcore.api.menu.impl.PlayerMenu;
 import top.shadowpixel.shadowcore.api.util.item.ItemBuilder;
-import top.shadowpixel.shadowcore.api.menu.component.MenuItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ public class RewardList {
     private final NodeSection configuration;
 
     private final String name;
-    private final Level level ;
+    private final Level level;
     private final int size;
     private final HashMap<String, String> titles = new HashMap<>();
     private final ArrayList<String> permissions = new ArrayList<>();

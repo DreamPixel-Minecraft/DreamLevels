@@ -23,6 +23,11 @@ public class SyncManager implements Manager {
         this.plugin = plugin;
     }
 
+    @NotNull
+    public static SyncManager getInstance() {
+        return requireNonNull(DreamLevels.getInstance().getSyncManager(), "SyncManager still uninitialized");
+    }
+
     @Override
     public void initialize() {
         MLogger.info("data.sync-mode.starting");
@@ -65,10 +70,5 @@ public class SyncManager implements Manager {
     @NotNull
     public String getChannelName() {
         return channelName;
-    }
-
-    @NotNull
-    public static SyncManager getInstance() {
-        return requireNonNull(DreamLevels.getInstance().getSyncManager(), "SyncManager still uninitialized");
     }
 }

@@ -13,9 +13,9 @@ public class PlayerExpModifyEvent extends AbstractLevelEvent implements Cancella
 
     /**
      * Fired when a player's exp changed. </br>
-     *
+     * <p>
      * Please pay attention that {@code amount} is the original value. </br>
-     *
+     * <p>
      * That's to say, you should multiply the amount by the multiple to get
      * the true value if the exp was added.
      *

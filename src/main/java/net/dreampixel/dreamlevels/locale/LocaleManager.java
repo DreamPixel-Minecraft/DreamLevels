@@ -24,9 +24,41 @@ public class LocaleManager extends AbstractLocaleManager<DreamLevels> {
             "Message.yml",
             "Events.yml"
     );
+    private static Locale internal;
 
     public LocaleManager(DreamLevels plugin, File directory) {
         super(plugin, directory);
+    }
+
+    @NotNull
+    public static LocaleManager getInstance() {
+        return DreamLevels.getInstance().getLocaleManager();
+    }
+
+    @NotNull
+    public static Locale getInternal() {
+        if (internal == null) {
+            var plugin = DreamLevels.getInstance();
+
+            // create internal locale
+            var locale = new Locale(plugin, "Internal", null, CONTENTS);
+            locale.setName("Internal");
+
+            // add configuration
+            try {
+                locale.addConfig("Message", ConfigurationProvider.getYamlConfigurationProvider()
+                        .load(plugin.getResource("Locale/zh_CN/Message.yml")));
+            } catch (Exception e) {
+                Logger.error(
+                        "Failed to load internal locale!",
+                        "It may not affect a lot, you can ignore it."
+                );
+            }
+
+            internal = locale;
+        }
+
+        return internal;
     }
 
     @Override
@@ -53,37 +85,5 @@ public class LocaleManager extends AbstractLocaleManager<DreamLevels> {
     @Override
     public @NotNull Collection<String> getContents() {
         return CONTENTS;
-    }
-
-    @NotNull
-    public static LocaleManager getInstance() {
-        return DreamLevels.getInstance().getLocaleManager();
-    }
-    private static Locale internal;
-
-    @NotNull
-    public static Locale getInternal() {
-        if (internal == null) {
-            var plugin = DreamLevels.getInstance();
-
-            // create internal locale
-            var locale = new Locale(plugin, "Internal", null, CONTENTS);
-            locale.setName("Internal");
-
-            // add configuration
-            try {
-                locale.addConfig("Message", ConfigurationProvider.getYamlConfigurationProvider()
-                        .load(plugin.getResource("Locale/zh_CN/Message.yml")));
-            } catch (Exception e) {
-                Logger.error(
-                        "Failed to load internal locale!",
-                        "It may not affect a lot, you can ignore it."
-                );
-            }
-
-            internal = locale;
-        }
-
-        return internal;
     }
 }

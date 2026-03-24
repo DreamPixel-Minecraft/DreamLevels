@@ -13,7 +13,7 @@ import java.io.File;
 import java.io.Reader;
 import java.util.UUID;
 
-@SuppressWarnings ({"unused", "ResultOfMethodCallIgnored"})
+@SuppressWarnings({"unused", "ResultOfMethodCallIgnored"})
 public abstract class ConfigurationDataModifier implements FileDataModifier {
 
     public abstract ConfigurationProvider getConfigurationProvider();
@@ -71,7 +71,8 @@ public abstract class ConfigurationDataModifier implements FileDataModifier {
         }
 
         try {
-            file.getParentFile().mkdirs();  file.createNewFile();
+            file.getParentFile().mkdirs();
+            file.createNewFile();
             save(new PlayerData(uuid));
             return true;
         } catch (Throwable t) {

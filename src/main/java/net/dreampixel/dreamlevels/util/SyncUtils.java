@@ -20,16 +20,16 @@ public class SyncUtils {
     /**
      * Post a modification request to notify the player's current server to modify
      * their data. The feedback will be accepted by the Consumer {@code onFeedback}. </br>
-     *
+     * <p>
      * If the player is offline, then run the {@code onOffline} actions.
      *
-     * @param request Request message
+     * @param request   Request message
      * @param onOffline Actions to take if the player is offline
      */
     public static void sendRequest(@NotNull UUID uniqueId,
-                             @NotNull QueryBuilder request,
-                             @NotNull Consumer<String> feedbackConsumer,
-                             @NotNull Runnable onOffline) {
+                                   @NotNull QueryBuilder request,
+                                   @NotNull Consumer<String> feedbackConsumer,
+                                   @NotNull Runnable onOffline) {
         var channel = BungeeMessenger.getInstance().getDefaultChannel();
         if (channel == null) {
             feedbackConsumer.accept("invalid channel");
@@ -96,7 +96,7 @@ public class SyncUtils {
 
     /**
      * @return Whether the sync mode is enabled, if true, the modification request will be post
-     *         to where the player is if online, otherwise directly modify their offline data.
+     * to where the player is if online, otherwise directly modify their offline data.
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean isProxyMode() {

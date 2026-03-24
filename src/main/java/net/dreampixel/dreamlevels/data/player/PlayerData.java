@@ -19,8 +19,8 @@ import java.util.UUID;
 
 @SerializableAs("DreamLevels-Data")
 public class PlayerData implements ConfigurationSerializable, IPlayerData {
-    private UUID uniqueId;
     private final Map<String, LevelData> levelData;
+    private UUID uniqueId;
 
     public PlayerData(@NotNull UUID uniqueId) {
         this.uniqueId = uniqueId;

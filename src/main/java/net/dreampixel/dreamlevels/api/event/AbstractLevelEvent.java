@@ -15,6 +15,11 @@ public abstract class AbstractLevelEvent extends PlayerEvent {
         this.level = level;
     }
 
+    @NotNull
+    public static HandlerList getHandlerList() {
+        return handlerList;
+    }
+
     public Level getLevel() {
         return level;
     }
@@ -22,11 +27,6 @@ public abstract class AbstractLevelEvent extends PlayerEvent {
     @NotNull
     @Override
     public HandlerList getHandlers() {
-        return handlerList;
-    }
-
-    @NotNull
-    public static HandlerList getHandlerList() {
         return handlerList;
     }
 }

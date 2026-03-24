@@ -10,7 +10,7 @@ import java.io.File;
 import java.util.UUID;
 
 public class YamlDataModifier extends ConfigurationDataModifier {
-    public static final StorageMethod[] STORAGE_METHODS = { StorageMethod.YAML };
+    public static final StorageMethod[] STORAGE_METHODS = {StorageMethod.YAML};
 
     @Override
     public ConfigurationProvider getConfigurationProvider() {

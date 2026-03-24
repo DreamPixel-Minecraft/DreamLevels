@@ -2,10 +2,10 @@ package net.dreampixel.dreamlevels.menu.dataspy;
 
 import lombok.var;
 import net.dreampixel.dreamlevels.DreamLevels;
+import net.dreampixel.dreamlevels.level.Level;
 import net.dreampixel.dreamlevels.menu.dataspy.menu.LevelDataMenu;
 import net.dreampixel.dreamlevels.menu.dataspy.menu.LevelDataOverallMenu;
 import net.dreampixel.dreamlevels.menu.dataspy.menu.PlayerDataMenu;
-import net.dreampixel.dreamlevels.level.Level;
 import net.dreampixel.dreamlevels.util.Logger;
 import net.dreampixel.dreamlevels.util.MLogger;
 import org.bukkit.entity.Player;
@@ -23,16 +23,20 @@ import java.util.UUID;
 public class DataSpyManager implements Manager {
     private final DreamLevels plugin;
     private final HashMap<String, MenuItem> items = new HashMap<>();
-
-    // menu for showing all players' data
-    private PlayerDataMenu playerDataMenu;
     // menu for showing a player's all level data
     private final HashMap<UUID, LevelDataOverallMenu> levelDataOverallMenus = new HashMap<>();
     // the key is "{target-uuid}-{levelName}"
     private final HashMap<String, LevelDataMenu> levelDataMenus = new HashMap<>();
+    // menu for showing all players' data
+    private PlayerDataMenu playerDataMenu;
 
     public DataSpyManager(DreamLevels plugin) {
         this.plugin = plugin;
+    }
+
+    @NotNull
+    public static DataSpyManager getInstance() {
+        return DreamLevels.getInstance().getDataSpyManager();
     }
 
     @Override
@@ -109,7 +113,7 @@ public class DataSpyManager implements Manager {
      *
      * @param player Player to show the menu
      * @param target Target player's uniqueId
-     * @param level A level system
+     * @param level  A level system
      */
     public void openLevelDataMenu(@NotNull Player player, @NotNull UUID target, @NotNull Level level) {
         var menu = getLevelDataMenu(target, level);
@@ -151,7 +155,7 @@ public class DataSpyManager implements Manager {
     /**
      * @param target Target player's unique id
      */
-    public void  removeLevelDataOverallMenu(@NotNull UUID target) {
+    public void removeLevelDataOverallMenu(@NotNull UUID target) {
         var menu = levelDataOverallMenus.remove(target);
         if (menu != null) {
             menu.delete();
@@ -168,7 +172,7 @@ public class DataSpyManager implements Manager {
 
     /**
      * @param target Target player
-     * @param level Target level
+     * @param level  Target level
      * @return A specific level data's menu
      */
     public LevelDataMenu getLevelDataMenu(@NotNull UUID target, @NotNull Level level) {
@@ -212,7 +216,7 @@ public class DataSpyManager implements Manager {
      * Update the menu of this player if existent, which will update all items in the menu.
      *
      * @param player Player
-     * @param level Level
+     * @param level  Level
      */
     public void updateMenu(@NotNull Player player, @NotNull Level level) {
         var menu = levelDataMenus.get(player.getUniqueId() + "-" + level.getName());
@@ -244,10 +248,5 @@ public class DataSpyManager implements Manager {
             var ldom = new LevelDataOverallMenu(uniqueId);
             this.levelDataOverallMenus.put(uniqueId, ldom);
         }
-    }
-
-    @NotNull
-    public static DataSpyManager getInstance() {
-        return DreamLevels.getInstance().getDataSpyManager();
     }
 }

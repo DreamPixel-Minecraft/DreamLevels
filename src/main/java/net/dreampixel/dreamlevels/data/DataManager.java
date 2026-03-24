@@ -5,13 +5,13 @@ import lombok.Getter;
 import lombok.var;
 import net.dreampixel.dreamlevels.DreamLevels;
 import net.dreampixel.dreamlevels.data.level.LevelData;
+import net.dreampixel.dreamlevels.data.level.NullOfflineLevelData;
 import net.dreampixel.dreamlevels.data.level.OfflineLevelData;
 import net.dreampixel.dreamlevels.data.modifier.DataModifier;
 import net.dreampixel.dreamlevels.data.modifier.StorageMethod;
 import net.dreampixel.dreamlevels.data.modifier.impl.JsonDataModifier;
 import net.dreampixel.dreamlevels.data.modifier.impl.SQLDataModifier;
 import net.dreampixel.dreamlevels.data.modifier.impl.YamlDataModifier;
-import net.dreampixel.dreamlevels.data.level.NullOfflineLevelData;
 import net.dreampixel.dreamlevels.data.player.IPlayerData;
 import net.dreampixel.dreamlevels.data.player.NullOfflinePlayerData;
 import net.dreampixel.dreamlevels.data.player.OfflinePlayerData;
@@ -36,27 +36,29 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Consumer;
 
-@SuppressWarnings ({"UnusedReturnValue", "unused"})
+@SuppressWarnings({"UnusedReturnValue", "unused"})
 public class DataManager implements Manager {
     private final DreamLevels plugin;
-
+    private final HashMap<UUID, PlayerData> loadedData = new HashMap<>(0);
     @Getter
     private StorageMethod storageMethod;
     @Getter
     private File storageDirectory;
     @Getter
     private DataModifier dataModifier;
-
     @Getter
     private SQLDatabase database;
-
-    private final HashMap<UUID, PlayerData> loadedData = new HashMap<>(0);
 
     public DataManager(DreamLevels plugin) {
         this.plugin = plugin;
     }
 
-    @SuppressWarnings ("ResultOfMethodCallIgnored")
+    @NotNull
+    public static DataManager getInstance() {
+        return DreamLevels.getInstance().getDataManager();
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public void initialize() {
         var config = plugin.getConfiguration();
@@ -306,7 +308,7 @@ public class DataManager implements Manager {
 
     public boolean isDatabaseMode() {
         return storageMethod == StorageMethod.SQLITE ||
-               storageMethod == StorageMethod.MYSQL;
+                storageMethod == StorageMethod.MYSQL;
     }
 
     public void initDatabase() {
@@ -398,10 +400,5 @@ public class DataManager implements Manager {
         });
 
         return data;
-    }
-
-    @NotNull
-    public static DataManager getInstance() {
-        return DreamLevels.getInstance().getDataManager();
     }
 }

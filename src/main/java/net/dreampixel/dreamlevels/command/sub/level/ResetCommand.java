@@ -142,7 +142,7 @@ public class ResetCommand extends SubCommand {
         }
     }
 
-    public void sendOfflineFeedback( CommandContext ctx, String feedback) {
+    public void sendOfflineFeedback(CommandContext ctx, String feedback) {
         var player = (String) ctx.getProperty("player");
         var level = (String) ctx.getProperty("level");
 
@@ -154,7 +154,7 @@ public class ResetCommand extends SubCommand {
                 LocaleUtils.sendCmdMessage(ctx.sender(), "offline.sync-success");
             }
 
-            LocaleUtils.sendCmdMessage(ctx.sender(), level.equals("*") ? "level.reset-all"  : "level.reset",
+            LocaleUtils.sendCmdMessage(ctx.sender(), level.equals("*") ? "level.reset-all" : "level.reset",
                     "{player}", player,
                     "{level}", level,
                     "{level-displayName}", level);
