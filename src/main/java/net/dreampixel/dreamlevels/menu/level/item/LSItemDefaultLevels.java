@@ -33,8 +33,12 @@ public class LSItemDefaultLevels extends MenuItem {
             LocaleUtils.sendMessages(player, "level-spy.modify.default-levels",
                     "{player}", player.getName(),
                     "{level}", level.getName());
-            DataInputController.getInstance().createInput(player, int.class,
-                    input -> {
+
+            // ask for input content
+            DataInputController.getInstance().<Integer>createInput()
+                    .player(player)
+                    .type(int.class)
+                    .onInput(input -> {
                         var previous = level.getDefaultLevels();
                         var value = input.getExistingValue();
                         level.setDefaultLevels(value);
@@ -47,12 +51,13 @@ public class LSItemDefaultLevels extends MenuItem {
 
                         // reopen the menu
                         menu.openMenu(player);
-                    },
-                    invalid -> LocaleUtils.sendMessage(player, "level-spy.invalid.integer"),
-                    () -> {
+                    })
+                    .onInvalid(invalid -> LocaleUtils.sendMessage(player, "level-spy.invalid.integer"))
+                    .onCancelled(() -> {
                         LocaleUtils.sendMessage(player, "level-spy.cancel");
                         menu.openMenu(player);
-                    });
+                    })
+                    .finish();
         });
     }
 

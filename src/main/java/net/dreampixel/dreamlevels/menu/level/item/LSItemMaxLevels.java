@@ -33,13 +33,17 @@ public class LSItemMaxLevels extends MenuItem {
             LocaleUtils.sendMessages(player, "level-spy.modify.max-levels",
                     "{player}", player.getName(),
                     "{level}", level.getName());
-            DataInputController.getInstance().createInput(player, int.class,
-                    input -> {
+
+            // ask for input content
+            DataInputController.getInstance().<Integer>createInput()
+                    .player(player)
+                    .type(Integer.class)
+                    .onInput(input -> {
                         var previous = level.getDefaultMaxLevels();
                         var value = input.getExistingValue();
                         level.setDefaultMaxLevels(value);
 
-                        // send feedback command
+                        // send feedback message
                         LocaleUtils.sendMessage(player, "level-spy.modified.max-levels",
                                 "{previous}", String.valueOf(previous),
                                 "{value}", String.valueOf(value),
@@ -47,12 +51,13 @@ public class LSItemMaxLevels extends MenuItem {
 
                         // reopen the menu
                         menu.openMenu(player);
-                    },
-                    invalid -> LocaleUtils.sendMessage(player, "level-spy.invalid.integer"),
-                    () -> {
+                    })
+                    .onInvalid(invalid -> LocaleUtils.sendMessage(player, "level-spy.invalid.integer"))
+                    .onCancelled(() -> {
                         LocaleUtils.sendMessage(player, "level-spy.cancel");
                         menu.openMenu(player);
-                    });
+                    })
+                    .finish();
         });
     }
 

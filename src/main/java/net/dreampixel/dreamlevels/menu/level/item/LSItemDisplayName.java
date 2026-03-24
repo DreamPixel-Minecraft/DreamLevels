@@ -33,13 +33,15 @@ public class LSItemDisplayName extends MenuItem {
             LocaleUtils.sendMessages(player, "level-spy.modify.display-name",
                     "{player}", player.getName(),
                     "{level}", level.getName());
-            DataInputController.getInstance().createInput(player, String.class,
-                    input -> {
+            DataInputController.getInstance().<String>createInput()
+                    .player(player)
+                    .type(String.class)
+                    .onInput(input -> {
                         var previous = level.getDisplayName();
                         var value = input.getExistingValue();
                         level.setDisplayName(value);
 
-                        // send feedback command
+                        // send feedback message
                         LocaleUtils.sendMessage(player, "level-spy.modified.display-name",
                                 "{previous}", String.valueOf(previous),
                                 "{value}", value,
@@ -47,11 +49,12 @@ public class LSItemDisplayName extends MenuItem {
 
                         // reopen the menu
                         menu.openMenu(player);
-                    },
-                    () -> {
+                    })
+                    .onCancelled(() -> {
                         LocaleUtils.sendMessage(player, "level-spy.cancel");
                         menu.openMenu(player);
-                    });
+                    })
+                    .finish();
         });
     }
 

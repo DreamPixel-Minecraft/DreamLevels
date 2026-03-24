@@ -37,8 +37,10 @@ public class DSItemResetAll extends MenuItem {
                     "{player}", player.getName());
 
             // ask for input content
-            DataInputController.getInstance().createInput(player, String.class,
-                    input -> {
+            DataInputController.getInstance().<String>createInput()
+                    .player(player)
+                    .type(String.class)
+                    .onInput(input -> {
                         if (input.getExistingValue().equalsIgnoreCase("confirm")) {
                             // reset all data and send feedback
                             playerData.resetAll();
@@ -53,13 +55,13 @@ public class DSItemResetAll extends MenuItem {
                         // send failure feedback and ask to reinput
                         LocaleUtils.sendMessage(player, "data-spy.invalid.text");
                         input.reinput();
-                    },
-                    i -> {},
-                    () -> {
+                    })
+                    .onCancelled(() -> {
                         // send cancel message and reopen the menu
                         LocaleUtils.sendMessage(player, "data-spy.cancel");
                         menu.openMenu(player);
-                    });
+                    })
+                    .finish();
         });
     }
 

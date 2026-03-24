@@ -5,9 +5,11 @@ import net.dreampixel.dreamlevels.data.level.LevelData;
 import net.dreampixel.dreamlevels.menu.dataspy.DataSpyManager;
 import net.dreampixel.dreamlevels.menu.dataspy.menu.LevelDataMenu;
 import net.dreampixel.dreamlevels.util.LocaleUtils;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import top.shadowpixel.shadowcore.api.input.DataInputController;
+import top.shadowpixel.shadowcore.api.input.DataInputEntry;
 import top.shadowpixel.shadowcore.api.menu.component.MenuItem;
 import top.shadowpixel.shadowcore.util.text.ReplaceUtils;
 
@@ -37,37 +39,16 @@ public class DSItemLevels extends MenuItem {
             LocaleUtils.sendMessages(player, "data-spy.modify.levels",
                     "{player}", player.getName(),
                     "{level}", levelData.getLevelName());
-            DataInputController.getInstance().createInput(player, int.class,
-                    input -> {
-                        int previous = levelData.getLevels();
-                        int value = input.getExistingValue();
-                        switch (input.getPrimitiveValue().charAt(0)) {
-                            case '+':
-                                levelData.addLevels(value);
-                                break;
-                            case '-':
-                                levelData.removeLevels(-value);
-                                break;
-                            default:
-                                levelData.setLevels(value);
-                                break;
-                        }
-
-                        // send feedback command
-                        LocaleUtils.sendMessage(player, "data-spy.modified.levels",
-                                "{previous}", String.valueOf(previous),
-                                "{value}", String.valueOf(levelData.getLevels()),
-                                "{player}", Objects.requireNonNull(levelData.getPlayer()).getName(),
-                                "{level}", levelData.getLevelName());
-
-                        // reopen the menu
-                        menu.openMenu(player);
-                    },
-                    invalid -> LocaleUtils.sendMessage(player, "data-spy.invalid.integer"),
-                    () -> {
+            DataInputController.getInstance().<Integer>createInput()
+                    .player(player)
+                    .type(int.class)
+                    .onInput(input -> handleInput(menu, input, player))
+                    .onInvalid(invalid -> LocaleUtils.sendMessage(player, "data-spy.invalid.integer"))
+                    .onCancelled(() -> {
                         LocaleUtils.sendMessage(player, "data-spy.cancel");
                         menu.openMenu(player);
-                    });
+                    })
+                    .finish();
         });
     }
 
@@ -103,6 +84,32 @@ public class DSItemLevels extends MenuItem {
 
         setItemMeta(meta);
         menu.setItem(1, 10, this);
+    }
+
+    private void handleInput(LevelDataMenu menu, DataInputEntry<Integer> input, Player player) {
+        int previous = levelData.getLevels();
+        int value = input.getExistingValue();
+        switch (input.getPrimitiveValue().charAt(0)) {
+            case '+':
+                levelData.addLevels(value);
+                break;
+            case '-':
+                levelData.removeLevels(-value);
+                break;
+            default:
+                levelData.setLevels(value);
+                break;
+        }
+
+        // send feedback command
+        LocaleUtils.sendMessage(player, "data-spy.modified.levels",
+                "{previous}", String.valueOf(previous),
+                "{value}", String.valueOf(levelData.getLevels()),
+                "{player}", Objects.requireNonNull(levelData.getPlayer()).getName(),
+                "{level}", levelData.getLevelName());
+
+        // reopen the menu
+        menu.openMenu(player);
     }
 
     @NotNull

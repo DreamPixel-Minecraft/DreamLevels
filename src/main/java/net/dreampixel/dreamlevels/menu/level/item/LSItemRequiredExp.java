@@ -33,13 +33,17 @@ public class LSItemRequiredExp extends MenuItem {
             LocaleUtils.sendMessages(player, "level-spy.modify.required-exp",
                     "{player}", player.getName(),
                     "{level}", level.getName());
-            DataInputController.getInstance().createInput(player, double.class,
-                    input -> {
+
+            // ask for input content
+            DataInputController.getInstance().<Double>createInput()
+                    .player(player)
+                    .type(double.class)
+                    .onInput(input -> {
                         var previous = level.getDefaultRequiredExp();
                         var value = input.getExistingValue();
                         level.setDefaultRequiredExp(value);
 
-                        // send feedback command
+                        // send feedback message
                         LocaleUtils.sendMessage(player, "level-spy.modified.required-exp",
                                 "{previous}", String.valueOf(previous),
                                 "{value}", String.valueOf(value),
@@ -47,12 +51,13 @@ public class LSItemRequiredExp extends MenuItem {
 
                         // reopen the menu
                         menu.openMenu(player);
-                    },
-                    invalid -> LocaleUtils.sendMessage(player, "level-spy.invalid.number"),
-                    () -> {
+                    })
+                    .onInvalid(invalid -> LocaleUtils.sendMessage(player, "level-spy.invalid.number"))
+                    .onCancelled(() -> {
                         LocaleUtils.sendMessage(player, "level-spy.cancel");
                         menu.openMenu(player);
-                    });
+                    })
+                    .finish();
         });
     }
 

@@ -35,16 +35,19 @@ public class DSItemReceivedRewards extends MenuItem {
             var player = event.getPlayer();
             player.closeInventory();
             LocaleUtils.sendMessages(player, "data-spy.modify.receive-rewards");
-            DataInputController.getInstance().createInput(player, double.class,
-                    input -> {
+            DataInputController.getInstance().<Double>createInput()
+                    .player(player)
+                    .type(double.class)
+                    .onInput(input -> {
                         levelData.setMultiple(input.getExistingValue());
                         menu.openMenu(player);
-                    },
-                    invalid -> LocaleUtils.sendMessage(player, "data-spy.invalid.number"),
-                    () -> {
+                    })
+                    .onInvalid(invalid -> LocaleUtils.sendMessage(player, "data-spy.invalid.number"))
+                    .onCancelled(() -> {
                         LocaleUtils.sendMessage(player, "data-spy.cancel");
                         menu.openMenu(player);
-                    });
+                    })
+                    .finish();
         });
     }
 
