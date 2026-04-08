@@ -37,13 +37,16 @@ public class Level implements ConfigurationSerializable {
      * basic vars for a level system
      */
     private final String name;
-    private final Map<Integer, Integer> expToLevel = new HashMap<>();
+    private final Map<Integer, Integer> expToLevel = new LinkedHashMap<>();
     private final LinkedHashMap<Integer, String> colors = new LinkedHashMap<>();
     private final HashMap<String, HashMap<String, ExecutableEvent>> levelEvents = new HashMap<>();
+
     private String displayName;
+
     private int defaultMaxLevels = 100;
     private int defaultLevels = 0;
     private double defaultRequiredExp = 5000D;
+
     private File storageFile;
 
     /**
