@@ -2,6 +2,7 @@ package net.dreampixel.dreamlevels.locale;
 
 import lombok.var;
 import net.dreampixel.dreamlevels.DreamLevels;
+import net.dreampixel.dreamlevels.level.LevelEventContainer;
 import net.dreampixel.dreamlevels.util.Logger;
 import org.jetbrains.annotations.NotNull;
 import top.shadowpixel.shadowcore.api.config.component.ConfigurationProvider;
@@ -19,7 +20,6 @@ public class LocaleManager extends AbstractLocaleManager<DreamLevels> {
     public static final List<LocaleInfo> PRESET_LOCALE_INFOS = ListUtils.immutableList(
             LocaleInfo.of("zh_CN", "Locale/zh_CN")
     );
-
     public static final List<String> CONTENTS = ListUtils.immutableList(
             "Message.yml",
             "Events.yml"
@@ -46,12 +46,15 @@ public class LocaleManager extends AbstractLocaleManager<DreamLevels> {
 
             // add configuration
             try {
-                locale.addConfig("Message", ConfigurationProvider.getYamlConfigurationProvider()
-                        .load(plugin.getResource("Locale/zh_CN/Message.yml")));
+                var yaml = ConfigurationProvider.getYamlConfigurationProvider();
+                locale.addConfig("Items", yaml.load(plugin.getResource("Items.yml")));
+                locale.addConfig("Default-events", yaml.load(plugin.getResource("Default-events.yml")));
+                locale.addConfig("Message", yaml.load(plugin.getResource("Locale/zh_CN/Message.yml")));
+                locale.addConfig("Events", yaml.load(plugin.getResource("Locale/zh_CN/Events.yml")));
             } catch (Exception e) {
-                Logger.error(
+                Logger.warn(
                         "Failed to load internal locale!",
-                        "It may not affect a lot, you can ignore it."
+                        "It may not affect a lot, which can probably be ignored."
                 );
             }
 
@@ -65,14 +68,40 @@ public class LocaleManager extends AbstractLocaleManager<DreamLevels> {
     public void initialize() {
         super.initialize();
         setDefaultLocale(plugin.getConfiguration().getString("locale.default-locale"));
+        loadLevelEvents();
+    }
 
-        // load reset-all events
-        getLocales().values().forEach(l -> {
-            var events = l.getConfig("Events");
-            if (events != null) {
-                var event = ExecutableEvent.of(events.getStringList("level-reset-all"));
-                event.replacePermanently("{prefix}", DreamLevels.getPrefix());
-                events.set("reset-all-events", event);
+    /**
+     * Load level events for every locale.
+     */
+    public void loadLevelEvents() {
+        // add all events to property
+        getLocales().values().forEach(locale -> {
+            var events = locale.getConfig("Events");
+            if (events == null) {
+                return;
+            }
+
+            // load level-reset-all event
+            var event = ExecutableEvent.of(events.getStringList("level-reset-all"));
+            event.replacePermanently("{prefix}", DreamLevels.getPrefix());
+            locale.setProperty("level-reset-all", event);
+
+            // load events of every levels as level event container objects,
+            // then put them to the property
+            var levelsSection = events.getNodeSection("levels");
+            if (levelsSection == null) {
+                return;
+            }
+
+            for (var key : levelsSection.getKeys()) {
+                var levelSection = levelsSection.getNodeSection(key);
+                if (levelSection == null) {
+                    continue;
+                }
+
+                var eventsContainer = new LevelEventContainer(locale.getName(), levelSection);
+                locale.setProperty("level-" + key.toLowerCase(), eventsContainer);
             }
         });
     }

@@ -51,6 +51,9 @@ public class Reward {
         loadCustomItems();
     }
 
+    /**
+     * Load custom items.
+     */
     public void loadCustomItems() {
         configuration.isNodeSection("custom-items", s -> {
             for (var key : s.getKeys()) {
@@ -115,6 +118,11 @@ public class Reward {
         return item;
     }
 
+    /**
+     * Receive the rewards for the player.
+     *
+     * @param player Player
+     */
     public void receive(@NotNull Player player) {
         // execute event
         event.execute(DreamLevels.getInstance(), player);
@@ -124,11 +132,23 @@ public class Reward {
         data.addReceivedReward(parent.getName(), this.name);
     }
 
+    /**
+     * Get reward menu item with a specific reward status.
+     *
+     * @param status Reward status
+     * @return Reward menu item
+     */
     @NotNull
     public MenuItem getRewardItem(@NotNull RewardStatus status) {
         return getItemByKey(status.getItemKey());
     }
 
+    /**
+     * Get the reward menu item, with a reward status of this player.
+     *
+     * @param player Player
+     * @return Reward menu item
+     */
     public MenuItem getRewardItem(@NotNull Player player) {
         RewardStatus status = getRewardStatus(player);
         var item = getRewardItem(status);
@@ -160,6 +180,12 @@ public class Reward {
         return ItemUtils.replace(item, player);
     }
 
+    /**
+     * Get a player's current reward status.
+     *
+     * @param player Player
+     * @return Reward status
+     */
     @NotNull
     public RewardStatus getRewardStatus(@NotNull Player player) {
         var data = parent.getLevel().getLevelData(player);

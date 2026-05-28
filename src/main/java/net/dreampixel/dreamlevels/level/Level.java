@@ -1,14 +1,12 @@
 package net.dreampixel.dreamlevels.level;
 
-import lombok.val;
 import lombok.var;
-import net.dreampixel.dreamlevels.DreamLevels;
 import net.dreampixel.dreamlevels.data.DataManager;
 import net.dreampixel.dreamlevels.data.level.ILevelData;
 import net.dreampixel.dreamlevels.data.level.LevelData;
 import net.dreampixel.dreamlevels.data.level.OfflineLevelData;
+import net.dreampixel.dreamlevels.locale.LocaleManager;
 import net.dreampixel.dreamlevels.menu.level.LevelSpyManager;
-import net.dreampixel.dreamlevels.util.Logger;
 import net.dreampixel.dreamlevels.util.MLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -23,12 +21,12 @@ import top.shadowpixel.shadowcore.util.collection.MapUtils;
 import top.shadowpixel.shadowcore.util.entity.PlayerUtils;
 import top.shadowpixel.shadowcore.util.object.NumberUtils;
 import top.shadowpixel.shadowcore.util.text.ColorUtils;
-import top.shadowpixel.shadowcore.util.text.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 @SuppressWarnings({"unchecked", "unused"})
 @SerializableAs("DreamLevels-Level")
@@ -39,7 +37,6 @@ public class Level implements ConfigurationSerializable {
     private final String name;
     private final Map<Integer, Integer> expToLevel = new LinkedHashMap<>();
     private final LinkedHashMap<Integer, String> colors = new LinkedHashMap<>();
-    private final HashMap<String, HashMap<String, ExecutableEvent>> levelEvents = new HashMap<>();
 
     private String displayName;
 
@@ -57,8 +54,6 @@ public class Level implements ConfigurationSerializable {
     public Level(String name) {
         this.name = name;
         this.displayName = name;
-
-        loadEvents();
     }
 
     /**
@@ -74,8 +69,6 @@ public class Level implements ConfigurationSerializable {
 
         this.expToLevel.putAll((HashMap<Integer, Integer>) deserialize.get("custom-exp-to-level-up"));
         this.colors.putAll((LinkedHashMap<Integer, String>) deserialize.get("colors"));
-
-        loadEvents();
     }
 
     /**
@@ -270,111 +263,62 @@ public class Level implements ConfigurationSerializable {
         return colors;
     }
 
-    public void loadEvents() {
-        var plugin = DreamLevels.getInstance();
-        plugin.getLocaleManager().getLocales().forEach((name, locale) -> {
-            var events = locale.getConfig("Events");
-            if (events == null) {
-                return;
-            }
-
-            val section = events.isNodeSection("levels." + this.name) ?
-                    events.getConfigurationSection("levels." + this.name) :
-                    events.getConfigurationSection("levels._DEFAULT_");
-
-            if (section == null) {
-                Logger.warn("invalid level events for " + name);
-                return;
-            }
-
-            var keys = new HashSet<>(section.getKeys());
-            var loadedEvents = new HashMap<String, ExecutableEvent>();
-
-            // load level-up events
-            var level_up = section.getConfigurationSection("level-up-events");
-            if (level_up != null) {
-                keys.remove("level-up-events"); // remove this node for avoiding duplicated loading
-                level_up.getKeys().forEach(key -> {
-                    var event = ExecutableEvent.of(level_up.getStringList(key));
-                    event.replacePermanently("{prefix}", DreamLevels.getPrefix());
-                    if (StringUtils.isInteger(key)) {
-                        event.replacePermanently("{levels}", key);
-                    }
-
-                    loadedEvents.put("LEVEL_UP_" + key.toUpperCase(), event);
-                });
-            }
-
-            keys.forEach(key -> {
-                if (key.equals("levels-added")) {
-                    var list = section.getStringList("levels-added");
-                    if (!list.isEmpty() && list.get(0).equalsIgnoreCase("LEVEL_UP")) {
-                        return;
-                    }
-                }
-
-                var event = ExecutableEvent.of(section.getStringList(key));
-                event.replacePermanently("{prefix}", DreamLevels.getPrefix());
-                loadedEvents.put(key, event);
-            });
-
-            this.levelEvents.put(name, loadedEvents);
-        });
+    /**
+     * Get a level event from a specific locale. If the event cannot be found in the locale,
+     * then trying to get it from the default locale. (should be enabled in the config,
+     * return null else)
+     *
+     * @param playerLocale Locale
+     * @param function Geting-event function
+     * @return Executable event
+     */
+    public @Nullable ExecutableEvent getLocalizedEvent(@NotNull String playerLocale, @NotNull Function<LevelEventContainer, ExecutableEvent> function) {
+        return LevelManager.getInstance().getLocalizedEvent(playerLocale, getName(), function);
     }
 
     /**
-     * Get a leveling up event according to player's locale.
+     * Get a level event from a player's locale. If the event cannot be found in  the locale,
+     * then trying to get it from the default locale. (should be enabled in the config,
+     * return null else)
      *
-     * @return Leveling up event
+     * @param player Player
+     * @param function Getting-event function
+     * @return Executable event
+     */
+    public @Nullable ExecutableEvent getLocalizedEvent(@NotNull Player player, @NotNull Function<LevelEventContainer, ExecutableEvent> function) {
+        return getLocalizedEvent(PlayerUtils.getLocale(player), function);
+    }
+
+    /**
+     * Get a default of this level. Return null if this level has no default event.
+     *
+     * @param function The function used to get event
+     * @return Executable event, or null if missing
+     */
+    public @Nullable ExecutableEvent getDefaultEvent(@NotNull Function<LevelEventContainer, ExecutableEvent> function) {
+        return LevelManager.getInstance().getDefaultLevelEvent(getName(), function);
+    }
+
+    /**
+     * Get level events from a specific locale. If the locale cannot be found or
+     * there is no specific events in this locale, then null will be returned.
+     *
+     * @param locale Locale name
+     * @return Level event container
      */
     @Nullable
-    public ExecutableEvent getLevelEvent(@NotNull Player player, @NotNull String key) {
-        var locale = PlayerUtils.getLocale(player);
-        if (key.equalsIgnoreCase("levels-added") && !this.levelEvents.containsKey("levels-added")) {
-            return getLevelUpEvent(player, getLevelData(player).getLevels());
-        }
-
-        var events = MapUtils.smartMatch(locale, this.levelEvents);
-        if (events == null) {
-            return ExecutableEvent.emptyEvent();
-        }
-
-        return events.get(key);
-    }
-
-    @Nullable
-    public ExecutableEvent getLevelUpEvent(@NotNull Player player, int level) {
-        var event = getLevelEvent(player, "LEVEL_UP_" + level);
-        if (event == null) {
-            event = getLevelEvent(player, "LEVEL_UP_DEFAULT");
-        }
-
-        return event;
-    }
-
-    @Nullable
-    public ExecutableEvent getLocalizedLevelEvent(@NotNull String locale, @NotNull String key) {
-        var events = this.levelEvents.get(locale);
-        if (events == null) {
+    public LevelEventContainer getLevelEvents(@NotNull String locale) {
+        var locale1 = LocaleManager.getInstance().getLocale(locale);
+        if (locale1 == null) {
             return null;
         }
 
-        return events.get(key);
-    }
-
-    @Nullable
-    public ExecutableEvent getLocalizedLevelUpEvent(@NotNull String locale, int level) {
-        var event = getLocalizedLevelEvent(locale, "LEVEL_UP_" + level);
-        if (event == null) {
-            event = getLocalizedLevelEvent(locale, "LEVEL_UP_DEFAULT");
-        }
-
-        return event;
+        return (LevelEventContainer) locale1.getProperty("level-" + getName().toLowerCase());
     }
 
     /**
      * Post-processing steps after this level was modified, including update the specific
-     * level-spy menu and save to the file.
+     * level-spy menu and save the level to its file.
      */
     protected void postprocess() {
         // update menu items for level spy menu

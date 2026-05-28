@@ -99,7 +99,7 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
     }
 
     /**
-     * Add levels. This operation will be cancelled if the event is fired and then cancelled.
+     * Add levels. This operation will be canceled if the event is fired and then canceled.
      */
     @Override
     public void addLevels(int amount) {
@@ -107,7 +107,7 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
     }
 
     /**
-     * Add levels. This operation will be cancelled if the event is fired and then cancelled.
+     * Add levels. This operation will be canceled if the event is fired and then canceled.
      *
      * @param fireEvent Whether to call the event.
      *                  If false, the data will be modified without event being fired
@@ -117,7 +117,7 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
     }
 
     /**
-     * Set levels. This operation will be cancelled if the event is fired and then cancelled.
+     * Set levels. This operation will be canceled if the event is fired and then canceled.
      */
     @Override
     public void setLevels(int amount) {
@@ -125,7 +125,7 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
     }
 
     /**
-     * Set levels. This operation will be cancelled if the event is fired and then cancelled.
+     * Set levels. This operation will be canceled if the event is fired and then canceled.
      *
      * @param fireEvent Whether to call the event.
      *                  If false, the data will be modified without event being fired
@@ -135,7 +135,7 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
     }
 
     /**
-     * Remove levels. This operation will be cancelled if the event is fired and then cancelled.
+     * Remove levels. This operation will be canceled if the event is fired and then canceled.
      */
     @Override
     public void removeLevels(int amount) {
@@ -143,7 +143,7 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
     }
 
     /**
-     * Remove levels. This operation will be cancelled if the event is fired and then cancelled.
+     * Remove levels. This operation will be canceled if the event is fired and then canceled.
      *
      * @param fireEvent Whether to call the event.
      *                  If false, the data will be modified without event being fired
@@ -153,7 +153,7 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
     }
 
     /**
-     * Add experience. This operation will be cancelled if the event is fired and then cancelled.
+     * Add experience. This operation will be canceled if the event is fired and then canceled.
      */
     @Override
     public void addExp(double amount) {
@@ -161,7 +161,7 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
     }
 
     /**
-     * Add experience. This operation will be cancelled if the event is fired and then cancelled.
+     * Add experience. This operation will be canceled if the event is fired and then canceled.
      *
      * @param fireEvent Whether to call the event.
      *                  If false, the data will be modified without event being fired
@@ -171,7 +171,7 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
     }
 
     /**
-     * Set experience. This operation will be cancelled if the event is fired and then cancelled.
+     * Set experience. This operation will be canceled if the event is fired and then canceled.
      */
     @Override
     public void setExp(double amount) {
@@ -179,7 +179,7 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
     }
 
     /**
-     * Set experience. This operation will be cancelled if the event is fired and then cancelled.
+     * Set experience. This operation will be canceled if the event is fired and then canceled.
      *
      * @param fireEvent Whether to call the event.
      *                  If false, the data will be modified without event being fired
@@ -189,7 +189,7 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
     }
 
     /**
-     * Remove experience. This operation will be cancelled if the event is fired and then cancelled.
+     * Remove experience. This operation will be canceled if the event is fired and then canceled.
      */
     @Override
     public void removeExp(double amount) {
@@ -197,7 +197,7 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
     }
 
     /**
-     * Remove experience. This operation will be cancelled if the event is fired and then cancelled.
+     * Remove experience. This operation will be canceled if the event is fired and then canceled.
      *
      * @param fireEvent Whether to call the event.
      *                  If false, the data will be modified without event being fired
@@ -207,7 +207,7 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
     }
 
     /**
-     * Set multiple. This operation will be cancelled if the event is fired and then cancelled.
+     * Set multiple. This operation will be canceled if the event is fired and then canceled.
      *
      * @param fireEvent Whether to call the event.
      *                  If false, the data will be modified without event being fired
@@ -426,11 +426,18 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
                 this.levels++;
 
                 // execute events
-                var event = level.getLevelUpEvent(player, this.levels);
-                if (event != null) {
-                    event.replace("{previous}", String.valueOf(levels - 1));
-                    event.replace("{current-levels}", String.valueOf(levels));
-                    event.execute(DreamLevels.getInstance(), player);
+                var defaultEvent = level.getDefaultEvent(c -> c.getLevelUpEvent(this.levels));
+                if (defaultEvent != null) {
+                    defaultEvent.replace("{previous}", String.valueOf(levels - 1));
+                    defaultEvent.replace("{current-levels}", String.valueOf(levels));
+                    defaultEvent.execute(DreamLevels.getInstance(), player);
+                }
+
+                var localizedEvent = level.getLocalizedEvent(player, c -> c.getLevelUpEvent(this.levels));
+                if (localizedEvent != null) {
+                    localizedEvent.replace("{previous}", String.valueOf(levels - 1));
+                    localizedEvent.replace("{current-levels}", String.valueOf(levels));
+                    localizedEvent.execute(DreamLevels.getInstance(), player);
                 }
             }
 
@@ -472,7 +479,7 @@ public class LevelData implements ConfigurationSerializable, ILevelData {
     }
 
     /**
-     * Set multiple. This operation will be cancelled if the event is fired and then cancelled.
+     * Set multiple. This operation will be canceled if the event is fired and then canceled.
      */
     @Override
     public void setMultiple(double amount) {

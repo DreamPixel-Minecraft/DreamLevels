@@ -4,6 +4,7 @@ import lombok.var;
 import net.dreampixel.dreamlevels.DreamLevels;
 import net.dreampixel.dreamlevels.api.event.*;
 import net.dreampixel.dreamlevels.data.DataManager;
+import net.dreampixel.dreamlevels.level.LevelEventContainer;
 import net.dreampixel.dreamlevels.level.LevelManager;
 import net.dreampixel.dreamlevels.menu.dataspy.DataSpyManager;
 import net.dreampixel.dreamlevels.reward.RewardManager;
@@ -15,29 +16,40 @@ import top.shadowpixel.shadowcore.api.function.component.ExecutableEvent;
 import top.shadowpixel.shadowcore.util.object.NumberUtils;
 
 public class LevelListener implements Listener {
-
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerLevelsModified(PlayerLevelsModifiedEvent event) {
         var level = event.getLevel();
         var player = event.getPlayer();
 
-        var ee = (ExecutableEvent) null;
+        // execute level events
+        var defaultEvent = (ExecutableEvent) null;
+        var localizedEvent = (ExecutableEvent) null;
         switch (event.getModificationType()) {
             case ADD:
-                ee = level.getLevelEvent(player, "levels-added");
+                var currentLevel = level.getLevelData(player).getLevels();
+                defaultEvent = level.getDefaultEvent(c -> c.getAddLevelEvent(currentLevel));
+                localizedEvent = level.getLocalizedEvent(player, c -> c.getAddLevelEvent(currentLevel));
                 break;
             case REMOVE:
-                ee = level.getLevelEvent(player, "levels-removed");
+                defaultEvent = level.getDefaultEvent(LevelEventContainer::getLevelsRemovedEvent);
+                localizedEvent = level.getLocalizedEvent(player, LevelEventContainer::getLevelsRemovedEvent);
                 break;
             case SET:
-                ee = level.getLevelEvent(player, "levels-set");
+                defaultEvent = level.getDefaultEvent(LevelEventContainer::getLevelsSetEvent);
+                localizedEvent = level.getLocalizedEvent(player, LevelEventContainer::getLevelsSetEvent);
                 break;
         }
 
-        if (ee != null) {
-            ee.replace("{levels}", String.valueOf(event.getAmount()));
-            ee.replace("{current-levels}", String.valueOf(level.getLevelData(player).getLevels()));
-            ee.execute(DreamLevels.getInstance(), player);
+        if (defaultEvent != null) {
+            defaultEvent.replace("{levels}", String.valueOf(event.getAmount()));
+            defaultEvent.replace("{current-levels}", String.valueOf(level.getLevelData(player).getLevels()));
+            defaultEvent.execute(DreamLevels.getInstance(), player);
+        }
+
+        if (localizedEvent != null) {
+            localizedEvent.replace("{levels}", String.valueOf(event.getAmount()));
+            localizedEvent.replace("{current-levels}", String.valueOf(level.getLevelData(player).getLevels()));
+            localizedEvent.execute(DreamLevels.getInstance(), player);
         }
 
         // refresh reward menu items
@@ -59,25 +71,39 @@ public class LevelListener implements Listener {
         var player = event.getPlayer();
         var data = level.getLevelData(player);
 
-        var ee = (ExecutableEvent) null;
+        // execute localized level event
+        var defaultEvent = (ExecutableEvent) null;
+        var localizedEvent = (ExecutableEvent) null;
         switch (event.getModificationType()) {
             case ADD:
-                ee = level.getLevelEvent(player, "exp-received");
-                if (ee != null) {
-                    ee.replace("{final-exp}", String.valueOf(data.getMultiple() * event.getAmount()));
+                defaultEvent = level.getLocalizedEvent(player, LevelEventContainer::getExpReceivedEvent);
+                if (defaultEvent != null) {
+                    defaultEvent.replace("{final-exp}", String.valueOf(data.getMultiple() * event.getAmount()));
+                }
+
+                localizedEvent = level.getLocalizedEvent(player, LevelEventContainer::getExpReceivedEvent);
+                if (localizedEvent != null) {
+                    localizedEvent.replace("{final-exp}", String.valueOf(data.getMultiple() * event.getAmount()));
                 }
                 break;
             case REMOVE:
-                ee = level.getLevelEvent(player, "exp-removed");
+                defaultEvent = level.getDefaultEvent(LevelEventContainer::getLevelsRemovedEvent);
+                localizedEvent = level.getLocalizedEvent(player, LevelEventContainer::getLevelsRemovedEvent);
                 break;
             case SET:
-                ee = level.getLevelEvent(player, "exp-set");
+                defaultEvent = level.getDefaultEvent(LevelEventContainer::getLevelsSetEvent);
+                localizedEvent = level.getLocalizedEvent(player, LevelEventContainer::getLevelsSetEvent);
                 break;
         }
 
-        if (ee != null) {
-            ee.replace("{exp}", String.valueOf(event.getAmount()));
-            ee.execute(DreamLevels.getInstance(), player);
+        if (defaultEvent != null) {
+            defaultEvent.replace("{exp}", String.valueOf(event.getAmount()));
+            defaultEvent.execute(DreamLevels.getInstance(), player);
+        }
+
+        if (localizedEvent != null) {
+            localizedEvent.replace("{exp}", String.valueOf(event.getAmount()));
+            localizedEvent.execute(DreamLevels.getInstance(), player);
         }
 
         // check leveling up
@@ -92,42 +118,63 @@ public class LevelListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerMultipleModified(PlayerMultipleModifiedEvent event) {
-        var ee = event.getLevel().getLevelEvent(event.getPlayer(), "multiple-set");
-        if (ee != null) {
-            ee.replace("{multiple}", NumberUtils.cutString(event.getAmount(), 2));
-            ee.execute(DreamLevels.getInstance(), event.getPlayer());
+        var level = event.getLevel();
+        var player = event.getPlayer();
+
+        // default event
+        var defaultEvent = level.getDefaultEvent(LevelEventContainer::getMultipleSetEvent);
+        if (defaultEvent != null) {
+            defaultEvent.replace("{multiple}", NumberUtils.cutString(event.getAmount(), 2));
+            defaultEvent.execute(DreamLevels.getInstance(), player);
+        }
+
+        // localized event
+        var localizedEvent = level.getLocalizedEvent(player, LevelEventContainer::getMultipleSetEvent);
+        if (localizedEvent != null) {
+            localizedEvent.replace("{multiple}", NumberUtils.cutString(event.getAmount(), 2));
+            localizedEvent.execute(DreamLevels.getInstance(), player);
         }
 
         // save data
-        DataManager.getInstance().getPlayerData(event.getPlayer()).saveAsync();
+        DataManager.getInstance().getPlayerData(player).saveAsync();
 
         // update data spy menus
-        DataSpyManager.getInstance().updateMenu(event.getPlayer(), event.getLevel());
+        DataSpyManager.getInstance().updateMenu(player, level);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerDataReset(PlayerDataResetEvent event) {
-        var ee = event.getLevel().getLevelEvent(event.getPlayer(), "reset");
-        if (ee != null) {
-            ee.execute(DreamLevels.getInstance(), event.getPlayer());
+        var level = event.getLevel();
+        var player = event.getPlayer();
+
+        var defaultEvent = level.getDefaultEvent(LevelEventContainer::getResetEventEvent);
+        if (defaultEvent != null) {
+            defaultEvent.execute(DreamLevels.getInstance(), player);
+        }
+
+        var localizedEvent = level.getLocalizedEvent(player, LevelEventContainer::getResetEventEvent);
+        if (localizedEvent != null) {
+            localizedEvent.execute(DreamLevels.getInstance(), player);
         }
 
         // save data
-        DataManager.getInstance().getPlayerData(event.getPlayer()).saveAsync();
+        DataManager.getInstance().getPlayerData(player).saveAsync();
 
         // update experience bar
-        LevelManager.getInstance().updateExperienceBar(event.getPlayer());
+        LevelManager.getInstance().updateExperienceBar(player);
 
         // update data spy menus
-        DataSpyManager.getInstance().updateMenu(event.getPlayer(), event.getLevel());
+        DataSpyManager.getInstance().updateMenu(player, level);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerDataResetAll(PlayerDataResetAllEvent event) {
-        var ee = (ExecutableEvent) LocaleUtils.getLocaleEvents(event.getPlayer()).get("reset-all-events");
-        if (ee != null) {
-            ee.execute(DreamLevels.getInstance(), event.getPlayer());
-        }
+        // execute localized event
+        var localizedEvent = (ExecutableEvent) LocaleUtils.getLocale(event.getPlayer()).getProperty("level-reset-all");
+        localizedEvent.execute(DreamLevels.getInstance(), event.getPlayer());
+
+        // execute default event
+        LevelManager.getInstance().getDefaultResetAllEvent().execute(DreamLevels.getInstance(), event.getPlayer());
 
         // save data
         DataManager.getInstance().getPlayerData(event.getPlayer()).saveAsync();

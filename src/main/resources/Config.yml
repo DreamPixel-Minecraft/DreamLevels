@@ -1,6 +1,9 @@
 # 插件前缀
 prefix: '&b&lDL &8» &f'
-# 插件语言
+# 插件语言设置.
+# 本插件会根据玩家的游戏语言使用对应的插件语言, 比如玩家MrTyphoon使用的游戏语言是English (United States),
+# 则他使用的插件语言是en_US, 玩家konglai55使用的是简体中文, 则使用zh_CN.
+# 若要禁用此功能 (要强制让所有玩家使用同一语言), 请将'use-default-locale'设置为'true'.
 locale:
   # 语言文件存储的文件夹路径
   directory: '{default}/Locale'
@@ -9,6 +12,8 @@ locale:
   # 强制使用默认语言
   # 插件会根据玩家的游戏语言使用相应的插件语言, 如需禁用, 请启用该项.
   use-default-locale: false
+  # 如果玩家的语言文件里没有某个等级的事件, 是否使用默认语言对应的事件.
+  use-candidate-level-events: true
 data:
   # 数据存储支持
   # 本地文件: Yaml, Json

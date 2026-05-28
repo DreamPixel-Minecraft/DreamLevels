@@ -191,6 +191,13 @@ public final class DreamLevels extends AbstractPlugin {
             Logger.info("&7  > &fPlaceholderAPI: &cOFF");
         }
 
+        // ShadowMessenger
+        if (syncManager != null) {
+            Logger.info("&7  > &fShadowMessenger: &aON");
+        } else {
+            Logger.info("&7  > &fShadowMessenger: &cOFF");
+        }
+
         Logger.info("&9  [End]");
         Logger.info("&7  > &fStatus: &aREADY&7 &e(" + timer.getTimePassed() + "ms)");
         isEnabled = true;
@@ -236,6 +243,11 @@ public final class DreamLevels extends AbstractPlugin {
     @NotNull
     public FiledConfiguration getItemsConfiguration() {
         return requireNonNull(getConfiguration("Items"), "Items Configuration is null");
+    }
+
+    @NotNull
+    public FiledConfiguration getDefaultEventsConfiguration() {
+        return requireNonNull(getConfiguration("Default-events"), "Default-events Configuration is null");
     }
 
     /**
@@ -288,7 +300,7 @@ public final class DreamLevels extends AbstractPlugin {
     }
 
     /**
-     * Initializethe sync-mode service.
+     * Initialize the sync-mode service.
      */
     public void initSyncService() {
         if (syncManager != null) {
@@ -439,7 +451,7 @@ public final class DreamLevels extends AbstractPlugin {
     @NotNull
     @Deprecated //Shit
     public FileConfiguration getConfig() {
-        Logger.warn("The default method \"public FileConfiguration getConfig()\" method has been invoked which is deprecated and may cause unexpected problems!");
+        Logger.warn("The default method \"public FileConfiguration getConfig()\" has been invoked which is deprecated and may cause unexpected problems!");
         return super.getConfig();
     }
 }

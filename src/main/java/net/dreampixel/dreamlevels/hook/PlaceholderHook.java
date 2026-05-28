@@ -7,10 +7,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.shadowpixel.shadowcore.util.collection.ArrayUtils;
-import top.shadowpixel.shadowcore.util.collection.ListUtils;
 import top.shadowpixel.shadowcore.util.object.NumberUtils;
-
-import java.util.List;
 
 /**
  * A hook into PlaceholderAPI, providing placeholder service.
@@ -38,6 +35,11 @@ public class PlaceholderHook extends PlaceholderExpansion {
     public @Nullable String onPlaceholderRequest(Player player, @NotNull String params) {
         var parameters = params.split("_");
         if (ArrayUtils.isNull(parameters)) {
+            return null;
+        }
+
+        // ignore if no levels
+        if (parameters.length < 2) {
             return null;
         }
 
@@ -70,7 +72,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
             case "color":
                 return levelData.getColor();
             case "progressbar":
-                if (parameters.length > 3) {
+                if (parameters.length > 2) {
                     var length = NumberUtils.parseInt(parameters[2], -1);
                     if (length < 1) {
                         return "invalid length";
@@ -96,14 +98,5 @@ public class PlaceholderHook extends PlaceholderExpansion {
     @Override
     public boolean persist() {
         return true;
-    }
-
-    @Override
-    public @NotNull List<String> getPlaceholders() {
-        return ListUtils.asList(
-                "levels",
-                "exp",
-                "progressbar"
-        );
     }
 }

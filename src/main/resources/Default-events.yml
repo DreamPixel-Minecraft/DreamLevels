@@ -1,0 +1,66 @@
+# 每个等级事件的通用设置.
+#
+# 使用不同语言的玩家将会使用不同的等级事件, 就比如, MrTyphoon使用的语言是zh_CN, 那么他
+# 使用的事件是Locale/zh_CN/Events.yml; konglai55使用的语言是en_US, 那么他使用的
+# 事件是Locale/en_US/Events.yml. 这个配置文件确保无论玩家使用的是什么语言, 都会在执行
+# 玩家语言对应的事件的同时, 执行这个文件里设置的事件.
+#
+# ~ 开发者的建议:
+# 请注意，所有与奖励相关的事件都应该写在这里，以确保所有玩家能够公平地领取奖励，而各语言下的
+# 事件主要用于向玩家显示奖励信息。
+levels:
+  # 未配置等级的默认事件
+  _DEFAULT_:
+    # {exp}            -> 玩家得到的经验的原始值 (未乘以倍率)
+    # {final-exp}      -> 玩家最终得到的经验 (倍率 * 经验)
+    exp-received: []
+    # {exp}            -> 经验数量
+    exp-set: []
+    # {exp}            -> 经验数量
+    exp-removed: []
+    # 此项可用 "LEVEL_UP" 代替, 将调用升级事件.
+    #
+    # {levels}         -> 玩家得到的等级数量
+    # {current-levels} -> 玩家的当前等级
+    levels-added:
+      - LEVEL_UP
+    # {levels}         -> 等级数量
+    levels-set: []
+    # {levels}         -> 等级数量
+    levels-removed: []
+    # {multiple}       -> 倍率
+    multiple-set: []
+    reset: []
+    # {previous}       -> 玩家的上一级
+    # {current-levels} -> 玩家当前等级
+    level-up-events:
+      # 默认升级事件
+      default: []
+  # 等级系统 server 事件
+  server:
+    # {exp}            -> 玩家得到的经验的原始值 (未乘以倍率)
+    # {final-exp}      -> 玩家最终得到的经验 (倍率 * 经验)
+    exp-received: []
+    # {exp}            -> 经验数量
+    exp-set: []
+    # {exp}            -> 经验数量
+    exp-removed: []
+    # 此项可用 "LEVEL_UP" 代替, 将调用升级事件.
+    #
+    # {levels}         -> 玩家得到的等级数量
+    # {current-levels} -> 玩家的当前等级
+    levels-added:
+      - LEVEL_UP
+    # {levels}         -> 等级数量
+    # {current-levels} -> 玩家的当前等级
+    levels-set: []
+    # {levels}         -> 等级数量
+    # {current-levels} -> 玩家的当前等级
+    levels-removed: []
+    # {multiple}       -> 倍率
+    multiple-set: []
+    reset: []
+    # {previous}       -> 玩家的上一级
+    # {current-levels} -> 玩家当前等级
+    level-up-events: {}
+level-reset-all: []
