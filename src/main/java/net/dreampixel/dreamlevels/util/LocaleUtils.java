@@ -102,7 +102,7 @@ public class LocaleUtils {
         }
 
         if (player != null) {
-            var playerLocale = PlayerUtils.getLocale(((Player) player));
+            var playerLocale = PlayerUtils.getLocale(player);
             return getLocale(playerLocale);
         }
 
