@@ -91,28 +91,24 @@ public class LevelOverallMenu extends GlobalMenu {
                     "{page}", String.valueOf(i));
             var page = addPage(i, title, 54);
 
-            // copy immutable variable
-            var finalI = i;
-
             // next-page item
             if (i != getPages().size()) {
-                var item = getItemByKey("next-page");
-                if (item != null) {
-                    item.addClickAction(e -> changePage(e.getPlayer(), finalI + 1));
-                    itemSlots.isIntegerList("next-page",
-                            list -> list.forEach(slot -> setItem(finalI, slot, item)));
-                }
+                setChangePageItem("next-page", itemSlots, i, i + 1);
             }
 
             // previous-page item
             if (i > 1) {
-                var item = getItemByKey("previous-page");
-                if (item != null) {
-                    item.addClickAction(e -> changePage(e.getPlayer(), finalI - 1));
-                    itemSlots.isIntegerList("previous-page",
-                            list -> list.forEach(slot -> setItem(finalI, slot, item)));
-                }
+                setChangePageItem("previous-page", itemSlots, i, i - 1);
             }
+        }
+    }
+
+    private void setChangePageItem(String itemKey, NodeSection itemSlots, int currentPage, int targetPage) {
+        var item = getItemByKey(itemKey);
+        if (item != null) {
+            item.addClickAction(e -> changePage(e.getPlayer(), targetPage));
+            itemSlots.isIntegerList(itemKey,
+                    list -> list.forEach(slot -> setItem(currentPage, slot, item)));
         }
     }
 

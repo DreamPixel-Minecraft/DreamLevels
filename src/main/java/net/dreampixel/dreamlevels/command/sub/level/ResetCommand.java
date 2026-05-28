@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import top.shadowpixel.shadowcore.api.command.CommandContext;
 import top.shadowpixel.shadowcore.api.command.SubCommand;
 import top.shadowpixel.shadowcore.api.command.annotation.CommandInfo;
+import top.shadowpixel.shadowcore.api.command.component.CommandArgument;
 import top.shadowpixel.shadowcore.api.uid.UUIDStorage;
 
 import java.util.Collection;
@@ -34,51 +35,7 @@ public class ResetCommand extends SubCommand {
         // if so, run the offline modification
         var typedPlayer = arguments[1].getString();
         if (typedPlayer.startsWith("of:")) {
-            if (Bukkit.getPlayer(typedPlayer.substring(3)) != null) {
-                LocaleUtils.sendCmdMessage(ctx.sender(), "offline.online-detected");
-                return true;
-            }
-
-            // execute offline commands and send feedback
-            LocaleUtils.sendCmdMessage(ctx.sender(), "offline.sync-mode");
-
-            // add properties
-            ctx.addProperty("player", typedPlayer);
-            ctx.addProperty("level", levelStr);
-
-            // handle offline data for player
-            if (levelStr.equalsIgnoreCase("*")) {
-                // reset all
-                DataManager.getInstance().getOfflineDataModifier(
-                                typedPlayer.substring(3),
-                                feedback -> {
-                                    // send feedback
-                                    if (arguments.length > 3 && !arguments[3].getBoolean()) {
-                                        return;
-                                    }
-
-                                    sendOfflineFeedback(ctx, feedback);
-                                }
-                        )
-                        .resetAll();
-            } else {
-                // reset a specific level
-                DataManager.getInstance()
-                        .getOfflineLevelDataModifier(
-                                typedPlayer.substring(3),
-                                levelStr,
-                                feedback -> {
-                                    // send feedback
-                                    if (arguments.length > 3 && !arguments[3].getBoolean()) {
-                                        return;
-                                    }
-
-                                    sendOfflineFeedback(ctx, feedback);
-                                }
-                        )
-                        .reset();
-            }
-
+            executeOffline(ctx, typedPlayer, levelStr, arguments);
             return true;
         }
 
@@ -114,6 +71,54 @@ public class ResetCommand extends SubCommand {
         }
 
         return true;
+    }
+
+    private void executeOffline(@NotNull CommandContext ctx, String typedPlayer, String levelStr, CommandArgument[] arguments) {
+        if (Bukkit.getPlayer(typedPlayer.substring(3)) != null) {
+            LocaleUtils.sendCmdMessage(ctx.sender(), "offline.online-detected");
+            return;
+        }
+
+        // execute offline commands and send feedback
+        LocaleUtils.sendCmdMessage(ctx.sender(), "offline.sync-mode");
+
+        // add properties
+        ctx.addProperty("player", typedPlayer);
+        ctx.addProperty("level", levelStr);
+
+        // handle offline data for player
+        if (levelStr.equalsIgnoreCase("*")) {
+            // reset all
+            DataManager.getInstance().getOfflineDataModifier(
+                            typedPlayer.substring(3),
+                            feedback -> {
+                                // send feedback
+                                if (arguments.length > 3 && !arguments[3].getBoolean()) {
+                                    return;
+                                }
+
+                                sendOfflineFeedback(ctx, feedback);
+                            }
+                    )
+                    .resetAll();
+        } else {
+            // reset a specific level
+            DataManager.getInstance()
+                    .getOfflineLevelDataModifier(
+                            typedPlayer.substring(3),
+                            levelStr,
+                            feedback -> {
+                                // send feedback
+                                if (arguments.length > 3 && !arguments[3].getBoolean()) {
+                                    return;
+                                }
+
+                                sendOfflineFeedback(ctx, feedback);
+                            }
+                    )
+                    .reset();
+        }
+
     }
 
     @Override

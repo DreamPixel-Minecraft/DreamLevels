@@ -114,40 +114,33 @@ public class LevelDataOverallMenu extends GlobalMenu implements LifeCycled {
             var title = ReplaceUtils.coloredReplace(plugin.getConfiguration().getString("data-spy.menu-title.level-data-overall"),
                     "{page}", String.valueOf(i));
             var page = addPage(i, title, 54);
-            // copy immutable variable
-            var finalI = i;
 
             // next-page item
             if (i != getPages().size()) {
-                var item = getItemByKey("next-page");
-                if (item != null) {
-                    item.addClickAction(e -> {
-                        changePage(e.getPlayer(), finalI + 1);
-                        e.setCancelled(true);
-                    });
-
-                    itemSlots.isIntegerList("next-page",
-                            list -> list.forEach(slot -> setItem(finalI, slot, item)));
-                }
+                setChangePageItem("next-page", itemSlots, i, i + 1);
             }
 
             // previous-page item
             if (i > 1) {
-                var item = getItemByKey("previous-page");
-                if (item != null) {
-                    item.addClickAction(e -> {
-                        changePage(e.getPlayer(), finalI - 1);
-                        e.setCancelled(true);
-                    });
-
-                    itemSlots.isIntegerList("previous-page",
-                            list -> list.forEach(slot -> setItem(finalI, slot, item)));
-                }
+                setChangePageItem("previous-page", itemSlots, i, i - 1);
             }
 
             if (page != null) {
                 page.setItem(49, raItem);
             }
+        }
+    }
+
+    private void setChangePageItem(String itemKey, NodeSection itemSlots, int currentPage, int targetPage) {
+        var item = getItemByKey(itemKey);
+        if (item != null) {
+            item.addClickAction(e -> {
+                changePage(e.getPlayer(), targetPage);
+                e.setCancelled(true);
+            });
+
+            itemSlots.isIntegerList(itemKey,
+                    list -> list.forEach(slot -> setItem(currentPage, slot, item)));
         }
     }
 

@@ -64,33 +64,31 @@ public class PlayerDataMenu extends GlobalMenu {
         var pageCount = targets.size() / dataSlots.length
                 + (targets.size() % dataSlots.length > 0 ? 1 : 0);
         for (int i = 1; i <= pageCount; i++) {
-            addPage(i,
+            addPage(
+                    i,
                     ReplaceUtils.coloredReplace(DreamLevels.getInstance().getConfiguration().getString("data-spy.menu-title.player-data"),
                             "{page}", String.valueOf(i)),
-                    54);
-
-            // copy immutable variable
-            var finalI = i;
+                    54
+            );
 
             // next-page item
             if (i != pageCount) {
-                var item = getItemByKey("next-page");
-                if (item != null) {
-                    item.addClickAction(e -> changePage(e.getPlayer(), finalI + 1));
-                    itemSlots.isIntegerList("next-page",
-                            list -> list.forEach(slot -> setItem(finalI, slot, item)));
-                }
+                setChangePageItem("next-page", itemSlots, i, i + 1);
             }
 
             // previous-page item
             if (i > 1) {
-                var item = getItemByKey("previous-page");
-                if (item != null) {
-                    item.addClickAction(e -> changePage(e.getPlayer(), finalI - 1));
-                    itemSlots.isIntegerList("previous-page",
-                            list -> list.forEach(slot -> setItem(finalI, slot, item)));
-                }
+                setChangePageItem("previous-page", itemSlots, i, i - 1);
             }
+        }
+    }
+
+    private void setChangePageItem(String itemKey, NodeSection itemSlots, int currentPage, int targetPage) {
+        var item = getItemByKey(itemKey);
+        if (item != null) {
+            item.addClickAction(e -> changePage(e.getPlayer(), targetPage));
+            itemSlots.isIntegerList(itemKey,
+                    list -> list.forEach(slot -> setItem(currentPage, slot, item)));
         }
     }
 
