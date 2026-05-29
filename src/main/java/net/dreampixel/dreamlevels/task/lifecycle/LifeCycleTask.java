@@ -141,4 +141,33 @@ public class LifeCycleTask extends BukkitRunnable {
             }
         }
     }
+
+    @NotNull
+    public static LifeCycleTask getInstance() {
+        return instance;
+    }
+
+    /**
+     * Add an item to the task. If the task is not started, then it'll be ignored.
+     *
+     * @param item Item
+     */
+    public static void add(@NotNull LifeCycled item) {
+        if (instance != null) {
+            instance.addItem(item);
+            Debugger.info("Item '" + item.getKey() + "' was added to the life cycle task.");
+        }
+    }
+
+    /**
+     * Remove an item from the task. If the task is not started, then it'll be ignored.
+     *
+     * @param key Key of the item
+     */
+    public static void remove(@NotNull String key) {
+        if (instance != null) {
+            instance.removeItem(key);
+            Debugger.info("Item '" + key + "' was removed from the life cycle task.");
+        }
+    }
 }
