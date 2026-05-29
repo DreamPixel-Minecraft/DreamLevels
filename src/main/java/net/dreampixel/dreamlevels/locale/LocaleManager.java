@@ -18,7 +18,12 @@ import java.util.List;
 
 public class LocaleManager extends AbstractLocaleManager<DreamLevels> {
     public static final List<LocaleInfo> PRESET_LOCALE_INFOS = ListUtils.immutableList(
-            LocaleInfo.of("zh_CN", "Locale/zh_CN")
+            LocaleInfo.builder()
+                    .name("zh_CN")
+                    .internalPath("Locale/zh_CN")
+                    .complete()
+                    .uncompletableFile("Events.yml")
+                    .build()
     );
     public static final List<String> CONTENTS = ListUtils.immutableList(
             "Message.yml",
